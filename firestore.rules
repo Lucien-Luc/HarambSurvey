@@ -8,8 +8,9 @@ service cloud.firestore {
       // Anyone can read surveys (for public survey access)
       allow read: if true;
       
-      // Authenticated users can create/update surveys
-      allow write: if request.auth != null;
+      // Only authorized admins can create/update surveys
+      allow write: if request.auth != null && 
+        request.auth.token.email in ['admin@bpn.com'];
     }
     
     // Responses collection - allow public write, authenticated read
@@ -17,27 +18,31 @@ service cloud.firestore {
       // Anyone can submit survey responses (for public surveys)
       allow create: if true;
       
-      // Authenticated users can read all responses (for admin dashboard)
-      allow read: if request.auth != null;
+      // Only authorized admins can read all responses (for admin dashboard)
+      allow read: if request.auth != null && 
+        request.auth.token.email in ['admin@bpn.com'];
       
-      // Authenticated users can update/delete responses
-      allow update, delete: if request.auth != null;
+      // Only authorized admins can update/delete responses
+      allow update, delete: if request.auth != null && 
+        request.auth.token.email in ['admin@bpn.com'];
     }
     
-    // Users collection - user can access their own data, admins can access all
+    // Users collection - only authorized admins can access user data
     match /users/{userId} {
       allow read, write: if request.auth != null && 
-        (request.auth.uid == userId || request.auth.token.admin == true);
+        request.auth.token.email in ['admin@bpn.com'];
     }
     
-    // Settings collection - authenticated users only
+    // Settings collection - only authorized admins can access settings
     match /settings/{document} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && 
+        request.auth.token.email in ['admin@bpn.com'];
     }
     
-    // Analytics collection - authenticated users only  
+    // Analytics collection - only authorized admins can access analytics
     match /analytics/{document} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && 
+        request.auth.token.email in ['admin@bpn.com'];
     }
   }
 }

@@ -98,13 +98,18 @@ class FirebaseConfig {
     // Auth methods
     async signInWithEmailAndPassword(email, password) {
         try {
+            // Check if email is in the authorized admin list
+            const authorizedAdmins = ['admin@bpn.com']; // Only authorized admin emails
+            if (!authorizedAdmins.includes(email.toLowerCase())) {
+                return { success: false, error: 'Unauthorized access. Only designated admins can access this system.' };
+            }
+            
             const result = await this.auth.signInWithEmailAndPassword(email, password);
             
-            // Check if this is the authorized admin
-            const adminEmail = 'admin@bpn.com'; // Single admin email
-            if (result.user.email !== adminEmail) {
+            // Double-check email after successful authentication
+            if (!authorizedAdmins.includes(result.user.email.toLowerCase())) {
                 await this.auth.signOut();
-                return { success: false, error: 'Unauthorized access. Only the designated admin can access this system.' };
+                return { success: false, error: 'Unauthorized access. Only designated admins can access this system.' };
             }
             
             return { success: true, user: result.user };
