@@ -25,13 +25,17 @@ The following collections are now restricted to authorized admin emails only:
 - **Survey Taking**: Anyone can still take surveys (responses collection allows public create)
 - **Survey Reading**: Anyone can read published surveys for public access
 
-### To Apply These Security Rules:
+### URGENT: Apply Security Rules to Fix Permission Errors
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project: `tasked-7bfac` 
-3. Navigate to **Firestore Database** → **Rules**
-4. Copy the content from `firestore.rules` file
-5. Paste into the rules editor and click **"Publish"**
+**Your app is showing permission errors because the Firebase security rules need to be updated in your Firebase Console.**
+
+1. **Go to Firebase Console**: [https://console.firebase.google.com/](https://console.firebase.google.com/)
+2. **Select your project**: `tasked-7bfac`
+3. **Navigate to**: Firestore Database → Rules
+4. **Replace existing rules** with the content from `firestore.rules` file
+5. **Click "Publish"** to apply the changes
+
+**Current permission errors will be resolved after applying these rules.**
 
 ### Important Notes:
 

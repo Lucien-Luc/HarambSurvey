@@ -1,3 +1,25 @@
+# 🚨 FIREBASE SECURITY RULES REQUIRED
+
+## Current Status: Permission Errors
+
+Your BPN Survey Platform is showing **permission denied** errors because the Firebase security rules need to be applied in your Firebase Console.
+
+## Quick Fix Steps:
+
+### 1. Open Firebase Console
+Go to: [https://console.firebase.google.com/](https://console.firebase.google.com/)
+
+### 2. Select Your Project
+Choose project: `tasked-7bfac`
+
+### 3. Navigate to Firestore Rules
+- Click **"Firestore Database"** in the left menu
+- Click **"Rules"** tab at the top
+
+### 4. Replace Rules
+Copy and paste this content into the rules editor:
+
+```javascript
 rules_version = '2';
 
 service cloud.firestore {
@@ -61,3 +83,23 @@ service cloud.firestore {
     }
   }
 }
+```
+
+### 5. Publish Rules
+Click **"Publish"** to apply the changes
+
+## After Applying Rules:
+
+1. **Refresh your app** - The permission errors should be resolved
+2. **Long-press the BPN logo** - To access admin registration
+3. **Create your first admin account** - The system will allow only one admin
+4. **Start using the survey platform** - All features will work properly
+
+## What These Rules Do:
+
+- ✅ **Public Survey Access**: Anyone can read and take surveys
+- ✅ **Admin-Only Management**: Only admins can create/edit surveys and view responses
+- ✅ **Single Admin Registration**: Allows creating one admin account, then blocks additional ones
+- ✅ **Secure Data Access**: All sensitive operations require admin authentication
+
+The app will work perfectly once these rules are applied!

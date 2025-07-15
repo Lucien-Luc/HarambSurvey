@@ -65,13 +65,14 @@
                             <h2>BPN Admin Access</h2>
                             <p>Secure authentication required</p>
                         </div>
-                        <form id="adminLoginForm">
+                        <!-- Login Form -->
+                        <form id="adminLoginForm" class="auth-form-content">
                             <div class="form-group">
                                 <label for="adminEmail">
                                     <i class="fas fa-user"></i>
                                     Admin Email
                                 </label>
-                                <input type="email" id="adminEmail" class="form-control" placeholder="admin@bpn.com" required autocomplete="username">
+                                <input type="email" id="adminEmail" class="form-control" placeholder="Enter admin email" required autocomplete="username">
                             </div>
                             <div class="form-group">
                                 <label for="adminPassword">
@@ -85,9 +86,42 @@
                                 Sign In to Admin Panel
                             </button>
                         </form>
+
+                        <!-- Sign Up Form -->
+                        <form id="adminSignupForm" class="auth-form-content" style="display: none;">
+                            <div class="form-group">
+                                <label for="signupEmail">
+                                    <i class="fas fa-user"></i>
+                                    Admin Email
+                                </label>
+                                <input type="email" id="signupEmail" class="form-control" placeholder="Enter admin email" required autocomplete="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="signupPassword">
+                                    <i class="fas fa-lock"></i>
+                                    Password
+                                </label>
+                                <input type="password" id="signupPassword" class="form-control" placeholder="Create password" required autocomplete="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="signupConfirmPassword">
+                                    <i class="fas fa-lock"></i>
+                                    Confirm Password
+                                </label>
+                                <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Confirm password" required autocomplete="new-password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <i class="fas fa-user-plus"></i>
+                                Create Admin Account
+                            </button>
+                        </form>
                         <div class="auth-error" id="authError"></div>
+                        <div class="auth-toggle">
+                            <p id="authToggleText">No admin account exists? <a href="#" id="showSignupBtn">Create first admin account</a></p>
+                            <p id="authToggleTextSignup" style="display: none;">Already have an admin account? <a href="#" id="showLoginBtn">Sign in here</a></p>
+                        </div>
                         <div class="auth-info">
-                            <p><i class="fas fa-info-circle"></i> Only authorized admin accounts can access this system</p>
+                            <p><i class="fas fa-info-circle"></i> Only one admin account can exist in the system</p>
                         </div>
                     </div>
                 </div>

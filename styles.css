@@ -448,6 +448,33 @@ textarea.form-control {
     color: var(--color-primary);
 }
 
+.auth-form-content {
+    margin-bottom: 1rem;
+}
+
+.auth-toggle {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #E5E7EB;
+}
+
+.auth-toggle p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-tertiary);
+}
+
+.auth-toggle a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
 /* Admin Layout */
 .admin-layout {
     display: flex;

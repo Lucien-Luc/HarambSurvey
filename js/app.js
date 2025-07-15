@@ -37,6 +37,22 @@ class SurveyApp {
         if (adminLoginForm) {
             adminLoginForm.addEventListener('submit', this.handleAdminLogin.bind(this));
         }
+
+        // Admin signup form
+        const adminSignupForm = document.getElementById('adminSignupForm');
+        if (adminSignupForm) {
+            adminSignupForm.addEventListener('submit', this.handleAdminSignup.bind(this));
+        }
+
+        // Auth toggle buttons
+        const showSignupBtn = document.getElementById('showSignupBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        if (showSignupBtn) {
+            showSignupBtn.addEventListener('click', this.showSignupForm.bind(this));
+        }
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', this.showLoginForm.bind(this));
+        }
         
         // Logout button
         const logoutBtn = document.getElementById('logoutBtn');
@@ -236,8 +252,102 @@ class SurveyApp {
         }
     }
     
-    showAdminLogin() {
+    async showAdminLogin() {
         this.showView('adminLoginView');
+        
+        // Check if admin already exists to show/hide signup option
+        const adminExists = await window.firebaseConfig.adminExists();
+        const showSignupBtn = document.getElementById('showSignupBtn');
+        const authToggleText = document.getElementById('authToggleText');
+        
+        if (adminExists.exists) {
+            showSignupBtn.style.display = 'none';
+            authToggleText.innerHTML = '<i class="fas fa-info-circle"></i> Admin account exists. Sign in to continue.';
+        } else {
+            showSignupBtn.style.display = 'inline';
+            authToggleText.innerHTML = 'No admin account exists? <a href="#" id="showSignupBtn">Create first admin account</a>';
+            // Re-bind event listener for dynamically updated button
+            const newShowSignupBtn = document.getElementById('showSignupBtn');
+            if (newShowSignupBtn) {
+                newShowSignupBtn.addEventListener('click', this.showSignupForm.bind(this));
+            }
+        }
+    }
+
+    showSignupForm(e) {
+        e.preventDefault();
+        document.getElementById('adminLoginForm').style.display = 'none';
+        document.getElementById('adminSignupForm').style.display = 'block';
+        document.getElementById('authToggleText').style.display = 'none';
+        document.getElementById('authToggleTextSignup').style.display = 'block';
+        this.clearAuthError();
+    }
+
+    showLoginForm(e) {
+        e.preventDefault();
+        document.getElementById('adminLoginForm').style.display = 'block';
+        document.getElementById('adminSignupForm').style.display = 'none';
+        document.getElementById('authToggleText').style.display = 'block';
+        document.getElementById('authToggleTextSignup').style.display = 'none';
+        this.clearAuthError();
+    }
+
+    clearAuthError() {
+        const errorEl = document.getElementById('authError');
+        if (errorEl) {
+            errorEl.textContent = '';
+            errorEl.classList.remove('show');
+        }
+    }
+
+    async handleAdminSignup(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        const errorEl = document.getElementById('authError');
+        
+        // Validation
+        if (!email || !password || !confirmPassword) {
+            errorEl.textContent = 'Please fill in all fields';
+            errorEl.classList.add('show');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            errorEl.textContent = 'Passwords do not match';
+            errorEl.classList.add('show');
+            return;
+        }
+        
+        if (password.length < 6) {
+            errorEl.textContent = 'Password must be at least 6 characters long';
+            errorEl.classList.add('show');
+            return;
+        }
+        
+        Utils.showLoading('Creating admin account...');
+        
+        try {
+            const result = await window.firebaseConfig.createAdminAccount(email, password);
+            
+            if (result.success) {
+                this.isAdminMode = true;
+                this.showView('adminDashboardView');
+                this.loadAdminData();
+                Utils.showSuccess('Admin account created successfully! Welcome to the dashboard.');
+            } else {
+                errorEl.textContent = result.error;
+                errorEl.classList.add('show');
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            errorEl.textContent = 'Failed to create admin account. Please try again.';
+            errorEl.classList.add('show');
+        } finally {
+            Utils.hideLoading();
+        }
     }
     
     async handleAdminLogin(e) {

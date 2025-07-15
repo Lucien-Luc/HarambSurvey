@@ -95,24 +95,40 @@ class FirebaseConfig {
         document.body.appendChild(errorElement);
     }
     
+    // Check if admin already exists
+    async adminExists() {
+        try {
+            // Check in Firestore users collection
+            const usersResult = await this.getCollection('users');
+            if (usersResult.success) {
+                const adminUser = usersResult.data.find(user => user.role === 'admin');
+                if (adminUser) {
+                    return { exists: true, source: 'firestore', admin: adminUser };
+                }
+            }
+            
+            // Check in Firebase Auth (list users - this would need server-side implementation)
+            // For now, we'll rely on Firestore check
+            return { exists: false };
+        } catch (error) {
+            console.error('Error checking admin existence:', error);
+            return { exists: false };
+        }
+    }
+
     // Auth methods
     async signInWithEmailAndPassword(email, password) {
         try {
-            // Check if email is in the authorized admin list
-            const authorizedAdmins = ['admin@bpn.com']; // Only authorized admin emails
-            if (!authorizedAdmins.includes(email.toLowerCase())) {
-                return { success: false, error: 'Unauthorized access. Only designated admins can access this system.' };
-            }
-            
             const result = await this.auth.signInWithEmailAndPassword(email, password);
             
-            // Double-check email after successful authentication
-            if (!authorizedAdmins.includes(result.user.email.toLowerCase())) {
+            // Check if user has admin role in Firestore
+            const userDoc = await this.getDocument('users', result.user.uid);
+            if (!userDoc.success || userDoc.data?.role !== 'admin') {
                 await this.auth.signOut();
-                return { success: false, error: 'Unauthorized access. Only designated admins can access this system.' };
+                return { success: false, error: 'Unauthorized access. Only admin accounts can access this system.' };
             }
             
-            return { success: true, user: result.user };
+            return { success: true, user: result.user, userData: userDoc.data };
         } catch (error) {
             console.error('Sign in error:', error);
             
@@ -126,6 +142,53 @@ class FirebaseConfig {
                 errorMessage = 'Please enter a valid email address.';
             } else if (error.code === 'auth/too-many-requests') {
                 errorMessage = 'Too many failed attempts. Please try again later.';
+            }
+            
+            return { success: false, error: errorMessage };
+        }
+    }
+
+    // Admin registration
+    async createAdminAccount(email, password) {
+        try {
+            // First check if admin already exists
+            const adminCheck = await this.adminExists();
+            if (adminCheck.exists) {
+                return { success: false, error: 'An admin account already exists in the system. Only one admin is allowed.' };
+            }
+            
+            // Create Firebase Auth user
+            const authResult = await this.auth.createUserWithEmailAndPassword(email, password);
+            
+            // Create admin user document in Firestore
+            const userData = {
+                uid: authResult.user.uid,
+                email: email,
+                role: 'admin',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            const userDocResult = await this.createDocument('users', userData, authResult.user.uid);
+            
+            if (userDocResult.success) {
+                return { success: true, user: authResult.user, userData: userData };
+            } else {
+                // If Firestore creation fails, delete the Auth user
+                await authResult.user.delete();
+                return { success: false, error: 'Failed to create admin profile. Please try again.' };
+            }
+            
+        } catch (error) {
+            console.error('Admin creation error:', error);
+            
+            let errorMessage = error.message;
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'This email is already registered. Please use a different email or sign in instead.';
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'Password is too weak. Please use at least 6 characters.';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Please enter a valid email address.';
             }
             
             return { success: false, error: errorMessage };
