@@ -120,14 +120,13 @@ class SurveyApp {
                     }
                 }
             } else {
-                // Load demo data if Firebase access is limited
-                this.loadDemoData();
+                // Show no surveys message if no data available
+                this.showNoSurveyMessage();
             }
             
         } catch (error) {
             console.error('Error loading initial data:', error);
-            // Load demo data as fallback
-            this.loadDemoData();
+            Utils.showError('Unable to connect to database. Please check Firebase configuration.');
         } finally {
             Utils.hideLoading();
         }

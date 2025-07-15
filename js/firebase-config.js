@@ -99,9 +99,31 @@ class FirebaseConfig {
     async signInWithEmailAndPassword(email, password) {
         try {
             const result = await this.auth.signInWithEmailAndPassword(email, password);
+            
+            // Check if this is the authorized admin
+            const adminEmail = 'admin@bpn.com'; // Single admin email
+            if (result.user.email !== adminEmail) {
+                await this.auth.signOut();
+                return { success: false, error: 'Unauthorized access. Only the designated admin can access this system.' };
+            }
+            
             return { success: true, user: result.user };
         } catch (error) {
-            return { success: false, error: error.message };
+            console.error('Sign in error:', error);
+            
+            // Provide user-friendly error messages
+            let errorMessage = error.message;
+            if (error.code === 'auth/user-not-found') {
+                errorMessage = 'No admin account found with this email address.';
+            } else if (error.code === 'auth/wrong-password') {
+                errorMessage = 'Incorrect password. Please try again.';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Please enter a valid email address.';
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = 'Too many failed attempts. Please try again later.';
+            }
+            
+            return { success: false, error: errorMessage };
         }
     }
     
