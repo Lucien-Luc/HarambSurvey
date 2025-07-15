@@ -181,14 +181,16 @@ class SurveyInterface {
                 if (question.options && question.options.length > 0) {
                     inputHtml = '<div class="radio-group">';
                     question.options.forEach((option, index) => {
+                        const optionValue = typeof option === 'object' ? option.value : option;
+                        const optionLabel = typeof option === 'object' ? option.label : option;
                         inputHtml += `
                             <div class="radio-option">
                                 <input type="radio" 
                                        name="${name}" 
                                        id="${name}_${index}" 
-                                       value="${Utils.sanitizeHtml(option.value)}"
+                                       value="${Utils.sanitizeHtml(optionValue)}"
                                        ${question.required ? 'required' : ''}>
-                                <label for="${name}_${index}">${Utils.sanitizeHtml(option.label)}</label>
+                                <label for="${name}_${index}">${Utils.sanitizeHtml(optionLabel)}</label>
                             </div>
                         `;
                     });
@@ -200,13 +202,15 @@ class SurveyInterface {
                 if (question.options && question.options.length > 0) {
                     inputHtml = '<div class="checkbox-group">';
                     question.options.forEach((option, index) => {
+                        const optionValue = typeof option === 'object' ? option.value : option;
+                        const optionLabel = typeof option === 'object' ? option.label : option;
                         inputHtml += `
                             <div class="checkbox-option">
                                 <input type="checkbox" 
                                        name="${name}" 
                                        id="${name}_${index}" 
-                                       value="${Utils.sanitizeHtml(option.value)}">
-                                <label for="${name}_${index}">${Utils.sanitizeHtml(option.label)}</label>
+                                       value="${Utils.sanitizeHtml(optionValue)}">
+                                <label for="${name}_${index}">${Utils.sanitizeHtml(optionLabel)}</label>
                             </div>
                         `;
                     });
@@ -219,7 +223,9 @@ class SurveyInterface {
                     inputHtml = `<select class="form-control form-select" name="${name}" id="${name}" ${question.required ? 'required' : ''}>`;
                     inputHtml += '<option value="">Select an option</option>';
                     question.options.forEach(option => {
-                        inputHtml += `<option value="${Utils.sanitizeHtml(option.value)}">${Utils.sanitizeHtml(option.label)}</option>`;
+                        const optionValue = typeof option === 'object' ? option.value : option;
+                        const optionLabel = typeof option === 'object' ? option.label : option;
+                        inputHtml += `<option value="${Utils.sanitizeHtml(optionValue)}">${Utils.sanitizeHtml(optionLabel)}</option>`;
                     });
                     inputHtml += '</select>';
                 }

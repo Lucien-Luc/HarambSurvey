@@ -19,6 +19,11 @@ class SurveyApp {
         this.bindEvents();
         this.loadInitialData();
         this.checkUrlParams();
+        
+        // Set up Firebase auth state listener after app is initialized
+        if (window.firebaseConfig && window.firebaseConfig.auth) {
+            window.firebaseConfig.onAuthStateChanged = this.handleAuthStateChange.bind(this);
+        }
     }
     
     bindEvents() {
@@ -147,6 +152,42 @@ class SurveyApp {
             Utils.hideLoading();
         }
     }
+    
+    updateSurveySelectors() {
+        // Update survey filter dropdown
+        const surveyFilter = document.getElementById('surveyFilter');
+        if (surveyFilter) {
+            const currentValue = surveyFilter.value;
+            surveyFilter.innerHTML = '<option value="">All Surveys</option>';
+            
+            this.surveys.forEach(survey => {
+                const option = document.createElement('option');
+                option.value = survey.id;
+                option.textContent = survey.title;
+                if (option.value === currentValue) {
+                    option.selected = true;
+                }
+                surveyFilter.appendChild(option);
+            });
+        }
+        
+        // Update analytics filter dropdown
+        const analyticsFilter = document.getElementById('analyticsFilter');
+        if (analyticsFilter) {
+            const currentValue = analyticsFilter.value;
+            analyticsFilter.innerHTML = '<option value="">Select Survey</option>';
+            
+            this.surveys.forEach(survey => {
+                const option = document.createElement('option');
+                option.value = survey.id;
+                option.textContent = survey.title;
+                if (option.value === currentValue) {
+                    option.selected = true;
+                }
+                analyticsFilter.appendChild(option);
+            });
+        }
+    }
 
     loadDemoData() {
         // Demo survey data for when Firebase access is limited
@@ -216,26 +257,37 @@ class SurveyApp {
     updateSurveySelectors() {
         // Update survey filter dropdown
         const surveyFilter = document.getElementById('surveyFilter');
-        const analyticsFilter = document.getElementById('analyticsFilter');
-        
-        [surveyFilter, analyticsFilter].forEach(select => {
-            if (select) {
-                // Clear existing options except the first one
-                const firstOption = select.querySelector('option');
-                select.innerHTML = '';
-                if (firstOption) {
-                    select.appendChild(firstOption);
+        if (surveyFilter) {
+            const currentValue = surveyFilter.value;
+            surveyFilter.innerHTML = '<option value="">All Surveys</option>';
+            
+            this.surveys.forEach(survey => {
+                const option = document.createElement('option');
+                option.value = survey.id;
+                option.textContent = survey.title;
+                if (option.value === currentValue) {
+                    option.selected = true;
                 }
-                
-                // Add survey options
-                this.surveys.forEach(survey => {
-                    const option = document.createElement('option');
-                    option.value = survey.id;
-                    option.textContent = survey.title;
-                    select.appendChild(option);
-                });
-            }
-        });
+                surveyFilter.appendChild(option);
+            });
+        }
+        
+        // Update analytics filter dropdown
+        const analyticsFilter = document.getElementById('analyticsFilter');
+        if (analyticsFilter) {
+            const currentValue = analyticsFilter.value;
+            analyticsFilter.innerHTML = '<option value="">Select Survey</option>';
+            
+            this.surveys.forEach(survey => {
+                const option = document.createElement('option');
+                option.value = survey.id;
+                option.textContent = survey.title;
+                if (option.value === currentValue) {
+                    option.selected = true;
+                }
+                analyticsFilter.appendChild(option);
+            });
+        }
     }
     
     startLongPress(e) {
@@ -462,13 +514,38 @@ class SurveyApp {
         if (!this.isAdminMode) return;
         
         try {
-            // Load responses
-            const responsesResult = await window.firebaseConfig.getCollection('responses', 
-                { field: 'submittedAt', direction: 'desc' });
-            
-            if (responsesResult.success) {
-                this.responses = responsesResult.data;
+            // Initialize admin manager if not already done
+            if (!this.adminManager) {
+                this.adminManager = new AdminManager();
             }
+            
+            // Initialize form builder if not already done
+            if (!this.formBuilder) {
+                this.formBuilder = new FormBuilder();
+            }
+            
+            // Initialize analytics if not already done
+            if (!this.analytics) {
+                this.analytics = new SurveyAnalytics();
+            }
+            
+            // Sync demo data to admin manager in case of Firebase permission errors
+            if (this.adminManager) {
+                this.adminManager.surveys = this.surveys;
+                this.adminManager.responses = this.responses;
+                
+                // Update admin UI with demo data
+                this.adminManager.updateSurveysList();
+                this.adminManager.updateResponsesList();
+                this.adminManager.updateDashboardStats();
+            }
+            
+            // Set data for analytics
+            this.analytics.setSurveys(this.surveys);
+            this.analytics.setResponses(this.responses);
+            
+            // Update survey selectors
+            this.updateSurveySelectors();
             
             // Update dashboard stats
             this.updateDashboardStats();
@@ -510,7 +587,8 @@ class SurveyApp {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const todayResponses = this.responses.filter(r => {
-            const responseDate = r.submittedAt.toDate();
+            if (!r.submittedAt) return false;
+            const responseDate = r.submittedAt.toDate ? r.submittedAt.toDate() : new Date(r.submittedAt);
             return responseDate >= today;
         }).length;
         
@@ -545,7 +623,9 @@ class SurveyApp {
         last7Days.forEach(date => responsesByDate[date] = 0);
         
         this.responses.forEach(response => {
-            const date = response.submittedAt.toDate().toISOString().split('T')[0];
+            if (!response.submittedAt) return;
+            const responseDate = response.submittedAt.toDate ? response.submittedAt.toDate() : new Date(response.submittedAt);
+            const date = responseDate.toISOString().split('T')[0];
             if (responsesByDate.hasOwnProperty(date)) {
                 responsesByDate[date]++;
             }

@@ -65,6 +65,11 @@ class AdminManager {
             (surveys, error) => {
                 if (error) {
                     console.error('Error listening to surveys:', error);
+                    // Fall back to demo mode when Firebase permissions fail
+                    if (error.code === 'permission-denied') {
+                        console.log('Firebase permission denied, loading demo data...');
+                        this.loadDemoData();
+                    }
                     return;
                 }
                 
@@ -81,6 +86,11 @@ class AdminManager {
             (responses, error) => {
                 if (error) {
                     console.error('Error listening to responses:', error);
+                    // Fall back to demo mode when Firebase permissions fail
+                    if (error.code === 'permission-denied') {
+                        console.log('Firebase permission denied, loading demo data...');
+                        this.loadDemoData();
+                    }
                     return;
                 }
                 
@@ -91,6 +101,22 @@ class AdminManager {
             },
             { field: 'submittedAt', direction: 'desc' }
         );
+    }
+    
+    loadDemoData() {
+        // Load demo surveys and responses if not already loaded
+        if (this.surveys.length === 0 && window.app && window.app.surveys) {
+            this.surveys = window.app.surveys;
+            this.updateSurveysList();
+        }
+        
+        if (this.responses.length === 0 && window.app && window.app.responses) {
+            this.responses = window.app.responses;
+            this.updateResponsesList();
+        }
+        
+        this.updateDashboardStats();
+        this.updateAnalytics();
     }
     
     updateSurveysList() {
@@ -132,7 +158,8 @@ class AdminManager {
         
         if (dateFrom || dateTo) {
             filtered = filtered.filter(survey => {
-                const createdDate = survey.createdAt.toDate();
+                if (!survey.createdAt) return false;
+                const createdDate = survey.createdAt.toDate ? survey.createdAt.toDate() : new Date(survey.createdAt);
                 const fromDate = dateFrom ? new Date(dateFrom) : new Date('1970-01-01');
                 const toDate = dateTo ? new Date(dateTo) : new Date();
                 
@@ -238,7 +265,9 @@ class AdminManager {
         last7Days.forEach(date => responsesByDate[date] = 0);
         
         surveyResponses.forEach(response => {
-            const date = response.submittedAt.toDate().toISOString().split('T')[0];
+            if (!response.submittedAt) return;
+            const responseDate = response.submittedAt.toDate ? response.submittedAt.toDate() : new Date(response.submittedAt);
+            const date = responseDate.toISOString().split('T')[0];
             if (responsesByDate.hasOwnProperty(date)) {
                 responsesByDate[date]++;
             }
@@ -310,7 +339,11 @@ class AdminManager {
             filtered = filtered.filter(response => response.status === statusFilter);
         }
         
-        return filtered.sort((a, b) => b.submittedAt.toDate() - a.submittedAt.toDate());
+        return filtered.sort((a, b) => {
+            const aDate = a.submittedAt?.toDate ? a.submittedAt.toDate() : new Date(a.submittedAt || 0);
+            const bDate = b.submittedAt?.toDate ? b.submittedAt.toDate() : new Date(b.submittedAt || 0);
+            return bDate - aDate;
+        });
     }
     
     getResponseRowHTML(response) {
@@ -377,7 +410,8 @@ class AdminManager {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const todayResponses = this.responses.filter(r => {
-            const responseDate = r.submittedAt.toDate();
+            if (!r.submittedAt) return false;
+            const responseDate = r.submittedAt.toDate ? r.submittedAt.toDate() : new Date(r.submittedAt);
             return responseDate >= today;
         }).length;
         
@@ -548,6 +582,19 @@ class AdminManager {
         }
     }
     
+    viewSurveyResponses(surveyId) {
+        // Switch to responses view and filter by survey
+        window.app.showAdminView('responses');
+        
+        // Set the survey filter
+        const surveyFilter = document.getElementById('surveyFilter');
+        if (surveyFilter) {
+            surveyFilter.value = surveyId;
+            // Trigger the filter update
+            this.updateResponsesList();
+        }
+    }
+
     async exportSurveyResponses(surveyId) {
         const survey = this.surveys.find(s => s.id === surveyId);
         const surveyResponses = this.responses.filter(r => r.surveyId === surveyId);
