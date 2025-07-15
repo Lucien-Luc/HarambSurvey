@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test</title>
+</head>
+<body>
+    <h1>Firebase Connection Test</h1>
+    <button onclick="testFirebaseConnection()">Test Firebase</button>
+    <button onclick="addSampleSurvey()">Add Sample Survey</button>
+    <div id="results"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA51uZoEjokzLMN8738uhxl_eHvVjKTBSA",
+            authDomain: "tasked-7bfac.firebaseapp.com",
+            projectId: "tasked-7bfac",
+            storageBucket: "tasked-7bfac.firebasestorage.app",
+            messagingSenderId: "834333377475",
+            appId: "1:834333377475:web:b343415fc6ebc54512f376"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function log(message) {
+            document.getElementById('results').innerHTML += '<p>' + message + '</p>';
+        }
+
+        async function testFirebaseConnection() {
+            log('Testing Firebase connection...');
+            
+            try {
+                // Test reading surveys collection
+                const surveysSnapshot = await db.collection('surveys').limit(1).get();
+                log('✓ Successfully connected to surveys collection');
+                log(`Found ${surveysSnapshot.docs.length} surveys`);
+                
+                // Test reading responses collection  
+                const responsesSnapshot = await db.collection('responses').limit(1).get();
+                log('✓ Successfully connected to responses collection');
+                log(`Found ${responsesSnapshot.docs.length} responses`);
+                
+            } catch (error) {
+                log('✗ Error: ' + error.message);
+                log('Error code: ' + error.code);
+            }
+        }
+
+        async function addSampleSurvey() {
+            log('Adding sample survey...');
+            
+            try {
+                const sampleSurvey = {
+                    title: 'Customer Satisfaction Survey',
+                    description: 'Help us improve our services',
+                    status: 'active',
+                    questions: [
+                        {
+                            id: 'q1',
+                            type: 'radio',
+                            title: 'How satisfied are you with our service?',
+                            required: true,
+                            options: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied']
+                        },
+                        {
+                            id: 'q2',
+                            type: 'text',
+                            title: 'Any comments?',
+                            required: false
+                        }
+                    ],
+                    createdAt: firebase.firestore.Timestamp.now()
+                };
+
+                const docRef = await db.collection('surveys').add(sampleSurvey);
+                log('✓ Sample survey added with ID: ' + docRef.id);
+                
+            } catch (error) {
+                log('✗ Error adding survey: ' + error.message);
+                log('Error code: ' + error.code);
+            }
+        }
+    </script>
+</body>
+</html>
