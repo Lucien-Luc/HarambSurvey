@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>BPN Survey Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-container" id="logoContainer">
+                    <div class="logo">
+                        <img src="attached_assets/logo_1752487155061_1752582716936.png" alt="BPN Logo" style="height: 40px; width: auto;">
+                    </div>
+                </div>
+                <nav class="nav" id="mainNav">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link active" data-view="survey">Survey</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Survey View (Default) -->
+            <div id="surveyView" class="view active">
+                <div class="survey-container">
+                    <div class="survey-header">
+                        <h1 id="surveyTitle">Welcome to BPN Survey</h1>
+                        <p id="surveyDescription">Please complete the following survey. Your responses are important to us.</p>
+                    </div>
+                    
+                    <div class="survey-form" id="surveyForm">
+                        <div class="survey-welcome">
+                            <div class="welcome-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h2>No Active Survey</h2>
+                            <p>There are currently no surveys available. Please check back later.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Login View -->
+            <div id="adminLoginView" class="view">
+                <div class="auth-container">
+                    <div class="auth-form">
+                        <h2>Admin Access</h2>
+                        <p>Please authenticate to access the admin dashboard</p>
+                        <form id="adminLoginForm">
+                            <div class="form-group">
+                                <label for="adminEmail">Email</label>
+                                <input type="email" id="adminEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPassword">Password</label>
+                                <input type="password" id="adminPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign In</button>
+                        </form>
+                        <div class="auth-error" id="authError"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard View -->
+            <div id="adminDashboardView" class="view">
+                <div class="admin-layout">
+                    <aside class="admin-sidebar">
+                        <div class="sidebar-header">
+                            <h3>Admin Panel</h3>
+                            <button class="btn btn-sm btn-outline" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                        <nav class="sidebar-nav">
+                            <a href="#" class="sidebar-link active" data-admin-view="dashboard">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="#" class="sidebar-link" data-admin-view="surveys">
+                                <i class="fas fa-list"></i> Surveys
+                            </a>
+                            <a href="#" class="sidebar-link" data-admin-view="form-builder">
+                                <i class="fas fa-edit"></i> Form Builder
+                            </a>
+                            <a href="#" class="sidebar-link" data-admin-view="responses">
+                                <i class="fas fa-users"></i> Responses
+                            </a>
+                            <a href="#" class="sidebar-link" data-admin-view="analytics">
+                                <i class="fas fa-chart-bar"></i> Analytics
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <main class="admin-content">
+                        <!-- Dashboard View -->
+                        <div id="adminDashboard" class="admin-view active">
+                            <div class="dashboard-header">
+                                <h1>Dashboard</h1>
+                                <p>Overview of your survey platform</p>
+                            </div>
+                            
+                            <div class="dashboard-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-poll"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="totalSurveys">0</h3>
+                                        <p>Total Surveys</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="totalResponses">0</h3>
+                                        <p>Total Responses</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="todayResponses">0</h3>
+                                        <p>Today's Responses</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="completionRate">0%</h3>
+                                        <p>Completion Rate</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-charts">
+                                <div class="chart-container">
+                                    <h3>Response Trends</h3>
+                                    <canvas id="responseTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Surveys Management View -->
+                        <div id="adminSurveys" class="admin-view">
+                            <div class="view-header">
+                                <h1>Surveys</h1>
+                                <button class="btn btn-primary" id="createSurveyBtn">
+                                    <i class="fas fa-plus"></i> Create Survey
+                                </button>
+                            </div>
+                            
+                            <div class="surveys-list" id="surveysList">
+                                <!-- Survey items will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Form Builder View -->
+                        <div id="adminFormBuilder" class="admin-view">
+                            <div class="form-builder-container">
+                                <div class="form-builder-header">
+                                    <h1 id="formBuilderTitle">Form Builder</h1>
+                                    <div class="form-builder-actions">
+                                        <button class="btn btn-outline" id="previewFormBtn">
+                                            <i class="fas fa-eye"></i> Preview
+                                        </button>
+                                        <button class="btn btn-success" id="saveFormBtn">
+                                            <i class="fas fa-save"></i> Save
+                                        </button>
+                                        <button class="btn btn-primary" id="publishFormBtn">
+                                            <i class="fas fa-paper-plane"></i> Publish
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-builder-content">
+                                    <div class="form-settings">
+                                        <div class="form-group">
+                                            <label for="formTitle">Survey Title</label>
+                                            <input type="text" id="formTitle" placeholder="Enter survey title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="formDescription">Description</label>
+                                            <textarea id="formDescription" placeholder="Enter survey description"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-builder-layout">
+                                        <div class="question-types">
+                                            <h3>Question Types</h3>
+                                            <div class="question-type-list">
+                                                <div class="question-type" data-type="text">
+                                                    <i class="fas fa-font"></i>
+                                                    <span>Text Input</span>
+                                                </div>
+                                                <div class="question-type" data-type="textarea">
+                                                    <i class="fas fa-align-left"></i>
+                                                    <span>Long Text</span>
+                                                </div>
+                                                <div class="question-type" data-type="radio">
+                                                    <i class="fas fa-dot-circle"></i>
+                                                    <span>Multiple Choice</span>
+                                                </div>
+                                                <div class="question-type" data-type="checkbox">
+                                                    <i class="fas fa-check-square"></i>
+                                                    <span>Checkboxes</span>
+                                                </div>
+                                                <div class="question-type" data-type="select">
+                                                    <i class="fas fa-list"></i>
+                                                    <span>Dropdown</span>
+                                                </div>
+                                                <div class="question-type" data-type="rating">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>Rating Scale</span>
+                                                </div>
+                                                <div class="question-type" data-type="email">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <span>Email</span>
+                                                </div>
+                                                <div class="question-type" data-type="number">
+                                                    <i class="fas fa-hashtag"></i>
+                                                    <span>Number</span>
+                                                </div>
+                                                <div class="question-type" data-type="date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    <span>Date</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-preview" id="formPreview">
+                                            <h3>Form Preview</h3>
+                                            <div class="questions-container" id="questionsContainer">
+                                                <div class="empty-form">
+                                                    <i class="fas fa-plus-circle"></i>
+                                                    <p>Drag question types here to build your form</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Responses View -->
+                        <div id="adminResponses" class="admin-view">
+                            <div class="view-header">
+                                <h1>Survey Responses</h1>
+                                <div class="view-actions">
+                                    <select id="surveyFilter" class="form-select">
+                                        <option value="">All Surveys</option>
+                                    </select>
+                                    <button class="btn btn-success" id="exportExcelBtn">
+                                        <i class="fas fa-file-excel"></i> Export to Excel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="responses-table-container">
+                                <table class="responses-table" id="responsesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Survey</th>
+                                            <th>Submitted At</th>
+                                            <th>Device</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="responsesTableBody">
+                                        <!-- Response rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Analytics View -->
+                        <div id="adminAnalytics" class="admin-view">
+                            <div class="view-header">
+                                <h1>Analytics</h1>
+                                <select id="analyticsFilter" class="form-select">
+                                    <option value="">Select Survey</option>
+                                </select>
+                            </div>
+
+                            <div id="analyticsContent" class="analytics-content">
+                                <div class="analytics-empty">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <p>Select a survey to view analytics</p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading...</p>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal" id="questionModal">
+                <div class="modal-header">
+                    <h3 id="questionModalTitle">Edit Question</h3>
+                    <button class="modal-close" id="closeQuestionModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content" id="questionModalContent">
+                    <!-- Question editing form will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/survey.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/form-builder.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

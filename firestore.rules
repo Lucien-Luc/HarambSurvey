@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Survey collection - allow public read, authenticated write
+    match /surveys/{surveyId} {
+      // Anyone can read surveys (for public survey access)
+      allow read: if true;
+      
+      // Authenticated users can create/update surveys
+      allow write: if request.auth != null;
+    }
+    
+    // Responses collection - allow public write, authenticated read
+    match /responses/{responseId} {
+      // Anyone can submit survey responses (for public surveys)
+      allow create: if true;
+      
+      // Authenticated users can read all responses (for admin dashboard)
+      allow read: if request.auth != null;
+      
+      // Authenticated users can update/delete responses
+      allow update, delete: if request.auth != null;
+    }
+    
+    // Users collection - user can access their own data, admins can access all
+    match /users/{userId} {
+      allow read, write: if request.auth != null && 
+        (request.auth.uid == userId || request.auth.token.admin == true);
+    }
+    
+    // Settings collection - authenticated users only
+    match /settings/{document} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Analytics collection - authenticated users only  
+    match /analytics/{document} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
