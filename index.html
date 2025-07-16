@@ -381,9 +381,9 @@
                                 Next
                                 <i class="fas fa-arrow-right"></i>
                             </button>
-                            <button type="submit" class="btn btn-success" id="submitBtn" style="display: block;" onclick="forceSubmit(event)">
+                            <button type="button" class="btn btn-success" id="submitBtn" style="display: block; background: green; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
                                 <i class="fas fa-check"></i>
-                                Submit Form
+                                SUBMIT FORM NOW
                             </button>
                         </div>
                     </form>
@@ -799,65 +799,82 @@
     <script src="initialize-firebase.js"></script>
     
     <script>
-        // Direct submit function for immediate testing
-        function forceSubmit(event) {
-            console.log('=== FORCE SUBMIT CALLED ===');
-            alert('Submit button clicked! Check console.');
+        // Simple working submit function
+        function submitFormNow() {
+            alert('FORM SUBMISSION STARTED!');
+            console.log('=== SUBMITTING FORM ===');
             
-            event.preventDefault();
-            
-            // Get form data directly
+            // Get form
             const form = document.getElementById('employerDiagnosticForm');
             if (!form) {
-                alert('Form not found!');
+                alert('ERROR: Form not found!');
                 return;
             }
             
-            const formData = new FormData(form);
-            const data = {};
+            // Collect all form data
+            const inputs = form.querySelectorAll('input, textarea, select');
+            const data = {
+                submittedAt: new Date().toISOString(),
+                timestamp: Date.now()
+            };
             
-            // Convert FormData to object
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
+            inputs.forEach(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    if (input.checked) {
+                        if (!data[input.name]) data[input.name] = [];
+                        if (Array.isArray(data[input.name])) {
+                            data[input.name].push(input.value);
+                        } else {
+                            data[input.name] = input.value;
+                        }
+                    }
+                } else if (input.value) {
+                    data[input.name] = input.value;
+                }
+            });
             
-            // Add metadata
-            data.submittedAt = new Date().toISOString();
-            data.formType = 'employer-diagnostic';
-            data.id = Date.now().toString();
-            
-            console.log('Form data collected:', data);
+            console.log('Collected form data:', data);
             
             // Save to localStorage
             const submissions = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
             submissions.push(data);
             localStorage.setItem('employer-submissions', JSON.stringify(submissions));
             
-            console.log('Saved to localStorage. Total submissions:', submissions.length);
+            console.log('SUCCESS! Saved to localStorage. Total:', submissions.length);
             console.table(submissions);
             
-            alert('SUCCESS! Form submitted and saved to localStorage. Check console for details.');
+            alert('SUCCESS! Form submitted and saved. Check console for data.');
             
-            // Show thank you
+            // Show success message
             document.querySelector('.survey-container').innerHTML = `
-                <div style="text-align: center; padding: 3rem;">
-                    <h2 style="color: green;">✓ Form Submitted Successfully!</h2>
-                    <p>Your data has been saved. Check the browser console to see the submission details.</p>
-                    <button onclick="window.location.reload()" style="padding: 10px 20px; margin-top: 20px;">Submit Another Form</button>
+                <div style="text-align: center; padding: 50px; background: #f0f8f0; border-radius: 10px;">
+                    <h1 style="color: green; font-size: 2.5em;">✓ SUCCESS!</h1>
+                    <h2>Form Submitted Successfully</h2>
+                    <p style="font-size: 1.2em; margin: 20px 0;">Your employer diagnostic form has been submitted.</p>
+                    <p>Submission ID: ${Date.now()}</p>
+                    <button onclick="window.location.reload()" style="padding: 15px 30px; font-size: 16px; background: blue; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">Submit Another Form</button>
                 </div>
             `;
         }
         
-        // Show submit button immediately for testing
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                const submitBtn = document.getElementById('submitBtn');
-                if (submitBtn) {
-                    submitBtn.style.display = 'block';
-                    submitBtn.style.visibility = 'visible';
-                    console.log('Submit button made visible for testing');
-                }
-            }, 1000);
+        // Make submit button work immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Setting up submit button...');
+            
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                // Make button visible and clickable
+                submitBtn.style.display = 'block';
+                submitBtn.style.visibility = 'visible';
+                
+                // Add click handler
+                submitBtn.onclick = submitFormNow;
+                
+                console.log('Submit button is ready and visible');
+                alert('Submit button is now ready! Look for the green "SUBMIT FORM NOW" button.');
+            } else {
+                console.error('Submit button not found!');
+            }
         });
     </script>
 </body>
