@@ -39,7 +39,12 @@ class SimpleFormSubmit {
                 'internship': 'Internship',
                 'onsite': 'Onsite',
                 'remote': 'Remote',
-                'hybrid': 'Hybrid'
+                'hybrid': 'Hybrid',
+                'expected_start_date': 'Expected Start Date',
+                'contract_type': 'Contract Type',
+                'permanent': 'Permanent',
+                'fixed_term': 'Fixed-Term',
+                'casual': 'Casual'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -70,7 +75,12 @@ class SimpleFormSubmit {
                 'internship': 'Amahugurwa',
                 'onsite': 'Ku kazi',
                 'remote': 'Kure',
-                'hybrid': 'Bivanze'
+                'hybrid': 'Bivanze',
+                'expected_start_date': 'Itariki Itegerejwe yo Gutangira',
+                'contract_type': 'Ubwoko bw\'Amasezerano',
+                'permanent': 'Buhoraho',
+                'fixed_term': 'Igihe Gitandukanye',
+                'casual': 'Ubusanzwe'
             }
         };
     }
@@ -2626,6 +2636,9 @@ class SimpleFormSubmit {
             const card = this.createPositionCard(i + 1);
             grid.appendChild(card);
         }
+        
+        // Apply translations to newly created cards
+        this.updateTranslations();
     }
     
     createPositionCard(positionNumber) {
@@ -2648,65 +2661,70 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_jobTitle">Job Title *</label>
+                <label for="pos${positionNumber}_jobTitle" data-translate="job_title">Job Title</label>
+                <span class="required"> *</span>
                 <input type="text" id="pos${positionNumber}_jobTitle" name="pos${positionNumber}_jobTitle" required>
             </div>
             
             <div class="position-form-group">
-                <label>Work Type *</label>
+                <label data-translate="work_type">Work Type</label>
+                <span class="required"> *</span>
                 <div class="position-checkbox-group">
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workType" value="full-time" required>
-                        <span>Full-time</span>
+                        <span data-translate="full_time">Full-time</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workType" value="part-time" required>
-                        <span>Part-time</span>
+                        <span data-translate="part_time">Part-time</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workType" value="internship" required>
-                        <span>Internship</span>
+                        <span data-translate="internship">Internship</span>
                     </label>
                 </div>
             </div>
             
             <div class="position-form-group">
-                <label>Work Mode *</label>
+                <label data-translate="work_mode">Work Mode</label>
+                <span class="required"> *</span>
                 <div class="position-checkbox-group">
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workMode" value="onsite" required>
-                        <span>Onsite</span>
+                        <span data-translate="onsite">Onsite</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workMode" value="remote" required>
-                        <span>Remote</span>
+                        <span data-translate="remote">Remote</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_workMode" value="hybrid" required>
-                        <span>Hybrid</span>
+                        <span data-translate="hybrid">Hybrid</span>
                     </label>
                 </div>
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_startDate">Expected Start Date *</label>
+                <label for="pos${positionNumber}_startDate" data-translate="expected_start_date">Expected Start Date</label>
+                <span class="required"> *</span>
                 <input type="date" id="pos${positionNumber}_startDate" name="pos${positionNumber}_startDate" required>
             </div>
             
             <div class="position-form-group">
-                <label>Contract Type *</label>
+                <label data-translate="contract_type">Contract Type</label>
+                <span class="required"> *</span>
                 <div class="position-checkbox-group">
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_contractType" value="permanent" required>
-                        <span>Permanent</span>
+                        <span data-translate="permanent">Permanent</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_contractType" value="fixed-term" required>
-                        <span>Fixed-Term</span>
+                        <span data-translate="fixed_term">Fixed-Term</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_contractType" value="casual" required>
-                        <span>Casual</span>
+                        <span data-translate="casual">Casual</span>
                     </label>
                 </div>
             </div>
