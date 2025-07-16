@@ -2764,12 +2764,14 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_jobSummary">Job Summary *</label>
+                <label for="pos${positionNumber}_jobSummary" data-translate="job_summary">Job Summary</label>
+                <span class="required"> *</span>
                 <textarea id="pos${positionNumber}_jobSummary" name="pos${positionNumber}_jobSummary" rows="3" placeholder="Brief description of the role's purpose (2-3 lines)" required></textarea>
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_keyResponsibilities">Key Responsibilities *</label>
+                <label for="pos${positionNumber}_keyResponsibilities" data-translate="key_responsibilities">Key Responsibilities</label>
+                <span class="required"> *</span>
                 <textarea id="pos${positionNumber}_keyResponsibilities" name="pos${positionNumber}_keyResponsibilities" rows="4" placeholder="List 4-6 main tasks and responsibilities for this role..." required></textarea>
             </div>
             
@@ -2813,7 +2815,7 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
-                <label>Benefits/Perks (Select all that apply)</label>
+                <label data-translate="benefits_perks">Benefits/Perks (Select all that apply)</label>
                 <div class="position-benefits-grid">
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="transport-allowance">
@@ -2843,17 +2845,18 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_otherBenefits">Other benefits/perks</label>
+                <label for="pos${positionNumber}_otherBenefits" data-translate="other_benefits">Other benefits/perks</label>
                 <input type="text" id="pos${positionNumber}_otherBenefits" name="pos${positionNumber}_otherBenefits" placeholder="Please specify any other benefits">
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_workingHours">Working Hours *</label>
+                <label for="pos${positionNumber}_workingHours" data-translate="working_hours">Working Hours</label>
+                <span class="required"> *</span>
                 <input type="text" id="pos${positionNumber}_workingHours" name="pos${positionNumber}_workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_additionalNotes">Additional Notes (Optional)</label>
+                <label for="pos${positionNumber}_additionalNotes" data-translate="additional_notes">Additional Notes (Optional)</label>
                 <textarea id="pos${positionNumber}_additionalNotes" name="pos${positionNumber}_additionalNotes" rows="3" placeholder="Any extra info you'd like to share about this position?"></textarea>
             </div>
         `;

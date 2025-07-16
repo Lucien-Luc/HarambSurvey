@@ -183,23 +183,25 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="startDate">Expected Start Date *</label>
+                                    <label for="startDate" data-translate="expected_start_date">Expected Start Date</label>
+                                    <span class="required"> *</span>
                                     <input type="date" id="startDate" name="startDate" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Contract Type *</label>
+                                    <label data-translate="contract_type">Contract Type</label>
+                                    <span class="required"> *</span>
                                     <div class="checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="radio" name="contractType" value="permanent" required>
-                                            <span>Permanent</span>
+                                            <span data-translate="permanent">Permanent</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="contractType" value="fixed-term" required>
-                                            <span>Fixed-Term</span>
+                                            <span data-translate="fixed_term">Fixed-Term</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="contractType" value="casual" required>
-                                            <span>Casual</span>
+                                            <span data-translate="casual">Casual</span>
                                         </label>
                                     </div>
                                 </div>
@@ -219,11 +221,13 @@
                             <!-- Single Position Mode - Job Summary -->
                             <div id="singlePositionJobSummary">
                                 <div class="form-group">
-                                    <label for="jobSummary">Job Summary *</label>
+                                    <label for="jobSummary" data-translate="job_summary">Job Summary</label>
+                                    <span class="required"> *</span>
                                     <textarea id="jobSummary" name="jobSummary" rows="3" placeholder="Brief description of the role's purpose (2-3 lines)" required></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="keyResponsibilities">Key Responsibilities *</label>
+                                    <label for="keyResponsibilities" data-translate="key_responsibilities">Key Responsibilities</label>
+                                    <span class="required"> *</span>
                                     <textarea id="keyResponsibilities" name="keyResponsibilities" rows="6" placeholder="List 4-6 main tasks and responsibilities for this role..." required></textarea>
                                 </div>
                             </div>
@@ -346,11 +350,12 @@
                             <!-- Single Position Mode -->
                             <div id="singlePositionOffer">
                                 <div class="form-group">
-                                    <label for="salaryRange">Salary Range (Monthly) *</label>
+                                    <label for="salaryRange" data-translate="salary_range">Salary Range (Monthly)</label>
+                                    <span class="required"> *</span>
                                     <input type="text" id="salaryRange" name="salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Benefits/Perks (Select all that apply)</label>
+                                    <label data-translate="benefits_perks">Benefits/Perks (Select all that apply)</label>
                                     <div class="checkbox-group multi-select">
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="benefits" value="transport-allowance">
@@ -379,15 +384,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="otherBenefits">Other benefits/perks</label>
+                                    <label for="otherBenefits" data-translate="other_benefits">Other benefits/perks</label>
                                     <input type="text" id="otherBenefits" name="otherBenefits" placeholder="Please specify any other benefits">
                                 </div>
                                 <div class="form-group">
-                                    <label for="workingHours">Working Hours *</label>
+                                    <label for="workingHours" data-translate="working_hours">Working Hours</label>
+                                    <span class="required"> *</span>
                                     <input type="text" id="workingHours" name="workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="additionalNotes">Additional Notes (Optional)</label>
+                                    <label for="additionalNotes" data-translate="additional_notes">Additional Notes (Optional)</label>
                                     <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any extra info you'd like to share?"></textarea>
                                 </div>
                             </div>
