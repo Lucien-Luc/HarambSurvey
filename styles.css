@@ -2058,6 +2058,259 @@ textarea.form-control {
     }
 }
 
+/* Enhanced Mobile & Tablet Responsiveness */
+
+/* Tablet optimizations (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .intro-container {
+        padding: 3rem 2rem;
+    }
+    
+    .survey-container {
+        padding: 2.5rem 2rem;
+        margin: 0 1rem;
+    }
+    
+    .partner-logos {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .bpn-logo, .harambee-logo, .g2s-logo {
+        max-height: 60px;
+    }
+    
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+    
+    .survey-navigation .btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Enhanced mobile styles */
+@media (max-width: 768px) {
+    /* Intro page mobile improvements */
+    .intro-container {
+        padding: 2rem 1rem;
+        text-align: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .intro-content {
+        width: 100%;
+    }
+    
+    .intro-header h1 {
+        font-size: 1.8rem !important;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+    
+    .intro-header p {
+        font-size: 1rem !important;
+        line-height: 1.5;
+        margin-bottom: 2rem;
+    }
+    
+    .partner-logos {
+        margin: 2rem 0;
+        gap: 1.5rem;
+        flex-direction: column;
+    }
+    
+    .bpn-logo, .harambee-logo, .g2s-logo {
+        max-height: 50px !important;
+        width: auto;
+    }
+    
+    .intro-btn {
+        padding: 1rem 2rem !important;
+        font-size: 1.1rem !important;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+    
+    /* Survey form mobile improvements */
+    .survey-container {
+        margin: 0 0.5rem !important;
+        padding: 1.5rem 1rem !important;
+        border-radius: 15px !important;
+    }
+    
+    .survey-header h1 {
+        font-size: 1.5rem !important;
+        line-height: 1.3;
+    }
+    
+    .survey-header p {
+        font-size: 0.95rem !important;
+    }
+    
+    .progress-bar {
+        height: 8px !important;
+        border-radius: 4px;
+    }
+    
+    .progress-text {
+        font-size: 0.9rem !important;
+        margin-top: 0.75rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.3rem !important;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        font-size: 0.95rem !important;
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Touch-friendly form controls */
+    .form-control, 
+    input[type="text"], 
+    input[type="email"], 
+    input[type="url"], 
+    input[type="number"],
+    textarea, 
+    select {
+        padding: 0.875rem !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        min-height: 48px; /* Touch-friendly */
+    }
+    
+    textarea {
+        min-height: 120px !important;
+    }
+    
+    .checkbox-group, 
+    .radio-group {
+        gap: 0.75rem;
+    }
+    
+    .checkbox-label, 
+    .radio-label {
+        padding: 0.75rem !important;
+        font-size: 0.95rem !important;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Navigation buttons mobile */
+    .survey-navigation {
+        flex-direction: column !important;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .survey-navigation .btn {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        min-height: 48px;
+        justify-content: center;
+    }
+    
+    /* Header mobile */
+    .header {
+        padding: 0.75rem 0 !important;
+    }
+    
+    .header-content {
+        padding: 0 1rem;
+        height: 52px;
+    }
+    
+    .logo img {
+        height: 32px !important;
+    }
+    
+    /* Notification popup mobile */
+    .notification-popup {
+        margin: 1rem !important;
+        padding: 2rem 1.5rem !important;
+        width: calc(100% - 2rem) !important;
+        max-width: none !important;
+        border-radius: 15px !important;
+    }
+    
+    .notification-icon {
+        width: 70px !important;
+        height: 70px !important;
+        margin-bottom: 1rem;
+    }
+    
+    .notification-icon i {
+        font-size: 2rem !important;
+    }
+    
+    .notification-title {
+        font-size: 1.75rem !important;
+        margin-bottom: 0.75rem;
+    }
+    
+    .notification-message {
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem;
+    }
+    
+    .notification-details {
+        padding: 0.875rem !important;
+        margin-bottom: 1.5rem;
+        font-size: 0.85rem !important;
+    }
+    
+    .notification-action {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        min-height: 48px;
+    }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+    .intro-header h1 {
+        font-size: 1.6rem !important;
+    }
+    
+    .survey-container {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding: 1rem !important;
+    }
+    
+    .partner-logos {
+        gap: 1rem;
+    }
+    
+    .bpn-logo, .harambee-logo, .g2s-logo {
+        max-height: 40px !important;
+    }
+    
+    .form-control, 
+    input[type="text"], 
+    input[type="email"], 
+    input[type="url"], 
+    input[type="number"],
+    textarea, 
+    select {
+        padding: 0.75rem !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}
+
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
     .btn:hover,
