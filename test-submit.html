@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Submit</title>
+</head>
+<body>
+    <button onclick="testSubmit()">Test Submit Function</button>
+    <div id="result"></div>
+    
+    <script>
+        function testSubmit() {
+            document.getElementById('result').innerHTML = 'Function called!';
+            
+            // Test the actual form
+            const form = document.getElementById('employerDiagnosticForm');
+            if (form) {
+                alert('Form found! Trying to submit...');
+                
+                // Create test data
+                const testData = {
+                    companyName: 'Test Company',
+                    submittedAt: new Date().toISOString()
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('test-submission', JSON.stringify(testData));
+                alert('Test data saved to localStorage!');
+                
+                // Show in console
+                console.log('Test submission successful:', testData);
+            } else {
+                alert('Form NOT found!');
+            }
+        }
+    </script>
+</body>
+</html>
