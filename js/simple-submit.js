@@ -2101,12 +2101,19 @@ class SimpleFormSubmit {
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
+        // Section 7 - What You Offer
+        const singlePositionOffer = document.getElementById('singlePositionOffer');
+        const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
+        
         // Show single position mode
         if (singleMode) singleMode.style.display = 'block';
         if (multipleMode) multipleMode.style.display = 'none';
         
         if (singlePositionCandidate) singlePositionCandidate.style.display = 'block';
         if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'none';
+        
+        if (singlePositionOffer) singlePositionOffer.style.display = 'block';
+        if (multiplePositionsOffer) multiplePositionsOffer.style.display = 'none';
         
         this.currentPositionMode = 'single';
     }
@@ -2121,6 +2128,10 @@ class SimpleFormSubmit {
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
+        // Section 7 - What You Offer
+        const singlePositionOffer = document.getElementById('singlePositionOffer');
+        const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
+        
         // Show multiple positions mode
         if (singleMode) singleMode.style.display = 'none';
         if (multipleMode) multipleMode.style.display = 'block';
@@ -2128,6 +2139,9 @@ class SimpleFormSubmit {
         
         if (singlePositionCandidate) singlePositionCandidate.style.display = 'none';
         if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'block';
+        
+        if (singlePositionOffer) singlePositionOffer.style.display = 'none';
+        if (multiplePositionsOffer) multiplePositionsOffer.style.display = 'block';
         
         this.currentPositionMode = 'multiple';
         this.createPositionCards(numPositions);

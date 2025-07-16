@@ -289,13 +289,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Multiple Positions Mode -->
-                            <div id="multiplePositionsCandidate" style="display: none;">
-                                <div class="positions-header">
-                                    <h3>Candidate Profile Configured</h3>
-                                    <p>You have configured the experience level, education, and technical skills for each position in the previous section. Continue to the next section for behavioral requirements.</p>
-                                </div>
-                            </div>
+
                         </div>
 
                         <!-- Section 6: Behavioral Skills & Work Environment -->
@@ -357,50 +351,62 @@
                                 <i class="fas fa-money-bill-wave"></i>
                                 <h2>What You Offer</h2>
                             </div>
-                            <div class="form-group">
-                                <label for="salaryRange">Salary Range (Monthly) *</label>
-                                <input type="text" id="salaryRange" name="salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Benefits/Perks (Select all that apply)</label>
-                                <div class="checkbox-group multi-select">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="transport-allowance">
-                                        <span>Transport allowance</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="meals-lunch">
-                                        <span>Meals/Lunch</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="health-insurance">
-                                        <span>Health insurance</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="training-development">
-                                        <span>Training/Development</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="commission-bonuses">
-                                        <span>Commission or Bonuses</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="benefits" value="flexible-schedule">
-                                        <span>Flexible schedule</span>
-                                    </label>
+                            
+                            <!-- Single Position Mode -->
+                            <div id="singlePositionOffer">
+                                <div class="form-group">
+                                    <label for="salaryRange">Salary Range (Monthly) *</label>
+                                    <input type="text" id="salaryRange" name="salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Benefits/Perks (Select all that apply)</label>
+                                    <div class="checkbox-group multi-select">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="transport-allowance">
+                                            <span>Transport allowance</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="meals-lunch">
+                                            <span>Meals/Lunch</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="health-insurance">
+                                            <span>Health insurance</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="training-development">
+                                            <span>Training/Development</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="commission-bonuses">
+                                            <span>Commission or Bonuses</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="benefits" value="flexible-schedule">
+                                            <span>Flexible schedule</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="otherBenefits">Other benefits/perks</label>
+                                    <input type="text" id="otherBenefits" name="otherBenefits" placeholder="Please specify any other benefits">
+                                </div>
+                                <div class="form-group">
+                                    <label for="workingHours">Working Hours *</label>
+                                    <input type="text" id="workingHours" name="workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additionalNotes">Additional Notes (Optional)</label>
+                                    <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any extra info you'd like to share?"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="otherBenefits">Other benefits/perks</label>
-                                <input type="text" id="otherBenefits" name="otherBenefits" placeholder="Please specify any other benefits">
-                            </div>
-                            <div class="form-group">
-                                <label for="workingHours">Working Hours *</label>
-                                <input type="text" id="workingHours" name="workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="additionalNotes">Additional Notes (Optional)</label>
-                                <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any extra info you'd like to share?"></textarea>
+                            
+                            <!-- Multiple Positions Mode -->
+                            <div id="multiplePositionsOffer" style="display: none;">
+                                <div class="positions-header">
+                                    <h3>Position Compensation Configured</h3>
+                                    <p>You have configured the salary ranges, benefits, and working hours for each position in Section 3. All position details are complete!</p>
+                                </div>
                             </div>
                         </div>
 
