@@ -297,40 +297,58 @@ class SimpleFormSubmit {
     }
 
     showSuccess(data) {
-        console.log('SimpleFormSubmit: Showing success message');
+        console.log('SimpleFormSubmit: Showing beautiful success popup');
         
-        // Create success message
-        const successHtml = `
-            <div style="text-align: center; padding: 40px; background: linear-gradient(135deg, #d4f5d4, #b8e6b8); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <div style="font-size: 4em; color: #28a745; margin-bottom: 20px;">✓</div>
-                <h1 style="color: #155724; font-size: 2.5em; margin-bottom: 15px;">Success!</h1>
-                <h2 style="color: #155724; font-size: 1.5em; margin-bottom: 20px;">Form Submitted Successfully</h2>
-                <p style="font-size: 1.1em; color: #155724; margin-bottom: 15px;">
-                    Your employer diagnostic form has been submitted and saved.
-                </p>
-                <p style="font-size: 0.9em; color: #6c757d; margin-bottom: 25px;">
-                    Submission ID: ${data.submissionId}<br>
-                    Time: ${new Date(data.submittedAt).toLocaleString()}
-                </p>
-                <button onclick="window.location.reload()" 
-                        style="background: #007bff; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-right: 10px;">
+        // Create beautiful popup overlay
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup">
+                <div class="notification-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="notification-title">Success!</h1>
+                <p class="notification-message">Your employer diagnostic form has been submitted successfully.</p>
+                <div class="notification-details">
+                    <strong>Submission ID:</strong> ${data.submissionId}<br>
+                    <strong>Time:</strong> ${new Date(data.submittedAt).toLocaleString()}
+                </div>
+                <button class="notification-action" onclick="window.location.reload()">
                     Submit Another Form
-                </button>
-                <button onclick="console.table(JSON.parse(localStorage.getItem('employer-submissions') || '[]'))" 
-                        style="background: #6c757d; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                    View All Submissions
                 </button>
             </div>
         `;
         
-        // Replace form with success message
-        const container = document.querySelector('.survey-container') || document.querySelector('#surveyView .container') || document.body;
-        if (container) {
-            container.innerHTML = successHtml;
-        }
+        // Add to page
+        document.body.appendChild(popup);
         
-        // Show alert
-        alert('✅ SUCCESS!\n\nForm submitted and saved successfully!\n\nSubmission ID: ' + data.submissionId);
+        // Show with animation
+        setTimeout(() => {
+            popup.classList.add('show');
+        }, 100);
+        
+        // Auto-remove after clicking or timeout
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                this.hideNotification(popup);
+            }
+        });
+        
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+            if (popup.parentNode) {
+                this.hideNotification(popup);
+            }
+        }, 8000);
+    }
+
+    hideNotification(popup) {
+        popup.classList.remove('show');
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        }, 300);
     }
 
     resetButton() {
