@@ -44,7 +44,24 @@ class SimpleFormSubmit {
                 'contract_type': 'Contract Type',
                 'permanent': 'Permanent',
                 'fixed_term': 'Fixed-Term',
-                'casual': 'Casual'
+                'casual': 'Casual',
+                'job_summary': 'Job Summary',
+                'key_responsibilities': 'Key Responsibilities',
+                'experience_level': 'Experience Level Required',
+                'education_level': 'Education Level Required',
+                'technical_skills': 'Technical/Professional Skills Needed',
+                'behavioral_skills': 'Behavioral/Soft Skills Needed',
+                'other_behavioral_skills': 'Other Behavioral Skills',
+                'work_environment': 'Work Environment',
+                'salary_range': 'Salary Range (Monthly)',
+                'benefits_perks': 'Benefits/Perks',
+                'other_benefits': 'Other benefits/perks',
+                'working_hours': 'Working Hours',
+                'additional_notes': 'Additional Notes',
+                'trainee': 'Trainee',
+                'entry_level': 'Entry-Level',
+                'mid_career': 'Mid-Career',
+                'senior_level': 'Senior-Level'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -80,7 +97,24 @@ class SimpleFormSubmit {
                 'contract_type': 'Ubwoko bw\'Amasezerano',
                 'permanent': 'Buhoraho',
                 'fixed_term': 'Igihe Gitandukanye',
-                'casual': 'Ubusanzwe'
+                'casual': 'Ubusanzwe',
+                'job_summary': 'Incamake y\'Akazi',
+                'key_responsibilities': 'Inshingano Zingenzi',
+                'experience_level': 'Urwego rw\'Ubumenyi Rusabwa',
+                'education_level': 'Urwego rw\'Amashuri Rusabwa',
+                'technical_skills': 'Ubuhanga bw\'Umwuga',
+                'behavioral_skills': 'Ubuhanga bw\'Imyitwarire',
+                'other_behavioral_skills': 'Ubundi Buhanga bw\'Imyitwarire',
+                'work_environment': 'Ibidukikije by\'Akazi',
+                'salary_range': 'Umushahara (Buri Kwezi)',
+                'benefits_perks': 'Inyungu n\'Ibindi',
+                'other_benefits': 'Izindi nyungu',
+                'working_hours': 'Amasaha yo Gukora',
+                'additional_notes': 'Andi Makuru',
+                'trainee': 'Uwitoza',
+                'entry_level': 'Urwego rwo Gutangira',
+                'mid_career': 'Urwego rwo Hagati',
+                'senior_level': 'Urwego rwo Hejuru'
             }
         };
     }
@@ -2740,39 +2774,41 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
-                <label>Experience Level Required *</label>
+                <label data-translate="experience_level">Experience Level Required</label>
+                <span class="required"> *</span>
                 <div class="position-checkbox-group">
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_experienceLevel" value="trainee" required>
-                        <span>Trainee</span>
+                        <span data-translate="trainee">Trainee</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_experienceLevel" value="entry-level" required>
-                        <span>Entry-Level</span>
+                        <span data-translate="entry_level">Entry-Level</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_experienceLevel" value="mid-career" required>
-                        <span>Mid-Career</span>
+                        <span data-translate="mid_career">Mid-Career</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="radio" name="pos${positionNumber}_experienceLevel" value="senior-level" required>
-                        <span>Senior-Level</span>
+                        <span data-translate="senior_level">Senior-Level</span>
                     </label>
                 </div>
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_educationLevel">Education Level Required</label>
+                <label for="pos${positionNumber}_educationLevel" data-translate="education_level">Education Level Required</label>
                 <input type="text" id="pos${positionNumber}_educationLevel" name="pos${positionNumber}_educationLevel" placeholder="e.g., High School, Certificate, Degree">
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_technicalSkills">Technical/Professional Skills Needed</label>
+                <label for="pos${positionNumber}_technicalSkills" data-translate="technical_skills">Technical/Professional Skills Needed</label>
                 <textarea id="pos${positionNumber}_technicalSkills" name="pos${positionNumber}_technicalSkills" rows="3" placeholder="List required software, certificates, specific skills..."></textarea>
             </div>
             
             <div class="position-form-group">
-                <label for="pos${positionNumber}_salaryRange">Salary Range (Monthly) *</label>
+                <label for="pos${positionNumber}_salaryRange" data-translate="salary_range">Salary Range (Monthly)</label>
+                <span class="required"> *</span>
                 <input type="text" id="pos${positionNumber}_salaryRange" name="pos${positionNumber}_salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
             </div>
             
