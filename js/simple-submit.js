@@ -471,6 +471,21 @@ class SimpleFormSubmit {
                         </div>
                     </div>
                 </div>
+                
+                <!-- Insightful Metrics Section -->
+                <div class="insights-section">
+                    <div class="section-title">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Detailed Insights</span>
+                    </div>
+                    <div id="insightfulMetrics">
+                        <div class="loading-placeholder">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading insights...</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
             </div>
         `;
         
@@ -560,12 +575,16 @@ class SimpleFormSubmit {
                 font-weight: 600;
             }
             
-            .stats-section, .actions-section, .activity-section {
+            .stats-section, .actions-section, .activity-section, .insights-section {
                 background: #ffffff;
                 border-radius: 8px;
                 padding: 2rem;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.08);
                 border: 1px solid #e2e8f0;
+            }
+            
+            .insights-section {
+                margin-top: 2rem;
             }
             
             .stats-grid {
@@ -869,6 +888,264 @@ class SimpleFormSubmit {
                 color: #cbd5e0;
             }
             
+            /* Insightful Metrics Styles */
+            .metrics-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1rem;
+            }
+            
+            .metric-card {
+                background: #f8f9fa;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 1.5rem;
+            }
+            
+            .metric-header {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+                font-weight: 600;
+                color: #2d3748;
+            }
+            
+            .metric-header i {
+                color: #667eea;
+                font-size: 1.1rem;
+            }
+            
+            .metric-content {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .metric-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .metric-item:last-child {
+                border-bottom: none;
+            }
+            
+            .metric-label {
+                font-size: 0.9rem;
+                color: #4a5568;
+            }
+            
+            .metric-value {
+                font-weight: 600;
+                color: #2d3748;
+                background: #e2e8f0;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.85rem;
+            }
+            
+            /* Enhanced Response Items */
+            .response-item.enhanced {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            .response-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+            
+            .response-company {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 600;
+                color: #2d3748;
+            }
+            
+            .response-company i {
+                color: #667eea;
+            }
+            
+            .response-time {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+                color: #718096;
+            }
+            
+            .response-details {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .response-detail {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+                color: #4a5568;
+            }
+            
+            .response-detail i {
+                color: #718096;
+                width: 12px;
+            }
+            
+            .response-actions {
+                display: flex;
+                justify-content: flex-end;
+            }
+            
+            .response-action-btn {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .response-action-btn:hover {
+                background: #5a67d8;
+            }
+            
+            /* Response Detail Popup Styles */
+            .response-detail-popup {
+                max-width: 90%;
+                max-height: 85%;
+                overflow-y: auto;
+                width: 800px;
+            }
+            
+            .response-detail-content {
+                padding: 1rem;
+            }
+            
+            .detail-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+            }
+            
+            .detail-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .detail-item.full-width {
+                grid-column: 1 / -1;
+            }
+            
+            .detail-item label {
+                font-weight: 600;
+                color: #2d3748;
+                font-size: 0.9rem;
+            }
+            
+            .detail-item span {
+                color: #4a5568;
+                font-size: 0.95rem;
+                line-height: 1.4;
+            }
+            
+            .close-btn {
+                background: #e53e3e;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
+            
+            .close-btn:hover {
+                background: #c53030;
+            }
+            
+            /* Responses List Popup Styles */
+            .responses-list-popup {
+                max-width: 95%;
+                max-height: 90%;
+                overflow-y: auto;
+                width: 1000px;
+            }
+            
+            .responses-list-content {
+                padding: 1rem;
+            }
+            
+            .responses-table {
+                display: flex;
+                flex-direction: column;
+                gap: 1px;
+                background: #e2e8f0;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            
+            .table-header {
+                display: grid;
+                grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr;
+                background: #4a5568;
+                color: white;
+                font-weight: 600;
+            }
+            
+            .table-row {
+                display: grid;
+                grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr;
+                background: white;
+            }
+            
+            .table-row:hover {
+                background: #f7fafc;
+            }
+            
+            .table-cell {
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                font-size: 0.9rem;
+            }
+            
+            .table-action-btn {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 0.5rem;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.85rem;
+            }
+            
+            .table-action-btn:hover {
+                background: #5a67d8;
+            }
+            
             /* Responsive Design */
             @media (max-width: 1200px) {
                 .admin-grid {
@@ -923,25 +1200,55 @@ class SimpleFormSubmit {
         document.head.appendChild(style);
     }
 
-    loadAdminData() {
-        // Load data from localStorage and Firebase
-        const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
-        const totalResponses = localData.length;
+    async loadAdminData() {
+        // Show loading state
+        this.showLoadingState();
         
-        // Update stats
-        document.getElementById('totalResponses').textContent = totalResponses;
-        document.getElementById('todayResponses').textContent = this.getTodayResponseCount(localData);
-        document.getElementById('avgCompletionTime').textContent = this.getAverageCompletionTime(localData);
-        
-        // Load recent responses
-        this.displayRecentResponses(localData);
-        
-        // Try to load from Firebase if available
-        if (window.firebaseConfig && window.firebaseConfig.isInitialized) {
-            this.loadFirebaseData();
+        try {
+            // Load data from Firebase first (primary source)
+            let responses = [];
+            
+            if (window.firebaseConfig && window.firebaseConfig.getCollection) {
+                const result = await window.firebaseConfig.getCollection('employer-diagnostics', 'timestamp');
+                if (result && result.success && result.data) {
+                    responses = result.data;
+                    console.log('Firebase data loaded:', responses.length, 'responses');
+                }
+            }
+            
+            // Fallback to localStorage if Firebase fails
+            if (responses.length === 0) {
+                const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+                responses = localData;
+                console.log('Using localStorage data:', responses.length, 'responses');
+            }
+            
+            // Update comprehensive analytics
+            this.updateAnalytics(responses);
+            this.displayRecentResponses(responses);
+            this.updateInsightfulMetrics(responses);
+            
+        } catch (error) {
+            console.error('Error loading admin data:', error);
+            this.showErrorState();
         }
     }
 
+    updateAnalytics(responses) {
+        // Basic counts
+        const totalResponses = responses.length;
+        const todayResponses = this.getTodayResponseCount(responses);
+        const avgCompletionTime = this.getAverageCompletionTime(responses);
+        
+        // Update display
+        document.getElementById('totalResponses').textContent = totalResponses;
+        document.getElementById('todayResponses').textContent = todayResponses;
+        document.getElementById('avgCompletionTime').textContent = avgCompletionTime;
+        
+        // Store responses for other methods
+        this.currentResponses = responses;
+    }
+    
     getTodayResponseCount(responses) {
         const today = new Date().toDateString();
         return responses.filter(r => new Date(r.timestamp).toDateString() === today).length;
@@ -952,30 +1259,261 @@ class SimpleFormSubmit {
         const avgMs = responses.reduce((sum, r) => sum + (r.completionTime || 0), 0) / responses.length;
         return Math.round(avgMs / 60000); // Convert to minutes
     }
+    
+    updateInsightfulMetrics(responses) {
+        if (responses.length === 0) return;
+        
+        // Add additional metrics section
+        const metricsHtml = this.generateInsightfulMetrics(responses);
+        const existingMetrics = document.getElementById('insightfulMetrics');
+        if (existingMetrics) {
+            existingMetrics.innerHTML = metricsHtml;
+        }
+    }
+    
+    generateInsightfulMetrics(responses) {
+        const industryStats = this.getIndustryBreakdown(responses);
+        const companySizeStats = this.getCompanySizeBreakdown(responses);
+        const hiringGoalsStats = this.getHiringGoalsBreakdown(responses);
+        const responseTimeStats = this.getResponseTimeAnalysis(responses);
+        
+        return `
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-industry"></i>
+                        <span>Top Industries</span>
+                    </div>
+                    <div class="metric-content">
+                        ${industryStats.slice(0, 3).map(stat => `
+                            <div class="metric-item">
+                                <span class="metric-label">${stat.name}</span>
+                                <span class="metric-value">${stat.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-users"></i>
+                        <span>Company Sizes</span>
+                    </div>
+                    <div class="metric-content">
+                        ${companySizeStats.slice(0, 3).map(stat => `
+                            <div class="metric-item">
+                                <span class="metric-label">${stat.name}</span>
+                                <span class="metric-value">${stat.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-target"></i>
+                        <span>Hiring Goals</span>
+                    </div>
+                    <div class="metric-content">
+                        ${hiringGoalsStats.slice(0, 3).map(stat => `
+                            <div class="metric-item">
+                                <span class="metric-label">${stat.name}</span>
+                                <span class="metric-value">${stat.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-clock"></i>
+                        <span>Response Trends</span>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-item">
+                            <span class="metric-label">Peak Hour</span>
+                            <span class="metric-value">${responseTimeStats.peakHour}:00</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">This Week</span>
+                            <span class="metric-value">${responseTimeStats.thisWeek}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Growth</span>
+                            <span class="metric-value">${responseTimeStats.growth}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    getIndustryBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const industry = r.industry || 'Not specified';
+            breakdown[industry] = (breakdown[industry] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getCompanySizeBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const size = r.companySize || 'Not specified';
+            breakdown[size] = (breakdown[size] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getHiringGoalsBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const goals = r.hiringGoals || 'Not specified';
+            breakdown[goals] = (breakdown[goals] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getResponseTimeAnalysis(responses) {
+        const hourCounts = {};
+        let thisWeekCount = 0;
+        let lastWeekCount = 0;
+        
+        const now = new Date();
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        
+        responses.forEach(r => {
+            const date = new Date(r.timestamp);
+            const hour = date.getHours();
+            hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+            
+            if (date > weekAgo) thisWeekCount++;
+            else if (date > twoWeeksAgo) lastWeekCount++;
+        });
+        
+        const peakHour = Object.entries(hourCounts)
+            .sort(([,a], [,b]) => b - a)[0]?.[0] || 0;
+        
+        const growth = lastWeekCount > 0 ? Math.round(((thisWeekCount - lastWeekCount) / lastWeekCount) * 100) : 0;
+        
+        return {
+            peakHour,
+            thisWeek: thisWeekCount,
+            growth: growth > 0 ? `+${growth}` : growth
+        };
+    }
+    
+    showLoadingState() {
+        const elements = ['totalResponses', 'todayResponses', 'avgCompletionTime'];
+        elements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = '...';
+        });
+        
+        const recentResponses = document.getElementById('recentResponses');
+        if (recentResponses) {
+            recentResponses.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Loading responses...</span>
+                </div>
+            `;
+        }
+    }
+    
+    showErrorState() {
+        const elements = ['totalResponses', 'todayResponses', 'avgCompletionTime'];
+        elements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = '0';
+        });
+        
+        const recentResponses = document.getElementById('recentResponses');
+        if (recentResponses) {
+            recentResponses.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Error loading data</span>
+                </div>
+            `;
+        }
+    }
 
     displayRecentResponses(responses) {
         const container = document.getElementById('recentResponses');
         
         if (responses.length === 0) {
-            container.innerHTML = '<div class="loading-placeholder">No responses yet</div>';
+            container.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-inbox"></i>
+                    <span>No responses yet</span>
+                </div>
+            `;
             return;
         }
         
-        const recent = responses.slice(-5).reverse(); // Last 5 responses
+        const recent = responses.slice(-10).reverse(); // Last 10 responses
         
-        container.innerHTML = recent.map(response => `
-            <div class="response-item">
-                <strong>${response.companyName || 'Unknown Company'}</strong>
-                <br>
-                <small>Submitted: ${new Date(response.timestamp).toLocaleString()}</small>
-                <br>
-                <small>Industry: ${response.industry || 'Not specified'}</small>
+        container.innerHTML = recent.map((response, index) => `
+            <div class="response-item enhanced">
+                <div class="response-header">
+                    <div class="response-company">
+                        <i class="fas fa-building"></i>
+                        <strong>${response.companyName || 'Unknown Company'}</strong>
+                    </div>
+                    <div class="response-time">
+                        <i class="fas fa-clock"></i>
+                        ${this.getRelativeTime(response.timestamp)}
+                    </div>
+                </div>
+                <div class="response-details">
+                    <div class="response-detail">
+                        <i class="fas fa-industry"></i>
+                        <span>${response.industry || 'Not specified'}</span>
+                    </div>
+                    <div class="response-detail">
+                        <i class="fas fa-users"></i>
+                        <span>${response.companySize || 'Not specified'}</span>
+                    </div>
+                    <div class="response-detail">
+                        <i class="fas fa-target"></i>
+                        <span>${response.hiringGoals || 'Not specified'}</span>
+                    </div>
+                </div>
+                <div class="response-actions">
+                    <button class="response-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${index})">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
             </div>
         `).join('');
     }
+    
+    getRelativeTime(timestamp) {
+        const now = new Date();
+        const date = new Date(timestamp);
+        const diff = now - date;
+        
+        const minutes = Math.floor(diff / (1000 * 60));
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        
+        if (minutes < 60) return `${minutes}m ago`;
+        if (hours < 24) return `${hours}h ago`;
+        if (days < 7) return `${days}d ago`;
+        return date.toLocaleDateString();
+    }
 
-    exportResponses() {
-        const responses = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+    async exportResponses() {
+        let responses = this.currentResponses || [];
         
         if (responses.length === 0) {
             Utils.showWarning('No responses to export');
@@ -983,40 +1521,225 @@ class SimpleFormSubmit {
         }
         
         try {
-            Utils.exportToExcel(responses, 'survey-responses.xlsx');
-            Utils.showSuccess('Responses exported successfully');
+            // Show loading
+            Utils.showLoading('Preparing Excel export...');
+            
+            // Create comprehensive Excel data
+            const excelData = this.prepareExcelData(responses);
+            
+            // Export with multiple sheets
+            await this.exportToExcelAdvanced(excelData);
+            
+            Utils.hideLoading();
+            Utils.showSuccess(`Successfully exported ${responses.length} responses to Excel`);
         } catch (error) {
+            Utils.hideLoading();
             Utils.showError('Failed to export responses: ' + error.message);
         }
     }
-
-    viewResponses() {
-        const responses = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+    
+    prepareExcelData(responses) {
+        // Main responses sheet
+        const mainSheet = responses.map((response, index) => ({
+            'Response ID': index + 1,
+            'Company Name': response.companyName || 'Not provided',
+            'Industry': response.industry || 'Not specified',
+            'Company Size': response.companySize || 'Not specified',
+            'Years in Business': response.yearsInBusiness || 'Not specified',
+            'Hiring Goals': response.hiringGoals || 'Not specified',
+            'Specific Roles': response.specificRoles || 'Not specified',
+            'Experience Level': response.experienceLevel || 'Not specified',
+            'Budget Range': response.budgetRange || 'Not specified',
+            'Timeline': response.timeline || 'Not specified',
+            'Challenges': response.challenges || 'Not specified',
+            'Skills Required': response.skillsRequired || 'Not specified',
+            'Location': response.location || 'Not specified',
+            'Remote Work': response.remoteWork || 'Not specified',
+            'Additional Comments': response.additionalComments || 'Not specified',
+            'Submission Date': new Date(response.timestamp).toLocaleDateString(),
+            'Submission Time': new Date(response.timestamp).toLocaleTimeString(),
+            'Completion Time (minutes)': response.completionTime ? Math.round(response.completionTime / 60000) : 'Not tracked',
+            'User Agent': response.userAgent || 'Not available',
+            'IP Address': response.ipAddress || 'Not tracked'
+        }));
         
-        if (responses.length === 0) {
-            Utils.showWarning('No responses to view');
+        // Analytics summary sheet
+        const analyticsSheet = [
+            {
+                'Metric': 'Total Responses',
+                'Value': responses.length,
+                'Description': 'Total number of survey responses received'
+            },
+            {
+                'Metric': 'Response Rate Today',
+                'Value': this.getTodayResponseCount(responses),
+                'Description': 'Responses received today'
+            },
+            {
+                'Metric': 'Average Completion Time',
+                'Value': this.getAverageCompletionTime(responses) + ' minutes',
+                'Description': 'Average time to complete survey'
+            },
+            {
+                'Metric': 'Most Common Industry',
+                'Value': this.getIndustryBreakdown(responses)[0]?.name || 'N/A',
+                'Description': 'Most frequently selected industry'
+            },
+            {
+                'Metric': 'Most Common Company Size',
+                'Value': this.getCompanySizeBreakdown(responses)[0]?.name || 'N/A',
+                'Description': 'Most frequently selected company size'
+            },
+            {
+                'Metric': 'Export Generated',
+                'Value': new Date().toLocaleString(),
+                'Description': 'Date and time this export was generated'
+            }
+        ];
+        
+        // Industry breakdown sheet
+        const industrySheet = this.getIndustryBreakdown(responses).map(item => ({
+            'Industry': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        // Company size breakdown sheet
+        const companySizeSheet = this.getCompanySizeBreakdown(responses).map(item => ({
+            'Company Size': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        return {
+            'Survey Responses': mainSheet,
+            'Analytics Summary': analyticsSheet,
+            'Industry Breakdown': industrySheet,
+            'Company Size Breakdown': companySizeSheet
+        };
+    }
+    
+    async exportToExcelAdvanced(data) {
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        
+        // Add sheets
+        Object.entries(data).forEach(([sheetName, sheetData]) => {
+            const ws = XLSX.utils.json_to_sheet(sheetData);
+            
+            // Auto-size columns
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            const cols = [];
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                let max_width = 0;
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    const cell = ws[XLSX.utils.encode_cell({r: R, c: C})];
+                    if (cell && cell.v) {
+                        const width = cell.v.toString().length;
+                        if (width > max_width) max_width = width;
+                    }
+                }
+                cols.push({wch: Math.min(max_width + 2, 50)});
+            }
+            ws['!cols'] = cols;
+            
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        });
+        
+        // Generate filename with timestamp
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const filename = `BPN-Survey-Export-${timestamp}.xlsx`;
+        
+        // Save file
+        XLSX.writeFile(wb, filename);
+    }
+
+
+
+    viewSingleResponse(index) {
+        const responses = this.currentResponses || [];
+        const response = responses[responses.length - 1 - index]; // Adjust for reverse order
+        
+        if (!response) {
+            Utils.showError('Response not found');
             return;
         }
         
-        // Create detailed view popup
         const popup = document.createElement('div');
         popup.className = 'notification-overlay';
         popup.innerHTML = `
-            <div class="notification-popup" style="max-width: 80%; max-height: 80%; overflow-y: auto;">
+            <div class="notification-popup response-detail-popup">
                 <div class="notification-header">
-                    <h2>Survey Responses (${responses.length})</h2>
-                    <button onclick="this.closest('.notification-overlay').remove()" style="float: right;">×</button>
+                    <h2>Response Details - ${response.companyName || 'Unknown Company'}</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
                 </div>
-                <div class="responses-detail">
-                    ${responses.map((response, index) => `
-                        <div class="response-detail" style="border-bottom: 1px solid #eee; padding: 15px 0;">
-                            <h4>Response #${index + 1} - ${response.companyName || 'Unknown'}</h4>
-                            <p><strong>Submitted:</strong> ${new Date(response.timestamp).toLocaleString()}</p>
-                            <p><strong>Industry:</strong> ${response.industry || 'Not specified'}</p>
-                            <p><strong>Company Size:</strong> ${response.companySize || 'Not specified'}</p>
-                            <p><strong>Hiring Goals:</strong> ${response.hiringGoals || 'Not specified'}</p>
+                <div class="response-detail-content">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Company Name:</label>
+                            <span>${response.companyName || 'Not provided'}</span>
                         </div>
-                    `).join('')}
+                        <div class="detail-item">
+                            <label>Industry:</label>
+                            <span>${response.industry || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Company Size:</label>
+                            <span>${response.companySize || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Years in Business:</label>
+                            <span>${response.yearsInBusiness || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Hiring Goals:</label>
+                            <span>${response.hiringGoals || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Specific Roles:</label>
+                            <span>${response.specificRoles || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Experience Level:</label>
+                            <span>${response.experienceLevel || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Budget Range:</label>
+                            <span>${response.budgetRange || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Timeline:</label>
+                            <span>${response.timeline || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Challenges:</label>
+                            <span>${response.challenges || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Skills Required:</label>
+                            <span>${response.skillsRequired || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Location:</label>
+                            <span>${response.location || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Remote Work:</label>
+                            <span>${response.remoteWork || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Additional Comments:</label>
+                            <span>${response.additionalComments || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Submitted:</label>
+                            <span>${new Date(response.timestamp).toLocaleString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Completion Time:</label>
+                            <span>${response.completionTime ? Math.round(response.completionTime / 60000) + ' minutes' : 'Not tracked'}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -1024,7 +1747,54 @@ class SimpleFormSubmit {
         document.body.appendChild(popup);
         setTimeout(() => popup.classList.add('show'), 100);
     }
-
+    
+    viewResponses() {
+        const responses = this.currentResponses || [];
+        
+        if (responses.length === 0) {
+            Utils.showWarning('No responses to view');
+            return;
+        }
+        
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup responses-list-popup">
+                <div class="notification-header">
+                    <h2>All Survey Responses (${responses.length})</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
+                </div>
+                <div class="responses-list-content">
+                    <div class="responses-table">
+                        <div class="table-header">
+                            <div class="table-cell">Company</div>
+                            <div class="table-cell">Industry</div>
+                            <div class="table-cell">Size</div>
+                            <div class="table-cell">Submitted</div>
+                            <div class="table-cell">Actions</div>
+                        </div>
+                        ${responses.map((response, index) => `
+                            <div class="table-row">
+                                <div class="table-cell">${response.companyName || 'Unknown'}</div>
+                                <div class="table-cell">${response.industry || 'Not specified'}</div>
+                                <div class="table-cell">${response.companySize || 'Not specified'}</div>
+                                <div class="table-cell">${new Date(response.timestamp).toLocaleDateString()}</div>
+                                <div class="table-cell">
+                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.length - 1 - index})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+    
     refreshData() {
         this.loadAdminData();
         Utils.showSuccess('Data refreshed');
