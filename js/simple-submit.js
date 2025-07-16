@@ -83,43 +83,53 @@ class SimpleFormSubmit {
     }
 
     setupAdminAccess() {
-        const logo = document.querySelector('.bpn-logo');
-        if (!logo) {
-            console.warn('BPN logo not found for admin access');
+        // Find all potential logo elements (header and intro page)
+        const logos = document.querySelectorAll('.bpn-logo, #logoContainer img, .logo img');
+        
+        if (logos.length === 0) {
+            console.warn('No BPN logos found for admin access');
             return;
         }
 
-        let pressTimer;
-        let isLongPress = false;
+        logos.forEach((logo, index) => {
+            let pressTimer;
+            let isLongPress = false;
 
-        const startLongPress = (e) => {
-            isLongPress = false;
-            pressTimer = setTimeout(() => {
-                isLongPress = true;
-                console.log('Long press detected - showing admin access');
-                this.showAdminAccess();
-            }, 2000); // 2 second long press
-        };
+            const startLongPress = (e) => {
+                e.preventDefault(); // Prevent default behaviors
+                isLongPress = false;
+                console.log(`Long press started on logo ${index + 1}`);
+                pressTimer = setTimeout(() => {
+                    isLongPress = true;
+                    console.log('Long press detected - showing admin access');
+                    this.showAdminAccess();
+                }, 3000); // 3 second long press for better UX
+            };
 
-        const endLongPress = () => {
-            clearTimeout(pressTimer);
-            if (!isLongPress) {
-                // Short press - do nothing
-                return;
-            }
-        };
+            const endLongPress = (e) => {
+                clearTimeout(pressTimer);
+                if (isLongPress) {
+                    console.log('Long press completed');
+                } else {
+                    console.log('Short press - no admin access');
+                }
+            };
 
-        // Touch events for mobile
-        logo.addEventListener('touchstart', startLongPress);
-        logo.addEventListener('touchend', endLongPress);
-        logo.addEventListener('touchcancel', endLongPress);
+            // Touch events for mobile
+            logo.addEventListener('touchstart', startLongPress);
+            logo.addEventListener('touchend', endLongPress);
+            logo.addEventListener('touchcancel', endLongPress);
 
-        // Mouse events for desktop
-        logo.addEventListener('mousedown', startLongPress);
-        logo.addEventListener('mouseup', endLongPress);
-        logo.addEventListener('mouseleave', endLongPress);
+            // Mouse events for desktop
+            logo.addEventListener('mousedown', startLongPress);
+            logo.addEventListener('mouseup', endLongPress);
+            logo.addEventListener('mouseleave', endLongPress);
 
-        console.log('Admin access setup complete - long press BPN logo');
+            // Prevent context menu on long press
+            logo.addEventListener('contextmenu', (e) => e.preventDefault());
+        });
+
+        console.log(`Admin access setup complete - long press any BPN logo (${logos.length} logos found)`);
     }
 
     showAdminAccess() {
