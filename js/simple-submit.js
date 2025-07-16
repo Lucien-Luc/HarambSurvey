@@ -2025,17 +2025,19 @@ class SimpleFormSubmit {
     }
     
     prepareExcelData(responses) {
-        // Main responses sheet - map all form fields
+        // Main responses sheet - map all form fields exactly as stored in database
         const mainSheet = responses.map((response, index) => ({
             'Response ID': index + 1,
             'Company Name': response.companyName || 'Not provided',
             'Contact Person': response.contactPerson || 'Not provided',
             'Company Website': response.companyWebsite || 'Not provided',
             'Company Location': response.companyLocation || 'Not provided',
-            'Industry': response.industry || 'Not specified',
+            'Industry': response.industry || 'Not provided',
             'Company Description': response.companyDescription || 'Not provided',
             'Job Title': response.jobTitle || 'Not provided',
-            'Number of Positions': response.numberOfPositions || 'Not provided',
+            'Positions Available': response.positionsAvailable || 'Not provided',
+            'Work Type': response.workType || 'Not provided',
+            'Work Mode': response.workMode || 'Not provided',
             'Expected Start Date': response.startDate || 'Not provided',
             'Contract Type': response.contractType || 'Not provided',
             'Job Summary': response.jobSummary || 'Not provided',
@@ -2082,9 +2084,9 @@ class SimpleFormSubmit {
                 'Description': 'Most frequently selected industry'
             },
             {
-                'Metric': 'Most Common Company Size',
-                'Value': this.getCompanySizeBreakdown(responses)[0]?.name || 'N/A',
-                'Description': 'Most frequently selected company size'
+                'Metric': 'Most Common Work Type',
+                'Value': this.getJobTypeBreakdown(responses)[0]?.name || 'N/A',
+                'Description': 'Most frequently selected work type'
             },
             {
                 'Metric': 'Export Generated',
@@ -2100,9 +2102,16 @@ class SimpleFormSubmit {
             'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
         }));
         
-        // Company size breakdown sheet
-        const companySizeSheet = this.getCompanySizeBreakdown(responses).map(item => ({
-            'Company Size': item.name,
+        // Work type breakdown sheet
+        const workTypeSheet = this.getJobTypeBreakdown(responses).map(item => ({
+            'Work Type': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        // Work mode breakdown sheet
+        const workModeSheet = this.getWorkModeBreakdown(responses).map(item => ({
+            'Work Mode': item.name,
             'Count': item.count,
             'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
         }));
@@ -2111,7 +2120,8 @@ class SimpleFormSubmit {
             'Survey Responses': mainSheet,
             'Analytics Summary': analyticsSheet,
             'Industry Breakdown': industrySheet,
-            'Company Size Breakdown': companySizeSheet
+            'Work Type Breakdown': workTypeSheet,
+            'Work Mode Breakdown': workModeSheet
         };
     }
     
