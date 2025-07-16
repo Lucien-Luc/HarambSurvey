@@ -146,9 +146,19 @@ class SimpleFormSubmit {
     async checkAdminExists() {
         try {
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
-                const admins = await window.firebaseConfig.getCollection('admins');
-                return admins && admins.length > 0;
+                console.log('Checking admin existence...');
+                const result = await window.firebaseConfig.getCollection('admins');
+                console.log('Admin collection result:', result);
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    console.log('Admin exists: true');
+                    return true;
+                } else {
+                    console.log('Admin exists: false');
+                    return false;
+                }
             }
+            console.log('Firebase not available');
             return false;
         } catch (error) {
             console.log('Error checking admin existence:', error);
@@ -231,17 +241,20 @@ class SimpleFormSubmit {
         try {
             // Create admin in Firebase
             if (window.firebaseConfig && window.firebaseConfig.createDocument) {
-                await window.firebaseConfig.createDocument('admins', {
+                const result = await window.firebaseConfig.createDocument('admins', {
                     password: password,
                     createdAt: new Date().toISOString(),
                     lastLogin: null
                 });
                 
-                // Close popup and show admin panel
-                document.querySelector('.notification-overlay').remove();
-                this.showAdminPanel();
-                
-                Utils.showSuccess('Admin account created successfully');
+                if (result.success) {
+                    // Close popup and show admin panel
+                    document.querySelector('.notification-overlay').remove();
+                    this.showAdminPanel();
+                    Utils.showSuccess('Admin account created successfully');
+                } else {
+                    alert('Error creating admin account: ' + result.error);
+                }
             } else {
                 alert('Firebase not available. Cannot create admin account.');
             }
@@ -262,10 +275,10 @@ class SimpleFormSubmit {
         try {
             // Check password in Firebase
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
-                const admins = await window.firebaseConfig.getCollection('admins');
+                const result = await window.firebaseConfig.getCollection('admins');
                 
-                if (admins && admins.length > 0) {
-                    const admin = admins[0];
+                if (result.success && result.data && result.data.length > 0) {
+                    const admin = result.data[0];
                     
                     if (admin.password === password) {
                         // Update last login
@@ -314,9 +327,14 @@ class SimpleFormSubmit {
             <div class="admin-container">
                 <div class="admin-header">
                     <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
-                    <button class="btn btn-secondary" onclick="window.simpleFormSubmit.showView('surveyView')">
-                        <i class="fas fa-arrow-left"></i> Back to Survey
-                    </button>
+                    <div class="admin-header-buttons">
+                        <button class="btn btn-warning" onclick="window.simpleFormSubmit.logoutAdmin()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.simpleFormSubmit.showView('surveyView')">
+                            <i class="fas fa-arrow-left"></i> Back to Survey
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="admin-content">
@@ -392,6 +410,11 @@ class SimpleFormSubmit {
                 margin-bottom: 30px;
                 padding-bottom: 20px;
                 border-bottom: 2px solid #eee;
+            }
+            
+            .admin-header-buttons {
+                display: flex;
+                gap: 10px;
             }
             
             .admin-header h1 {
@@ -625,6 +648,12 @@ class SimpleFormSubmit {
         } catch (error) {
             console.log('Firebase data not available:', error.message);
         }
+    }
+
+    logoutAdmin() {
+        // Simple logout - just go back to survey
+        this.showView('surveyView');
+        Utils.showSuccess('Logged out successfully');
     }
 
     setupFormNavigation() {
