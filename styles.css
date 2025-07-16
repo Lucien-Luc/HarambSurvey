@@ -707,6 +707,32 @@ textarea.form-control {
     box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9CA3AF;
+    font-style: italic;
+    opacity: 1;
+}
+
+.form-group input::-webkit-input-placeholder,
+.form-group textarea::-webkit-input-placeholder {
+    color: #9CA3AF;
+    font-style: italic;
+}
+
+.form-group input::-moz-placeholder,
+.form-group textarea::-moz-placeholder {
+    color: #9CA3AF;
+    font-style: italic;
+    opacity: 1;
+}
+
+.form-group input:-ms-input-placeholder,
+.form-group textarea:-ms-input-placeholder {
+    color: #9CA3AF;
+    font-style: italic;
+}
+
 .form-group textarea {
     resize: vertical;
     min-height: 100px;
