@@ -2093,15 +2093,15 @@ class SimpleFormSubmit {
     }
     
     showSinglePositionMode() {
-        // Section 3 - Position Details
+        // Section 2 - Position Details
         const singleMode = document.getElementById('singlePositionMode');
         const multipleMode = document.getElementById('multiplePositionsMode');
         
-        // Section 5 - Candidate Profile
+        // Section 3 - Candidate Profile
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
-        // Section 6 - What You Offer
+        // Section 4 - What You Offer
         const singlePositionOffer = document.getElementById('singlePositionOffer');
         const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
         
@@ -2119,16 +2119,16 @@ class SimpleFormSubmit {
     }
     
     showMultiplePositionsMode(numPositions) {
-        // Section 3 - Position Details
+        // Section 2 - Position Details
         const singleMode = document.getElementById('singlePositionMode');
         const multipleMode = document.getElementById('multiplePositionsMode');
         const positionCountSpan = document.getElementById('positionCount');
         
-        // Section 5 - Candidate Profile
+        // Section 3 - Candidate Profile
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
-        // Section 6 - What You Offer
+        // Section 4 - What You Offer
         const singlePositionOffer = document.getElementById('singlePositionOffer');
         const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
         

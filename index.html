@@ -79,7 +79,7 @@
                             <div class="progress-bar">
                                 <div class="progress-fill" id="progressFill"></div>
                             </div>
-                            <span class="progress-text" id="progressText">Section 1 of 6</span>
+                            <span class="progress-text" id="progressText">Section 1 of 4</span>
                         </div>
                     </div>
                     
@@ -110,25 +110,17 @@
                                 <label for="industry">Industry/Field *</label>
                                 <input type="text" id="industry" name="industry" required>
                             </div>
-                        </div>
-
-                        <!-- Section 2: Company Description -->
-                        <div class="survey-section" id="section2">
-                            <div class="section-header">
-                                <i class="fas fa-file-alt"></i>
-                                <h2>Company Description</h2>
-                            </div>
                             <div class="form-group">
                                 <label for="companyDescription">Company Description *</label>
                                 <textarea id="companyDescription" name="companyDescription" rows="4" placeholder="Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)" required></textarea>
                             </div>
                         </div>
 
-                        <!-- Section 3: Job Opening Overview -->
-                        <div class="survey-section" id="section3">
+                        <!-- Section 2: Position Details & Job Summary -->
+                        <div class="survey-section" id="section2">
                             <div class="section-header">
                                 <i class="fas fa-briefcase"></i>
-                                <h2>Job Opening Overview</h2>
+                                <h2>Position Details & Job Summary</h2>
                             </div>
                             
                             <!-- Single Position Mode (Default) -->
@@ -208,17 +200,9 @@
                                     <!-- Dynamic position cards will be inserted here -->
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Section 4: Job Summary & Responsibilities -->
-                        <div class="survey-section" id="section4">
-                            <div class="section-header">
-                                <i class="fas fa-tasks"></i>
-                                <h2>Job Summary & Responsibilities</h2>
-                            </div>
                             
-                            <!-- Single Position Mode -->
-                            <div id="singlePositionMode">
+                            <!-- Single Position Mode - Job Summary -->
+                            <div id="singlePositionJobSummary">
                                 <div class="form-group">
                                     <label for="jobSummary">Job Summary *</label>
                                     <textarea id="jobSummary" name="jobSummary" rows="3" placeholder="Brief description of the role's purpose (2-3 lines)" required></textarea>
@@ -228,15 +212,13 @@
                                     <textarea id="keyResponsibilities" name="keyResponsibilities" rows="6" placeholder="List 4-6 main tasks and responsibilities for this role..." required></textarea>
                                 </div>
                             </div>
-                            
-
                         </div>
 
-                        <!-- Section 5: Ideal Candidate Profile -->
-                        <div class="survey-section" id="section5">
+                        <!-- Section 3: Candidate Profile & Work Environment -->
+                        <div class="survey-section" id="section3">
                             <div class="section-header">
                                 <i class="fas fa-user-check"></i>
-                                <h2>Ideal Candidate Profile</h2>
+                                <h2>Candidate Profile & Work Environment</h2>
                             </div>
                             
                             <!-- Single Position Mode -->
@@ -290,14 +272,7 @@
                             </div>
                             
 
-                        </div>
-
-                        <!-- Section 6: Behavioral Skills & Work Environment -->
-                        <div class="survey-section" id="section6">
-                            <div class="section-header">
-                                <i class="fas fa-users"></i>
-                                <h2>Behavioral Skills & Work Environment</h2>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>What qualities do you want this person to have? (Check all that apply)</label>
                                 <div class="checkbox-group multi-select">
@@ -345,8 +320,8 @@
                             </div>
                         </div>
 
-                        <!-- Section 7: Compensation & Benefits -->
-                        <div class="survey-section" id="section7">
+                        <!-- Section 4: Compensation & Benefits -->
+                        <div class="survey-section" id="section4">
                             <div class="section-header">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <h2>What You Offer</h2>
