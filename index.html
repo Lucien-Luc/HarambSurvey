@@ -40,19 +40,320 @@
             <div id="surveyView" class="view active">
                 <div class="survey-container">
                     <div class="survey-header">
-                        <h1 id="surveyTitle">Welcome to BPN Survey</h1>
-                        <p id="surveyDescription">Please complete the following survey. Your responses are important to us.</p>
-                    </div>
-                    
-                    <div class="survey-form" id="surveyForm">
-                        <div class="survey-welcome">
-                            <div class="welcome-icon">
-                                <i class="fas fa-clipboard-list"></i>
+                        <h1 id="surveyTitle">Talent Fair – Employer Diagnostic Form</h1>
+                        <p id="surveyDescription">Please complete this form to help us better match your company with the right talent at the fair.</p>
+                        <div class="survey-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
                             </div>
-                            <h2>No Active Survey</h2>
-                            <p>There are currently no surveys available. Please check back later.</p>
+                            <span class="progress-text" id="progressText">Section 1 of 7</span>
                         </div>
                     </div>
+                    
+                    <form class="employer-diagnostic-form" id="employerDiagnosticForm">
+                        <!-- Section 1: Company Information -->
+                        <div class="survey-section active" id="section1">
+                            <div class="section-header">
+                                <i class="fas fa-building"></i>
+                                <h2>Company Information</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactPerson">Contact Person (Name & Role) *</label>
+                                <input type="text" id="contactPerson" name="contactPerson" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyWebsite">Company Website (if available)</label>
+                                <input type="url" id="companyWebsite" name="companyWebsite">
+                            </div>
+                            <div class="form-group">
+                                <label for="companyLocation">Company Location (City/Area) *</label>
+                                <input type="text" id="companyLocation" name="companyLocation" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="industry">Industry/Field *</label>
+                                <input type="text" id="industry" name="industry" required>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Company Description -->
+                        <div class="survey-section" id="section2">
+                            <div class="section-header">
+                                <i class="fas fa-file-alt"></i>
+                                <h2>Company Description</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyDescription">Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences) *</label>
+                                <textarea id="companyDescription" name="companyDescription" rows="4" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Job Opening Overview -->
+                        <div class="survey-section" id="section3">
+                            <div class="section-header">
+                                <i class="fas fa-briefcase"></i>
+                                <h2>Job Opening Overview</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title *</label>
+                                <input type="text" id="jobTitle" name="jobTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="positionsAvailable">Number of Positions Available *</label>
+                                <input type="number" id="positionsAvailable" name="positionsAvailable" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Work Type *</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workType" value="full-time" required>
+                                        <span>Full-time</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workType" value="part-time" required>
+                                        <span>Part-time</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workType" value="internship" required>
+                                        <span>Internship</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Work Mode *</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workMode" value="onsite" required>
+                                        <span>Onsite</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workMode" value="remote" required>
+                                        <span>Remote</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="workMode" value="hybrid" required>
+                                        <span>Hybrid</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">Expected Start Date *</label>
+                                <input type="date" id="startDate" name="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contract Type *</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="contractType" value="permanent" required>
+                                        <span>Permanent</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="contractType" value="fixed-term" required>
+                                        <span>Fixed-Term</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="contractType" value="casual" required>
+                                        <span>Casual</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Job Summary & Responsibilities -->
+                        <div class="survey-section" id="section4">
+                            <div class="section-header">
+                                <i class="fas fa-tasks"></i>
+                                <h2>Job Summary & Responsibilities</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobSummary">Brief description of the role's purpose (2-3 lines) *</label>
+                                <textarea id="jobSummary" name="jobSummary" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="keyResponsibilities">Key Responsibilities (List 4-6 main tasks) *</label>
+                                <textarea id="keyResponsibilities" name="keyResponsibilities" rows="6" placeholder="Please list the main tasks and responsibilities for this role..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Ideal Candidate Profile -->
+                        <div class="survey-section" id="section5">
+                            <div class="section-header">
+                                <i class="fas fa-user-check"></i>
+                                <h2>Ideal Candidate Profile</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="idealAge">Preferred Age Range</label>
+                                <input type="text" id="idealAge" name="idealAge" placeholder="e.g., 25-35 years">
+                            </div>
+                            <div class="form-group">
+                                <label for="idealGender">Gender Preference</label>
+                                <select id="idealGender" name="idealGender">
+                                    <option value="">No preference</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="any">Any</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="idealLocation">Preferred Location</label>
+                                <input type="text" id="idealLocation" name="idealLocation" placeholder="Preferred candidate location">
+                            </div>
+                            <div class="form-group">
+                                <label>Experience Level Required *</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="experienceLevel" value="trainee" required>
+                                        <span>Trainee</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="experienceLevel" value="entry-level" required>
+                                        <span>Entry-Level</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="experienceLevel" value="mid-career" required>
+                                        <span>Mid-Career</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="radio" name="experienceLevel" value="senior-level" required>
+                                        <span>Senior-Level</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="educationLevel">Education Level Required (if any)</label>
+                                <input type="text" id="educationLevel" name="educationLevel" placeholder="e.g., High School, Certificate, Degree">
+                            </div>
+                            <div class="form-group">
+                                <label for="technicalSkills">Technical/Professional Skills Needed</label>
+                                <textarea id="technicalSkills" name="technicalSkills" rows="3" placeholder="e.g., software, certificates, specific skills..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section 6: Behavioral Skills & Work Environment -->
+                        <div class="survey-section" id="section6">
+                            <div class="section-header">
+                                <i class="fas fa-users"></i>
+                                <h2>Behavioral Skills & Work Environment</h2>
+                            </div>
+                            <div class="form-group">
+                                <label>What qualities do you want this person to have? (Check all that apply)</label>
+                                <div class="checkbox-group multi-select">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="positive-attitude">
+                                        <span>Positive attitude</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="team-player">
+                                        <span>Team player</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="self-motivated">
+                                        <span>Self-motivated</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="reliable">
+                                        <span>Reliable</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="good-time-manager">
+                                        <span>Good time manager</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="adaptable">
+                                        <span>Adaptable</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="takes-initiative">
+                                        <span>Takes initiative</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="behavioralSkills" value="customer-friendly">
+                                        <span>Customer-friendly</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="otherBehavioralSkills">Other behavioral skills needed</label>
+                                <input type="text" id="otherBehavioralSkills" name="otherBehavioralSkills" placeholder="Please specify any other qualities">
+                            </div>
+                            <div class="form-group">
+                                <label for="workEnvironment">Work Environment & Social Aspects</label>
+                                <textarea id="workEnvironment" name="workEnvironment" rows="4" placeholder="Who will they work with? (Supervisor, team, customers?) What's the workplace like?"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section 7: Compensation & Benefits -->
+                        <div class="survey-section" id="section7">
+                            <div class="section-header">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <h2>What You Offer</h2>
+                            </div>
+                            <div class="form-group">
+                                <label for="salaryRange">Salary Range (Monthly) *</label>
+                                <input type="text" id="salaryRange" name="salaryRange" placeholder="e.g., KSH 25,000 - 35,000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Benefits/Perks (Select all that apply)</label>
+                                <div class="checkbox-group multi-select">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="transport-allowance">
+                                        <span>Transport allowance</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="meals-lunch">
+                                        <span>Meals/Lunch</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="health-insurance">
+                                        <span>Health insurance</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="training-development">
+                                        <span>Training/Development</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="commission-bonuses">
+                                        <span>Commission or Bonuses</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="benefits" value="flexible-schedule">
+                                        <span>Flexible schedule</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="otherBenefits">Other benefits/perks</label>
+                                <input type="text" id="otherBenefits" name="otherBenefits" placeholder="Please specify any other benefits">
+                            </div>
+                            <div class="form-group">
+                                <label for="workingHours">Working Hours *</label>
+                                <input type="text" id="workingHours" name="workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="additionalNotes">Additional Notes (Optional)</label>
+                                <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any extra info you'd like to share?"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="survey-navigation">
+                            <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+                                <i class="fas fa-arrow-left"></i>
+                                Previous
+                            </button>
+                            <button type="button" class="btn btn-primary" id="nextBtn">
+                                Next
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                                <i class="fas fa-check"></i>
+                                Submit Form
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -397,6 +698,7 @@
     <script src="js/admin.js"></script>
     <script src="js/form-builder.js"></script>
     <script src="js/analytics.js"></script>
+    <script src="js/employer-diagnostic.js"></script>
     <script src="js/app.js"></script>
     <script src="initialize-firebase.js"></script>
 </body>
