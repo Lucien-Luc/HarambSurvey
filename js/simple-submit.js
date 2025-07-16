@@ -133,40 +133,337 @@ class SimpleFormSubmit {
     }
 
     showAdminAccess() {
-        // Create admin access popup
-        const popup = document.createElement('div');
-        popup.className = 'notification-overlay';
-        popup.innerHTML = `
-            <div class="notification-popup" style="max-width: 400px;">
-                <div class="notification-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                    <i class="fas fa-shield-alt"></i>
+        // Create admin interface
+        this.showView('adminView');
+        
+        // Create admin view if it doesn't exist
+        if (!document.getElementById('adminView')) {
+            this.createAdminView();
+        }
+        
+        // Load admin data
+        this.loadAdminData();
+    }
+
+    createAdminView() {
+        const adminView = document.createElement('div');
+        adminView.id = 'adminView';
+        adminView.className = 'view';
+        adminView.innerHTML = `
+            <div class="admin-container">
+                <div class="admin-header">
+                    <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
+                    <button class="btn btn-secondary" onclick="window.simpleFormSubmit.showView('surveyView')">
+                        <i class="fas fa-arrow-left"></i> Back to Survey
+                    </button>
                 </div>
-                <h1 class="notification-title">Admin Access</h1>
-                <p class="notification-message">This feature requires Firebase admin authentication to be configured.</p>
-                <div class="notification-details">
-                    <strong>Note:</strong> Admin panel functionality was removed in production cleanup.<br>
-                    Contact developer to restore admin features if needed.
+                
+                <div class="admin-content">
+                    <div class="admin-section">
+                        <h2><i class="fas fa-chart-bar"></i> Survey Responses</h2>
+                        <div class="admin-stats">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalResponses">0</div>
+                                <div class="stat-label">Total Responses</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="todayResponses">0</div>
+                                <div class="stat-label">Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="avgCompletionTime">0</div>
+                                <div class="stat-label">Avg. Time (min)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-actions">
+                            <button class="btn btn-primary" onclick="window.simpleFormSubmit.exportResponses()">
+                                <i class="fas fa-download"></i> Export to Excel
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.simpleFormSubmit.viewResponses()">
+                                <i class="fas fa-eye"></i> View Responses
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2><i class="fas fa-database"></i> Data Management</h2>
+                        <div class="data-actions">
+                            <button class="btn btn-info" onclick="window.simpleFormSubmit.refreshData()">
+                                <i class="fas fa-refresh"></i> Refresh Data
+                            </button>
+                            <button class="btn btn-warning" onclick="window.simpleFormSubmit.clearLocalStorage()">
+                                <i class="fas fa-trash"></i> Clear Local Storage
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h2><i class="fas fa-list"></i> Recent Responses</h2>
+                        <div class="responses-list" id="recentResponses">
+                            <div class="loading-placeholder">Loading responses...</div>
+                        </div>
+                    </div>
                 </div>
-                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
-                    Understood
-                </button>
             </div>
         `;
         
-        // Add to page
-        document.body.appendChild(popup);
+        // Add to main content
+        document.querySelector('.main-content').appendChild(adminView);
         
-        // Show with animation
-        setTimeout(() => {
-            popup.classList.add('show');
-        }, 100);
+        // Add admin styles
+        this.addAdminStyles();
+    }
 
-        // Auto-remove when clicking outside
-        popup.addEventListener('click', (e) => {
-            if (e.target === popup) {
-                popup.remove();
+    addAdminStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            .admin-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
             }
-        });
+            
+            .admin-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #eee;
+            }
+            
+            .admin-header h1 {
+                color: #333;
+                margin: 0;
+                font-size: 28px;
+            }
+            
+            .admin-section {
+                background: white;
+                border-radius: 10px;
+                padding: 25px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            
+            .admin-section h2 {
+                color: #444;
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 20px;
+            }
+            
+            .admin-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .stat-card {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            }
+            
+            .stat-number {
+                font-size: 32px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            
+            .stat-label {
+                font-size: 14px;
+                opacity: 0.9;
+            }
+            
+            .admin-actions, .data-actions {
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s;
+            }
+            
+            .btn-primary { background: #007bff; color: white; }
+            .btn-secondary { background: #6c757d; color: white; }
+            .btn-info { background: #17a2b8; color: white; }
+            .btn-warning { background: #ffc107; color: black; }
+            
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+            
+            .responses-list {
+                max-height: 400px;
+                overflow-y: auto;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 15px;
+            }
+            
+            .response-item {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                margin-bottom: 10px;
+            }
+            
+            .response-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+            
+            .loading-placeholder {
+                text-align: center;
+                color: #999;
+                font-style: italic;
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+
+    loadAdminData() {
+        // Load data from localStorage and Firebase
+        const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+        const totalResponses = localData.length;
+        
+        // Update stats
+        document.getElementById('totalResponses').textContent = totalResponses;
+        document.getElementById('todayResponses').textContent = this.getTodayResponseCount(localData);
+        document.getElementById('avgCompletionTime').textContent = this.getAverageCompletionTime(localData);
+        
+        // Load recent responses
+        this.displayRecentResponses(localData);
+        
+        // Try to load from Firebase if available
+        if (window.firebaseConfig && window.firebaseConfig.isInitialized) {
+            this.loadFirebaseData();
+        }
+    }
+
+    getTodayResponseCount(responses) {
+        const today = new Date().toDateString();
+        return responses.filter(r => new Date(r.timestamp).toDateString() === today).length;
+    }
+
+    getAverageCompletionTime(responses) {
+        if (responses.length === 0) return 0;
+        const avgMs = responses.reduce((sum, r) => sum + (r.completionTime || 0), 0) / responses.length;
+        return Math.round(avgMs / 60000); // Convert to minutes
+    }
+
+    displayRecentResponses(responses) {
+        const container = document.getElementById('recentResponses');
+        
+        if (responses.length === 0) {
+            container.innerHTML = '<div class="loading-placeholder">No responses yet</div>';
+            return;
+        }
+        
+        const recent = responses.slice(-5).reverse(); // Last 5 responses
+        
+        container.innerHTML = recent.map(response => `
+            <div class="response-item">
+                <strong>${response.companyName || 'Unknown Company'}</strong>
+                <br>
+                <small>Submitted: ${new Date(response.timestamp).toLocaleString()}</small>
+                <br>
+                <small>Industry: ${response.industry || 'Not specified'}</small>
+            </div>
+        `).join('');
+    }
+
+    exportResponses() {
+        const responses = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+        
+        if (responses.length === 0) {
+            Utils.showWarning('No responses to export');
+            return;
+        }
+        
+        try {
+            Utils.exportToExcel(responses, 'survey-responses.xlsx');
+            Utils.showSuccess('Responses exported successfully');
+        } catch (error) {
+            Utils.showError('Failed to export responses: ' + error.message);
+        }
+    }
+
+    viewResponses() {
+        const responses = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+        
+        if (responses.length === 0) {
+            Utils.showWarning('No responses to view');
+            return;
+        }
+        
+        // Create detailed view popup
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup" style="max-width: 80%; max-height: 80%; overflow-y: auto;">
+                <div class="notification-header">
+                    <h2>Survey Responses (${responses.length})</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" style="float: right;">×</button>
+                </div>
+                <div class="responses-detail">
+                    ${responses.map((response, index) => `
+                        <div class="response-detail" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                            <h4>Response #${index + 1} - ${response.companyName || 'Unknown'}</h4>
+                            <p><strong>Submitted:</strong> ${new Date(response.timestamp).toLocaleString()}</p>
+                            <p><strong>Industry:</strong> ${response.industry || 'Not specified'}</p>
+                            <p><strong>Company Size:</strong> ${response.companySize || 'Not specified'}</p>
+                            <p><strong>Hiring Goals:</strong> ${response.hiringGoals || 'Not specified'}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+
+    refreshData() {
+        this.loadAdminData();
+        Utils.showSuccess('Data refreshed');
+    }
+
+    clearLocalStorage() {
+        if (confirm('Are you sure you want to clear all local storage data? This cannot be undone.')) {
+            localStorage.removeItem('employer-submissions');
+            localStorage.removeItem('latest-submission');
+            this.loadAdminData();
+            Utils.showSuccess('Local storage cleared');
+        }
+    }
+
+    async loadFirebaseData() {
+        try {
+            const responses = await window.firebaseConfig.getCollection('employer-diagnostics', 'timestamp', 50);
+            if (responses && responses.length > 0) {
+                // Update display with Firebase data
+                document.getElementById('totalResponses').textContent = responses.length;
+                Utils.showSuccess('Firebase data loaded');
+            }
+        } catch (error) {
+            console.log('Firebase data not available:', error.message);
+        }
     }
 
     setupFormNavigation() {
@@ -452,5 +749,6 @@ class SimpleFormSubmit {
 const simpleSubmit = new SimpleFormSubmit();
 simpleSubmit.init();
 
-// Make globally available for debugging
+// Make globally available for debugging and admin panel
 window.simpleSubmit = simpleSubmit;
+window.simpleFormSubmit = simpleSubmit;
