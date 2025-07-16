@@ -23,6 +23,8 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced Placeholder Text**: Moved guidance text inside form fields as greyish italic placeholders
 - **Mobile Optimization**: Added comprehensive responsive design for all screen sizes
 - **Auto-save Functionality**: Implemented draft saving and form recovery features
+- **Introduction Page**: Created elegant welcome page with partner logos (BPN, Harambee, Mastercard G2S) and smooth slide transition
+- **Smooth Page Transitions**: Implemented left-swipe animation from introduction to survey form
 
 **July 15, 2025:**
 - Enhanced mobile responsiveness with touch-friendly design

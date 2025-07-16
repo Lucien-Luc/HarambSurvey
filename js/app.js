@@ -27,6 +27,12 @@ class SurveyApp {
     }
     
     bindEvents() {
+        // Introduction page "Got it" button
+        const gotItBtn = document.getElementById('gotItBtn');
+        if (gotItBtn) {
+            gotItBtn.addEventListener('click', this.showSurvey.bind(this));
+        }
+        
         // Logo long press for admin access
         const logoContainer = document.getElementById('logoContainer');
         if (logoContainer) {
@@ -301,6 +307,28 @@ class SurveyApp {
         if (this.longPressTimer) {
             clearTimeout(this.longPressTimer);
             this.longPressTimer = null;
+        }
+    }
+    
+    showSurvey() {
+        const introView = document.getElementById('intro-view');
+        const surveyView = document.getElementById('surveyView');
+        
+        if (introView && surveyView) {
+            // Add slide out animation to intro
+            introView.classList.add('slide-out-left');
+            
+            // Show survey after transition
+            setTimeout(() => {
+                introView.style.display = 'none';
+                surveyView.classList.add('active');
+                surveyView.classList.add('slide-in-right');
+                
+                // Initialize employer diagnostic form
+                if (window.employerDiagnosticForm) {
+                    window.employerDiagnosticForm.init();
+                }
+            }, 400);
         }
     }
     
