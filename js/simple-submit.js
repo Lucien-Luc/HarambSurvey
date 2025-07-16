@@ -269,6 +269,7 @@ class SimpleFormSubmit {
 
     async loginAdmin() {
         const password = document.getElementById('adminLoginPassword').value;
+        console.log('Login attempt with password:', password ? '***' : 'empty');
         
         if (!password) {
             alert('Please enter password');
@@ -278,12 +279,17 @@ class SimpleFormSubmit {
         try {
             // Check password in Firebase
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
+                console.log('Getting admin collection...');
                 const result = await window.firebaseConfig.getCollection('admins');
+                console.log('Admin collection result:', result);
                 
                 if (result.success && result.data && result.data.length > 0) {
                     const admin = result.data[0];
+                    console.log('Admin found:', admin);
                     
                     if (admin.password === password) {
+                        console.log('Password matches - logging in...');
+                        
                         // Update last login
                         await window.firebaseConfig.updateDocument('admins', admin.id, {
                             lastLogin: new Date().toISOString()
@@ -294,16 +300,21 @@ class SimpleFormSubmit {
                         if (popup) {
                             popup.remove();
                         }
+                        
+                        console.log('Showing admin panel...');
                         this.showAdminPanel();
                         
                         Utils.showSuccess('Login successful');
                     } else {
+                        console.log('Password mismatch');
                         alert('Invalid password');
                     }
                 } else {
+                    console.log('No admin found in collection');
                     alert('No admin account found');
                 }
             } else {
+                console.log('Firebase not available');
                 alert('Firebase not available. Cannot authenticate.');
             }
         } catch (error) {
@@ -313,15 +324,22 @@ class SimpleFormSubmit {
     }
 
     showAdminPanel() {
-        // Create admin interface
-        this.showView('adminView');
+        console.log('showAdminPanel called');
         
         // Create admin view if it doesn't exist
         if (!document.getElementById('adminView')) {
+            console.log('Creating admin view...');
             this.createAdminView();
+        } else {
+            console.log('Admin view already exists');
         }
         
+        // Show admin interface
+        console.log('Switching to admin view...');
+        this.showView('adminView');
+        
         // Load admin data
+        console.log('Loading admin data...');
         this.loadAdminData();
     }
 
