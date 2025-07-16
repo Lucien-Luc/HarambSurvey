@@ -349,9 +349,13 @@ class SimpleFormSubmit {
         adminView.className = 'view';
         adminView.innerHTML = `
             <div class="admin-container">
+                <!-- Header Section -->
                 <div class="admin-header">
-                    <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
-                    <div class="admin-header-buttons">
+                    <div class="admin-header-left">
+                        <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+                        <p class="admin-subtitle">Survey Management & Analytics</p>
+                    </div>
+                    <div class="admin-header-right">
                         <button class="btn btn-warning" onclick="window.simpleFormSubmit.logoutAdmin()">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
@@ -361,50 +365,109 @@ class SimpleFormSubmit {
                     </div>
                 </div>
                 
-                <div class="admin-content">
-                    <div class="admin-section">
-                        <h2><i class="fas fa-chart-bar"></i> Survey Responses</h2>
-                        <div class="admin-stats">
-                            <div class="stat-card">
-                                <div class="stat-number" id="totalResponses">0</div>
-                                <div class="stat-label">Total Responses</div>
+                <!-- Main Dashboard Grid -->
+                <div class="admin-grid">
+                    <!-- Left Column: Stats & Quick Actions -->
+                    <div class="admin-left-column">
+                        <!-- Statistics Cards -->
+                        <div class="stats-section">
+                            <div class="section-title">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Analytics Overview</span>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="todayResponses">0</div>
-                                <div class="stat-label">Today</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number" id="avgCompletionTime">0</div>
-                                <div class="stat-label">Avg. Time (min)</div>
+                            <div class="stats-grid">
+                                <div class="stat-card primary">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="totalResponses">0</div>
+                                        <div class="stat-label">Total Responses</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card success">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="todayResponses">0</div>
+                                        <div class="stat-label">Today's Responses</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card info">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="avgCompletionTime">0</div>
+                                        <div class="stat-label">Avg. Time (min)</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="admin-actions">
-                            <button class="btn btn-primary" onclick="window.simpleFormSubmit.exportResponses()">
-                                <i class="fas fa-download"></i> Export to Excel
-                            </button>
-                            <button class="btn btn-secondary" onclick="window.simpleFormSubmit.viewResponses()">
-                                <i class="fas fa-eye"></i> View Responses
-                            </button>
+                        <!-- Quick Actions -->
+                        <div class="actions-section">
+                            <div class="section-title">
+                                <i class="fas fa-bolt"></i>
+                                <span>Quick Actions</span>
+                            </div>
+                            <div class="actions-grid">
+                                <button class="action-card primary" onclick="window.simpleFormSubmit.exportResponses()">
+                                    <div class="action-icon">
+                                        <i class="fas fa-download"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <div class="action-title">Export Data</div>
+                                        <div class="action-desc">Download Excel report</div>
+                                    </div>
+                                </button>
+                                <button class="action-card secondary" onclick="window.simpleFormSubmit.viewResponses()">
+                                    <div class="action-icon">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <div class="action-title">View All</div>
+                                        <div class="action-desc">Browse responses</div>
+                                    </div>
+                                </button>
+                                <button class="action-card info" onclick="window.simpleFormSubmit.refreshData()">
+                                    <div class="action-icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <div class="action-title">Refresh</div>
+                                        <div class="action-desc">Reload data</div>
+                                    </div>
+                                </button>
+                                <button class="action-card warning" onclick="window.simpleFormSubmit.clearLocalStorage()">
+                                    <div class="action-icon">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <div class="action-title">Clear Data</div>
+                                        <div class="action-desc">Remove local storage</div>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="admin-section">
-                        <h2><i class="fas fa-database"></i> Data Management</h2>
-                        <div class="data-actions">
-                            <button class="btn btn-info" onclick="window.simpleFormSubmit.refreshData()">
-                                <i class="fas fa-refresh"></i> Refresh Data
-                            </button>
-                            <button class="btn btn-warning" onclick="window.simpleFormSubmit.clearLocalStorage()">
-                                <i class="fas fa-trash"></i> Clear Local Storage
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="admin-section">
-                        <h2><i class="fas fa-list"></i> Recent Responses</h2>
-                        <div class="responses-list" id="recentResponses">
-                            <div class="loading-placeholder">Loading responses...</div>
+                    
+                    <!-- Right Column: Recent Activity -->
+                    <div class="admin-right-column">
+                        <div class="activity-section">
+                            <div class="section-title">
+                                <i class="fas fa-history"></i>
+                                <span>Recent Activity</span>
+                            </div>
+                            <div class="activity-content">
+                                <div class="responses-list" id="recentResponses">
+                                    <div class="loading-placeholder">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <span>Loading responses...</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -422,7 +485,7 @@ class SimpleFormSubmit {
         const style = document.createElement('style');
         style.textContent = `
             #adminView {
-                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                background: #f8f9fa;
                 min-height: 100vh;
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             }
@@ -438,31 +501,83 @@ class SimpleFormSubmit {
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 2rem;
-                padding: 1.5rem 2rem;
-                background: rgba(255, 255, 255, 0.95);
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255,255,255,0.2);
+                padding: 2rem 2.5rem;
+                background: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                border: 1px solid #e2e8f0;
             }
             
-            .admin-header-buttons {
-                display: flex;
-                gap: 12px;
-            }
-            
-            .admin-header h1 {
+            .admin-header-left h1 {
                 color: #2d3748;
-                margin: 0;
-                font-size: 2rem;
+                margin: 0 0 0.5rem 0;
+                font-size: 2.25rem;
                 font-weight: 700;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
                 display: flex;
                 align-items: center;
                 gap: 12px;
+            }
+            
+            .admin-subtitle {
+                color: #718096;
+                margin: 0;
+                font-size: 1rem;
+                font-weight: 500;
+                margin-left: 2.5rem;
+            }
+            
+            .admin-header-right {
+                display: flex;
+                gap: 12px;
+            }
+            
+            .admin-grid {
+                display: grid;
+                grid-template-columns: 1fr 400px;
+                gap: 2rem;
+                align-items: start;
+            }
+            
+            .admin-left-column {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .admin-right-column {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .section-title {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+                color: #2d3748;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+            
+            .stats-section, .actions-section, .activity-section {
+                background: #ffffff;
+                border-radius: 8px;
+                padding: 2rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border: 1px solid #e2e8f0;
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .actions-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1rem;
             }
             
             .admin-section {
@@ -500,50 +615,154 @@ class SimpleFormSubmit {
             }
             
             .stat-card {
-                background: linear-gradient(135deg, #667eea, #764ba2);
+                display: flex;
+                align-items: center;
+                padding: 1.5rem;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+            }
+            
+            .stat-card.primary {
+                border-color: #667eea;
+                background: #f7fafc;
+            }
+            
+            .stat-card.success {
+                border-color: #48bb78;
+                background: #f0fff4;
+            }
+            
+            .stat-card.info {
+                border-color: #4299e1;
+                background: #ebf8ff;
+            }
+            
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 1rem;
+                font-size: 1.5rem;
+            }
+            
+            .stat-card.primary .stat-icon {
+                background: #667eea;
                 color: white;
-                padding: 2rem;
-                border-radius: 16px;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-                transition: transform 0.3s ease;
             }
             
-            .stat-card:hover {
-                transform: translateY(-5px);
+            .stat-card.success .stat-icon {
+                background: #48bb78;
+                color: white;
             }
             
-            .stat-card::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-                animation: shimmer 3s infinite;
+            .stat-card.info .stat-icon {
+                background: #4299e1;
+                color: white;
             }
             
-            @keyframes shimmer {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+            .stat-content {
+                flex: 1;
             }
             
             .stat-number {
-                font-size: 2.5rem;
+                font-size: 2.25rem;
                 font-weight: 700;
-                margin-bottom: 0.5rem;
-                position: relative;
-                z-index: 1;
+                margin-bottom: 0.25rem;
+                line-height: 1;
+                color: #2d3748;
             }
             
             .stat-label {
                 font-size: 0.9rem;
-                opacity: 0.9;
                 font-weight: 500;
-                position: relative;
-                z-index: 1;
+                color: #718096;
+            }
+            
+            .action-card {
+                display: flex;
+                align-items: center;
+                padding: 1.25rem;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                cursor: pointer;
+                text-align: left;
+                background: #ffffff;
+            }
+            
+            .action-card:hover {
+                border-color: #cbd5e0;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            .action-card.primary:hover {
+                border-color: #667eea;
+            }
+            
+            .action-card.secondary:hover {
+                border-color: #718096;
+            }
+            
+            .action-card.info:hover {
+                border-color: #4299e1;
+            }
+            
+            .action-card.warning:hover {
+                border-color: #ed8936;
+            }
+            
+            .action-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 1rem;
+                font-size: 1.1rem;
+            }
+            
+            .action-card.primary .action-icon {
+                background: #667eea;
+                color: white;
+            }
+            
+            .action-card.secondary .action-icon {
+                background: #718096;
+                color: white;
+            }
+            
+            .action-card.info .action-icon {
+                background: #4299e1;
+                color: white;
+            }
+            
+            .action-card.warning .action-icon {
+                background: #ed8936;
+                color: white;
+            }
+            
+            .action-content {
+                flex: 1;
+            }
+            
+            .action-title {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: #2d3748;
+                margin-bottom: 0.25rem;
+            }
+            
+            .action-desc {
+                font-size: 0.8rem;
+                color: #718096;
+            }
+            
+            .activity-content {
+                min-height: 500px;
             }
             
             .admin-actions, .data-actions {
@@ -568,75 +787,55 @@ class SimpleFormSubmit {
                 overflow: hidden;
             }
             
-            .btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-                transition: left 0.5s;
-            }
-            
-            .btn:hover::before {
-                left: 100%;
-            }
+
             
             .btn-primary { 
-                background: linear-gradient(135deg, #667eea, #764ba2);
+                background: #667eea;
                 color: white;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                border: 1px solid #667eea;
             }
             
             .btn-secondary { 
-                background: linear-gradient(135deg, #6c757d, #5a6268);
+                background: #6c757d;
                 color: white;
-                box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+                border: 1px solid #6c757d;
             }
             
             .btn-info { 
-                background: linear-gradient(135deg, #17a2b8, #138496);
+                background: #17a2b8;
                 color: white;
-                box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+                border: 1px solid #17a2b8;
             }
             
             .btn-warning { 
-                background: linear-gradient(135deg, #ffc107, #e0a800);
+                background: #ffc107;
                 color: #212529;
-                box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+                border: 1px solid #ffc107;
             }
             
             .btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            }
-            
-            .btn:active {
-                transform: translateY(-1px);
+                opacity: 0.9;
             }
             
             .responses-list {
                 max-height: 400px;
                 overflow-y: auto;
-                border-radius: 12px;
+                border-radius: 8px;
                 padding: 1rem;
-                background: rgba(248, 250, 252, 0.8);
-                border: 1px solid rgba(226, 232, 240, 0.5);
+                background: #f8f9fa;
+                border: 1px solid #e2e8f0;
             }
             
             .response-item {
                 padding: 1rem;
-                border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+                border-bottom: 1px solid #e2e8f0;
                 margin-bottom: 1rem;
                 border-radius: 8px;
-                background: rgba(255, 255, 255, 0.7);
-                transition: all 0.3s ease;
+                background: #ffffff;
             }
             
             .response-item:hover {
-                background: rgba(255, 255, 255, 0.9);
-                transform: translateX(5px);
+                background: #f7fafc;
             }
             
             .response-item:last-child {
@@ -655,13 +854,33 @@ class SimpleFormSubmit {
             }
             
             .loading-placeholder {
-                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 color: #a0aec0;
                 font-style: italic;
-                padding: 2rem;
+                padding: 3rem;
+                gap: 1rem;
+            }
+            
+            .loading-placeholder i {
+                font-size: 2rem;
+                color: #cbd5e0;
             }
             
             /* Responsive Design */
+            @media (max-width: 1200px) {
+                .admin-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+                
+                .admin-right-column {
+                    order: -1;
+                }
+            }
+            
             @media (max-width: 768px) {
                 .admin-container {
                     padding: 1rem;
@@ -669,24 +888,34 @@ class SimpleFormSubmit {
                 
                 .admin-header {
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 1.5rem;
+                    text-align: center;
+                    padding: 1.5rem;
+                }
+                
+                .admin-header-left h1 {
+                    font-size: 1.75rem;
+                }
+                
+                .admin-subtitle {
+                    margin-left: 0;
                     text-align: center;
                 }
                 
-                .admin-header h1 {
-                    font-size: 1.5rem;
-                }
-                
-                .admin-stats {
+                .stats-grid {
                     grid-template-columns: 1fr;
                 }
                 
-                .admin-actions, .data-actions {
-                    flex-direction: column;
+                .actions-grid {
+                    grid-template-columns: 1fr;
                 }
                 
-                .btn {
-                    justify-content: center;
+                .stat-card, .action-card {
+                    padding: 1.25rem;
+                }
+                
+                .activity-content {
+                    min-height: 300px;
                 }
             }
         `;
