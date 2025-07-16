@@ -24,6 +24,9 @@ class SimpleFormSubmit {
     setup() {
         console.log('SimpleFormSubmit: Setting up...');
         
+        // Set up navigation first
+        this.setupNavigation();
+        
         // Find form and button
         this.form = document.getElementById('employerDiagnosticForm');
         this.submitBtn = document.getElementById('submitBtn');
@@ -56,12 +59,120 @@ class SimpleFormSubmit {
         // Add new click handler
         this.submitBtn.addEventListener('click', (e) => this.handleSubmit(e));
         
-        console.log('SimpleFormSubmit: Setup complete - button is ready');
+        // Set up form navigation
+        this.setupFormNavigation();
         
-        // Show confirmation that setup worked
-        setTimeout(() => {
-            alert('✓ Form submission system is ready!\n\nThe green SUBMIT FORM button is now active.');
-        }, 500);
+        console.log('SimpleFormSubmit: Setup complete - button is ready');
+    }
+
+    setupNavigation() {
+        // Handle "Got it" button to show survey form
+        const gotItBtn = document.getElementById('gotItBtn');
+        if (gotItBtn) {
+            gotItBtn.addEventListener('click', () => {
+                console.log('Got it button clicked - showing survey');
+                this.showView('surveyView');
+            });
+            console.log('Got it button handler added');
+        } else {
+            console.warn('Got it button not found');
+        }
+    }
+
+    setupFormNavigation() {
+        // Handle Next/Previous buttons for multi-step form
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextSection());
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.prevSection());
+        }
+        
+        // Initialize form state
+        this.currentSection = 1;
+        this.totalSections = document.querySelectorAll('.survey-section').length;
+        this.updateProgress();
+        this.updateNavigation();
+    }
+
+    showView(viewId) {
+        // Hide all views
+        const views = document.querySelectorAll('.view');
+        views.forEach(view => view.classList.remove('active'));
+        
+        // Show target view
+        const targetView = document.getElementById(viewId);
+        if (targetView) {
+            targetView.classList.add('active');
+            console.log('Switched to view:', viewId);
+        } else {
+            console.error('View not found:', viewId);
+        }
+    }
+
+    nextSection() {
+        if (this.currentSection < this.totalSections) {
+            this.showSection(this.currentSection + 1);
+        }
+    }
+
+    prevSection() {
+        if (this.currentSection > 1) {
+            this.showSection(this.currentSection - 1);
+        }
+    }
+
+    showSection(sectionNumber) {
+        // Hide current section
+        const sections = document.querySelectorAll('.survey-section');
+        sections.forEach(section => section.classList.remove('active'));
+        
+        // Show target section
+        const targetSection = document.getElementById(`section${sectionNumber}`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            this.currentSection = sectionNumber;
+            this.updateProgress();
+            this.updateNavigation();
+            console.log('Switched to section:', sectionNumber);
+        }
+    }
+
+    updateProgress() {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        if (progressFill) {
+            const percentage = (this.currentSection / this.totalSections) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+        
+        if (progressText) {
+            progressText.textContent = `Section ${this.currentSection} of ${this.totalSections}`;
+        }
+    }
+
+    updateNavigation() {
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        
+        // Show/hide previous button
+        if (prevBtn) {
+            prevBtn.style.display = this.currentSection > 1 ? 'flex' : 'none';
+        }
+
+        // Show/hide next vs submit button
+        if (this.currentSection === this.totalSections) {
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (this.submitBtn) this.submitBtn.style.display = 'flex';
+        } else {
+            if (nextBtn) nextBtn.style.display = 'flex';
+            if (this.submitBtn) this.submitBtn.style.display = 'none';
+        }
     }
 
     handleSubmit(event) {
