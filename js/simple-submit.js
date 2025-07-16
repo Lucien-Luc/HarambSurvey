@@ -8,6 +8,35 @@ class SimpleFormSubmit {
         this.form = null;
         this.submitBtn = null;
         this.isSubmitting = false;
+        this.currentLanguage = 'en';
+        this.translations = {
+            en: {
+                'page_title': 'Talent Fair - Employer Diagnostic',
+                'intro_title': 'Talent Fair - Employer Diagnostic',
+                'intro_subtitle': 'Help us understand your hiring needs and talent requirements for the upcoming job fair.',
+                'got_it': 'Got it',
+                'company_info': 'Company Information',
+                'position_details': 'Position Details & Job Summary',
+                'candidate_profile': 'Candidate Profile & Work Environment',
+                'what_you_offer': 'What You Offer',
+                'submit_form': 'SUBMIT FORM',
+                'next': 'Next',
+                'previous': 'Previous'
+            },
+            rw: {
+                'page_title': 'Inama y\'Ubushakashatsi - Gusuzuma Abakoresha',
+                'intro_title': 'Inama y\'Ubushakashatsi - Gusuzuma Abakoresha',
+                'intro_subtitle': 'Dufashe gusobanukirwa ibyo ukeneye mu gushaka abakozi n\'ibisabwa by\'ubuhanga mu nama izaza.',
+                'got_it': 'Byasobanuye',
+                'company_info': 'Amakuru y\'Ikigo',
+                'position_details': 'Ibisobanuro by\'Umwanya n\'Incamake y\'Akazi',
+                'candidate_profile': 'Umwirondoro w\'Umunyakandida n\'Ibidukikije by\'Akazi',
+                'what_you_offer': 'Icyo Utanga',
+                'submit_form': 'KOHEREZA IFISHI',
+                'next': 'Ibikurikira',
+                'previous': 'Ibimbere'
+            }
+        };
     }
 
     init() {
@@ -26,6 +55,9 @@ class SimpleFormSubmit {
         
         // Set up navigation first
         this.setupNavigation();
+        
+        // Set up language switcher
+        this.setupLanguageSwitcher();
         
         // Find form and button
         this.form = document.getElementById('employerDiagnosticForm');
@@ -63,6 +95,48 @@ class SimpleFormSubmit {
         this.setupFormNavigation();
         
         console.log('SimpleFormSubmit: Setup complete - button is ready');
+    }
+
+    setupLanguageSwitcher() {
+        const langButtons = document.querySelectorAll('.lang-btn');
+        
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const lang = e.target.getAttribute('data-lang');
+                this.switchLanguage(lang);
+            });
+        });
+    }
+
+    switchLanguage(lang) {
+        if (lang === this.currentLanguage) return;
+        
+        this.currentLanguage = lang;
+        
+        // Update active button
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+        
+        // Update page title
+        document.title = this.translations[lang]['page_title'];
+        
+        // Update translatable elements
+        this.updateTranslations();
+    }
+
+    updateTranslations() {
+        const lang = this.currentLanguage;
+        const translations = this.translations[lang];
+        
+        // Update elements with data-translate attribute
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translations[key]) {
+                element.textContent = translations[key];
+            }
+        });
     }
 
     setupNavigation() {

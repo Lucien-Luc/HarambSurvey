@@ -11,6 +11,14 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 16, 2025 - Latest:**
+- **Kinyarwanda Language Support**: Added bilingual functionality with English/Kinyarwanda language switcher using country flag buttons (🇺🇸/🇷🇼)
+- **Smart Language Positioning**: Positioned language switcher in header top-right for optimal user experience and accessibility
+- **Translation System**: Implemented comprehensive translation system with data-translate attributes for seamless language switching
+- **Cultural Localization**: Added proper Kinyarwanda translations for all key interface elements while maintaining English as primary language
+- **Responsive Language UI**: Country flag buttons with hover effects and active states, mobile-optimized sizing
+- **Migration Completed**: Successfully completed migration from Replit Agent to standard Replit environment with all functionality preserved
+
+**July 16, 2025 - Previous:**
 - **Form Sections Streamlined**: Consolidated 7 sections into 4 focused sections for better user experience
 - **Section Structure**: Company Info → Position Details & Job Summary → Candidate Profile & Work Environment → What You Offer
 - **Progress Bar Updated**: Updated progress tracking to show "Section 1 of 4" for cleaner navigation
