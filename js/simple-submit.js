@@ -2101,7 +2101,7 @@ class SimpleFormSubmit {
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
-        // Section 7 - What You Offer
+        // Section 6 - What You Offer
         const singlePositionOffer = document.getElementById('singlePositionOffer');
         const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
         
@@ -2128,7 +2128,7 @@ class SimpleFormSubmit {
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
         
-        // Section 7 - What You Offer
+        // Section 6 - What You Offer
         const singlePositionOffer = document.getElementById('singlePositionOffer');
         const multiplePositionsOffer = document.getElementById('multiplePositionsOffer');
         
