@@ -1349,7 +1349,12 @@ class SimpleFormSubmit {
     calculateTotalPositions(responses) {
         // Calculate total job openings from all responses
         return responses.reduce((total, response) => {
-            const positions = response.positionsToFill || response.numberOfPositions || 1;
+            // Check for multiple positions data structure
+            if (response.positions && Array.isArray(response.positions)) {
+                return total + response.positions.length;
+            }
+            // Check for single position number from our form
+            const positions = response.positionsAvailable || response.numberOfPositions || 1;
             return total + (parseInt(positions) || 1);
         }, 0);
     }
@@ -1375,19 +1380,21 @@ class SimpleFormSubmit {
         // Count employers with urgent hiring needs (looking for immediate start or less than 3 months)
         return responses.filter(response => {
             const startDate = response.startDate;
-            const timeline = response.timeline || '';
+            const additionalNotes = (response.additionalNotes || '').toLowerCase();
             
             if (startDate) {
                 const start = new Date(startDate);
                 const now = new Date();
                 const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
-                return diffMonths <= 3;
+                if (diffMonths <= 3) return true;
             }
             
-            return timeline.toLowerCase().includes('immediate') || 
-                   timeline.toLowerCase().includes('urgent') ||
-                   timeline.toLowerCase().includes('1-3 months') ||
-                   timeline.toLowerCase().includes('asap');
+            // Check for urgent keywords in additional notes and other fields
+            return additionalNotes.includes('urgent') || 
+                   additionalNotes.includes('immediate') ||
+                   additionalNotes.includes('asap') ||
+                   additionalNotes.includes('soon') ||
+                   additionalNotes.includes('quickly');
         }).length;
     }
 
@@ -1429,8 +1436,9 @@ class SimpleFormSubmit {
     
     generateInsightfulMetrics(responses) {
         const industryStats = this.getIndustryBreakdown(responses);
-        const companySizeStats = this.getCompanySizeBreakdown(responses);
-        const hiringGoalsStats = this.getHiringGoalsBreakdown(responses);
+        const experienceStats = this.getExperienceLevelBreakdown(responses);
+        const workModeStats = this.getWorkModeBreakdown(responses);
+        const salaryStats = this.getSalaryRangeBreakdown(responses);
         const responseTimeStats = this.getResponseTimeAnalysis(responses);
         
         return `
@@ -1452,11 +1460,11 @@ class SimpleFormSubmit {
                 
                 <div class="metric-card">
                     <div class="metric-header">
-                        <i class="fas fa-users"></i>
-                        <span>Company Sizes</span>
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Experience Levels</span>
                     </div>
                     <div class="metric-content">
-                        ${companySizeStats.slice(0, 3).map(stat => `
+                        ${experienceStats.slice(0, 3).map(stat => `
                             <div class="metric-item">
                                 <span class="metric-label">${stat.name}</span>
                                 <span class="metric-value">${stat.count}</span>
@@ -1467,11 +1475,26 @@ class SimpleFormSubmit {
                 
                 <div class="metric-card">
                     <div class="metric-header">
-                        <i class="fas fa-target"></i>
-                        <span>Hiring Goals</span>
+                        <i class="fas fa-home"></i>
+                        <span>Work Modes</span>
                     </div>
                     <div class="metric-content">
-                        ${hiringGoalsStats.slice(0, 3).map(stat => `
+                        ${workModeStats.slice(0, 3).map(stat => `
+                            <div class="metric-item">
+                                <span class="metric-label">${stat.name}</span>
+                                <span class="metric-value">${stat.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Salary Ranges</span>
+                    </div>
+                    <div class="metric-content">
+                        ${salaryStats.slice(0, 3).map(stat => `
                             <div class="metric-item">
                                 <span class="metric-label">${stat.name}</span>
                                 <span class="metric-value">${stat.count}</span>
@@ -1500,6 +1523,21 @@ class SimpleFormSubmit {
                         </div>
                     </div>
                 </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Job Types</span>
+                    </div>
+                    <div class="metric-content">
+                        ${this.getJobTypeBreakdown(responses).slice(0, 3).map(stat => `
+                            <div class="metric-item">
+                                <span class="metric-label">${stat.name}</span>
+                                <span class="metric-value">${stat.count}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -1526,11 +1564,44 @@ class SimpleFormSubmit {
             .sort((a, b) => b.count - a.count);
     }
     
-    getHiringGoalsBreakdown(responses) {
+    getExperienceLevelBreakdown(responses) {
         const breakdown = {};
         responses.forEach(r => {
-            const goals = r.hiringGoals || 'Not specified';
-            breakdown[goals] = (breakdown[goals] || 0) + 1;
+            const level = r.experienceLevel || 'Not specified';
+            breakdown[level] = (breakdown[level] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getWorkModeBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const mode = r.workMode || 'Not specified';
+            breakdown[mode] = (breakdown[mode] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getSalaryRangeBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const range = r.salaryRange || 'Not specified';
+            breakdown[range] = (breakdown[range] || 0) + 1;
+        });
+        return Object.entries(breakdown)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+    }
+    
+    getJobTypeBreakdown(responses) {
+        const breakdown = {};
+        responses.forEach(r => {
+            const type = r.workType || 'Not specified';
+            breakdown[type] = (breakdown[type] || 0) + 1;
         });
         return Object.entries(breakdown)
             .map(([name, count]) => ({ name, count }))
@@ -1651,12 +1722,12 @@ class SimpleFormSubmit {
                         <span>${response.industry || 'Not specified'}</span>
                     </div>
                     <div class="response-detail">
-                        <i class="fas fa-users"></i>
-                        <span>${response.companySize || 'Not specified'}</span>
+                        <i class="fas fa-briefcase"></i>
+                        <span>${response.jobTitle || 'Not specified'}</span>
                     </div>
                     <div class="response-detail">
-                        <i class="fas fa-target"></i>
-                        <span>${response.hiringGoals || 'Not specified'}</span>
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>${response.salaryRange || 'Not specified'}</span>
                     </div>
                 </div>
                 <div class="response-actions">
@@ -1877,56 +1948,84 @@ class SimpleFormSubmit {
                             <span>${response.companyName || 'Not provided'}</span>
                         </div>
                         <div class="detail-item">
+                            <label>Contact Person:</label>
+                            <span>${response.contactPerson || 'Not provided'}</span>
+                        </div>
+                        <div class="detail-item">
                             <label>Industry:</label>
                             <span>${response.industry || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Company Size:</label>
-                            <span>${response.companySize || 'Not specified'}</span>
+                            <label>Company Location:</label>
+                            <span>${response.companyLocation || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Years in Business:</label>
-                            <span>${response.yearsInBusiness || 'Not specified'}</span>
+                            <label>Website:</label>
+                            <span>${response.companyWebsite || 'Not provided'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Company Description:</label>
+                            <span>${response.companyDescription || 'Not provided'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Hiring Goals:</label>
-                            <span>${response.hiringGoals || 'Not specified'}</span>
+                            <label>Job Title:</label>
+                            <span>${response.jobTitle || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Specific Roles:</label>
-                            <span>${response.specificRoles || 'Not specified'}</span>
+                            <label>Positions Available:</label>
+                            <span>${response.positionsAvailable || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Work Type:</label>
+                            <span>${response.workType || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Work Mode:</label>
+                            <span>${response.workMode || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Expected Start Date:</label>
+                            <span>${response.startDate || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Contract Type:</label>
+                            <span>${response.contractType || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Job Summary:</label>
+                            <span>${response.jobSummary || 'Not provided'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Key Responsibilities:</label>
+                            <span>${response.keyResponsibilities || 'Not provided'}</span>
                         </div>
                         <div class="detail-item">
                             <label>Experience Level:</label>
                             <span>${response.experienceLevel || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Budget Range:</label>
-                            <span>${response.budgetRange || 'Not specified'}</span>
+                            <label>Technical Skills:</label>
+                            <span>${response.technicalSkills || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Timeline:</label>
-                            <span>${response.timeline || 'Not specified'}</span>
+                            <label>Behavioral Skills:</label>
+                            <span>${Array.isArray(response.behavioralSkills) ? response.behavioralSkills.join(', ') : (response.behavioralSkills || 'Not specified')}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Challenges:</label>
-                            <span>${response.challenges || 'Not specified'}</span>
+                            <label>Salary Range:</label>
+                            <span>${response.salaryRange || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Skills Required:</label>
-                            <span>${response.skillsRequired || 'Not specified'}</span>
+                            <label>Benefits:</label>
+                            <span>${Array.isArray(response.benefits) ? response.benefits.join(', ') : (response.benefits || 'Not specified')}</span>
                         </div>
                         <div class="detail-item">
-                            <label>Location:</label>
-                            <span>${response.location || 'Not specified'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Remote Work:</label>
-                            <span>${response.remoteWork || 'Not specified'}</span>
+                            <label>Working Hours:</label>
+                            <span>${response.workingHours || 'Not specified'}</span>
                         </div>
                         <div class="detail-item full-width">
-                            <label>Additional Comments:</label>
-                            <span>${response.additionalComments || 'Not specified'}</span>
+                            <label>Additional Notes:</label>
+                            <span>${response.additionalNotes || 'Not specified'}</span>
                         </div>
                         <div class="detail-item">
                             <label>Submitted:</label>
@@ -1966,7 +2065,7 @@ class SimpleFormSubmit {
                         <div class="table-header">
                             <div class="table-cell">Company</div>
                             <div class="table-cell">Industry</div>
-                            <div class="table-cell">Size</div>
+                            <div class="table-cell">Job Title</div>
                             <div class="table-cell">Submitted</div>
                             <div class="table-cell">Actions</div>
                         </div>
@@ -1974,7 +2073,7 @@ class SimpleFormSubmit {
                             <div class="table-row">
                                 <div class="table-cell">${response.companyName || 'Unknown'}</div>
                                 <div class="table-cell">${response.industry || 'Not specified'}</div>
-                                <div class="table-cell">${response.companySize || 'Not specified'}</div>
+                                <div class="table-cell">${response.jobTitle || 'Not specified'}</div>
                                 <div class="table-cell">${new Date(response.timestamp).toLocaleDateString()}</div>
                                 <div class="table-cell">
                                     <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.length - 1 - index})">
