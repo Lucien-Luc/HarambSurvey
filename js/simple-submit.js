@@ -424,8 +424,8 @@ class SimpleFormSubmit {
                 <!-- Header Section -->
                 <div class="admin-header">
                     <div class="admin-header-left">
-                        <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
-                        <p class="admin-subtitle">Survey Management & Analytics</p>
+                        <h1><i class="fas fa-shield-alt"></i> Talent Fair Dashboard</h1>
+                        <p class="admin-subtitle">Employer Registration & Analytics</p>
                     </div>
                     <div class="admin-header-right">
                         <button class="btn btn-warning" onclick="window.simpleFormSubmit.logoutAdmin()">
@@ -444,35 +444,44 @@ class SimpleFormSubmit {
                         <!-- Statistics Cards -->
                         <div class="stats-section">
                             <div class="section-title">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Analytics Overview</span>
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Talent Fair Overview</span>
                             </div>
                             <div class="stats-grid">
                                 <div class="stat-card primary">
                                     <div class="stat-icon">
-                                        <i class="fas fa-file-alt"></i>
+                                        <i class="fas fa-building"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <div class="stat-number" id="totalResponses">0</div>
-                                        <div class="stat-label">Total Responses</div>
+                                        <div class="stat-number" id="totalEmployers">0</div>
+                                        <div class="stat-label">Registered Employers</div>
                                     </div>
                                 </div>
                                 <div class="stat-card success">
                                     <div class="stat-icon">
-                                        <i class="fas fa-calendar-day"></i>
+                                        <i class="fas fa-users"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <div class="stat-number" id="todayResponses">0</div>
-                                        <div class="stat-label">Today's Responses</div>
+                                        <div class="stat-number" id="totalPositions">0</div>
+                                        <div class="stat-label">Job Openings</div>
                                     </div>
                                 </div>
                                 <div class="stat-card info">
                                     <div class="stat-icon">
+                                        <i class="fas fa-industry"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="topIndustry">-</div>
+                                        <div class="stat-label">Top Industry</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card warning">
+                                    <div class="stat-icon">
                                         <i class="fas fa-clock"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <div class="stat-number" id="avgCompletionTime">0</div>
-                                        <div class="stat-label">Avg. Time (min)</div>
+                                        <div class="stat-number" id="urgentHiring">0</div>
+                                        <div class="stat-label">Urgent Hiring</div>
                                     </div>
                                 </div>
                             </div>
@@ -1321,20 +1330,67 @@ class SimpleFormSubmit {
     }
 
     updateAnalytics(responses) {
-        // Basic counts
-        const totalResponses = responses.length;
-        const todayResponses = this.getTodayResponseCount(responses);
-        const avgCompletionTime = this.getAverageCompletionTime(responses);
+        // Calculate meaningful metrics for talent fair
+        const totalEmployers = responses.length;
+        const totalPositions = this.calculateTotalPositions(responses);
+        const topIndustry = this.getTopIndustry(responses);
+        const urgentHiring = this.getUrgentHiring(responses);
         
         // Update display
-        document.getElementById('totalResponses').textContent = totalResponses;
-        document.getElementById('todayResponses').textContent = todayResponses;
-        document.getElementById('avgCompletionTime').textContent = avgCompletionTime;
+        document.getElementById('totalEmployers').textContent = totalEmployers;
+        document.getElementById('totalPositions').textContent = totalPositions;
+        document.getElementById('topIndustry').textContent = topIndustry;
+        document.getElementById('urgentHiring').textContent = urgentHiring;
         
         // Store responses for other methods
         this.currentResponses = responses;
     }
     
+    calculateTotalPositions(responses) {
+        // Calculate total job openings from all responses
+        return responses.reduce((total, response) => {
+            const positions = response.positionsToFill || response.numberOfPositions || 1;
+            return total + (parseInt(positions) || 1);
+        }, 0);
+    }
+
+    getTopIndustry(responses) {
+        if (responses.length === 0) return '-';
+        
+        // Count industries
+        const industryCount = {};
+        responses.forEach(response => {
+            const industry = response.industry || 'Other';
+            industryCount[industry] = (industryCount[industry] || 0) + 1;
+        });
+        
+        // Find top industry
+        const topIndustry = Object.entries(industryCount)
+            .sort(([,a], [,b]) => b - a)[0];
+        
+        return topIndustry ? topIndustry[0] : '-';
+    }
+
+    getUrgentHiring(responses) {
+        // Count employers with urgent hiring needs (looking for immediate start or less than 3 months)
+        return responses.filter(response => {
+            const startDate = response.startDate;
+            const timeline = response.timeline || '';
+            
+            if (startDate) {
+                const start = new Date(startDate);
+                const now = new Date();
+                const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
+                return diffMonths <= 3;
+            }
+            
+            return timeline.toLowerCase().includes('immediate') || 
+                   timeline.toLowerCase().includes('urgent') ||
+                   timeline.toLowerCase().includes('1-3 months') ||
+                   timeline.toLowerCase().includes('asap');
+        }).length;
+    }
+
     getTodayResponseCount(responses) {
         const today = new Date().toDateString();
         return responses.filter(r => new Date(r.timestamp).toDateString() === today).length;
