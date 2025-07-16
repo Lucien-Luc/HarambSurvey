@@ -33,7 +33,7 @@ class SurveyApp {
             gotItBtn.addEventListener('click', this.showSurvey.bind(this));
         }
         
-        // Logo long press for admin access
+        // Logo long press for admin access (header logo)
         const logoContainer = document.getElementById('logoContainer');
         if (logoContainer) {
             logoContainer.addEventListener('mousedown', this.startLongPress.bind(this));
@@ -41,6 +41,16 @@ class SurveyApp {
             logoContainer.addEventListener('mouseleave', this.endLongPress.bind(this));
             logoContainer.addEventListener('touchstart', this.startLongPress.bind(this));
             logoContainer.addEventListener('touchend', this.endLongPress.bind(this));
+        }
+        
+        // Also add long press to intro page BPN logo
+        const introBpnLogo = document.querySelector('.bpn-logo');
+        if (introBpnLogo) {
+            introBpnLogo.addEventListener('mousedown', this.startLongPress.bind(this));
+            introBpnLogo.addEventListener('mouseup', this.endLongPress.bind(this));
+            introBpnLogo.addEventListener('mouseleave', this.endLongPress.bind(this));
+            introBpnLogo.addEventListener('touchstart', this.startLongPress.bind(this));
+            introBpnLogo.addEventListener('touchend', this.endLongPress.bind(this));
         }
         
         // Admin login form
