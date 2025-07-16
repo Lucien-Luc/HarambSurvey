@@ -315,20 +315,17 @@ class SurveyApp {
         const surveyView = document.getElementById('surveyView');
         
         if (introView && surveyView) {
-            // Add slide out animation to intro
-            introView.classList.add('slide-out-left');
+            // Hide intro view and show survey
+            introView.classList.remove('active');
+            introView.style.display = 'none';
             
-            // Show survey after transition
-            setTimeout(() => {
-                introView.style.display = 'none';
-                surveyView.classList.add('active');
-                surveyView.classList.add('slide-in-right');
-                
-                // Initialize employer diagnostic form
-                if (window.employerDiagnosticForm) {
-                    window.employerDiagnosticForm.init();
-                }
-            }, 400);
+            surveyView.classList.add('active');
+            surveyView.style.display = 'block';
+            
+            // Initialize employer diagnostic form if it exists
+            if (window.employerDiagnosticForm) {
+                window.employerDiagnosticForm.init();
+            }
         }
     }
     

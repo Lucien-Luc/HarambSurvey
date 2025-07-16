@@ -26,7 +26,7 @@ body {
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     color: var(--color-dark);
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: var(--color-light);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -76,6 +76,7 @@ body {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     position: relative;
     overflow: hidden;
+    padding: 2rem 0;
 }
 
 .intro-container::before {
@@ -248,36 +249,17 @@ body {
 
 /* Slide transition */
 .main-content {
-    position: relative;
-    overflow: hidden;
+    min-height: 100vh;
 }
 
 .view {
-    position: absolute;
+    display: none;
     width: 100%;
     min-height: 100vh;
-    top: 0;
-    left: 0;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view.active {
     display: block;
-}
-
-.view.slide-out-left {
-    transform: translateX(-100%);
-}
-
-.view.slide-in-right {
-    transform: translateX(100%);
-    animation: slideInFromRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slideInFromRight {
-    from {
-        transform: translateX(100%);
-    }
-    to {
-        transform: translateX(0);
-    }
 }
 
 /* Header Styles */
