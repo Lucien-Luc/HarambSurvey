@@ -249,7 +249,10 @@ class SimpleFormSubmit {
                 
                 if (result.success) {
                     // Close popup and show admin panel
-                    document.querySelector('.notification-overlay').remove();
+                    const popup = document.querySelector('.notification-overlay');
+                    if (popup) {
+                        popup.remove();
+                    }
                     this.showAdminPanel();
                     Utils.showSuccess('Admin account created successfully');
                 } else {
@@ -287,7 +290,10 @@ class SimpleFormSubmit {
                         });
                         
                         // Close popup and show admin panel
-                        document.querySelector('.notification-overlay').remove();
+                        const popup = document.querySelector('.notification-overlay');
+                        if (popup) {
+                            popup.remove();
+                        }
                         this.showAdminPanel();
                         
                         Utils.showSuccess('Login successful');
