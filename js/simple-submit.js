@@ -338,9 +338,81 @@ class SimpleFormSubmit {
         console.log('Switching to admin view...');
         this.showView('adminView');
         
-        // Load admin data
-        console.log('Loading admin data...');
-        this.loadAdminData();
+        // Ensure we have some test data for demo purposes
+        this.ensureTestData();
+        
+        // Load admin data with a small delay to ensure DOM is ready
+        setTimeout(() => {
+            console.log('Loading admin data...');
+            this.loadAdminData();
+        }, 100);
+    }
+    
+    ensureTestData() {
+        const existingData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+        
+        if (existingData.length === 0) {
+            console.log('No existing data, creating test data...');
+            const testData = [
+                {
+                    companyName: 'TechCorp Solutions',
+                    industry: 'Technology',
+                    companySize: '50-200 employees',
+                    yearsInBusiness: '5-10 years',
+                    hiringGoals: 'Scale technical team',
+                    specificRoles: 'Software Engineers, Data Scientists',
+                    experienceLevel: 'Mid-level',
+                    budgetRange: '$50,000 - $100,000',
+                    timeline: '3-6 months',
+                    challenges: 'Finding skilled developers',
+                    skillsRequired: 'JavaScript, Python, React',
+                    location: 'Cape Town',
+                    remoteWork: 'Hybrid',
+                    additionalComments: 'Looking for passionate developers',
+                    timestamp: Date.now() - 86400000, // 1 day ago
+                    completionTime: 420000 // 7 minutes
+                },
+                {
+                    companyName: 'Green Energy Co',
+                    industry: 'Renewable Energy',
+                    companySize: '10-50 employees',
+                    yearsInBusiness: '2-5 years',
+                    hiringGoals: 'Expand operations team',
+                    specificRoles: 'Project Managers, Engineers',
+                    experienceLevel: 'Senior',
+                    budgetRange: '$40,000 - $80,000',
+                    timeline: '1-3 months',
+                    challenges: 'Limited candidate pool',
+                    skillsRequired: 'Project management, Engineering',
+                    location: 'Johannesburg',
+                    remoteWork: 'On-site',
+                    additionalComments: 'Urgent hiring needed',
+                    timestamp: Date.now() - 3600000, // 1 hour ago
+                    completionTime: 360000 // 6 minutes
+                },
+                {
+                    companyName: 'FinanceMax Ltd',
+                    industry: 'Financial Services',
+                    companySize: '200-500 employees',
+                    yearsInBusiness: '10+ years',
+                    hiringGoals: 'Digital transformation',
+                    specificRoles: 'Business Analysts, Developers',
+                    experienceLevel: 'Entry-level',
+                    budgetRange: '$30,000 - $60,000',
+                    timeline: '6+ months',
+                    challenges: 'Skills gap in digital tools',
+                    skillsRequired: 'SQL, Analytics, Finance',
+                    location: 'Durban',
+                    remoteWork: 'Remote',
+                    additionalComments: 'Training provided',
+                    timestamp: Date.now() - 7200000, // 2 hours ago
+                    completionTime: 480000 // 8 minutes
+                }
+            ];
+            
+            localStorage.setItem('employer-submissions', JSON.stringify(testData));
+            console.log('Test data created');
+        }
     }
 
     createAdminView() {
@@ -1201,32 +1273,46 @@ class SimpleFormSubmit {
     }
 
     async loadAdminData() {
+        console.log('Loading admin data...');
+        
         // Show loading state
         this.showLoadingState();
         
         try {
-            // Load data from Firebase first (primary source)
             let responses = [];
             
+            // Try Firebase first
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
-                const result = await window.firebaseConfig.getCollection('employer-diagnostics', 'timestamp');
-                if (result && result.success && result.data) {
+                console.log('Attempting Firebase connection...');
+                const result = await window.firebaseConfig.getCollection('employer-diagnostics');
+                console.log('Firebase result:', result);
+                
+                if (result && result.success && result.data && result.data.length > 0) {
                     responses = result.data;
                     console.log('Firebase data loaded:', responses.length, 'responses');
+                } else {
+                    console.log('No Firebase data found, trying localStorage...');
                 }
+            } else {
+                console.log('Firebase not available, using localStorage...');
             }
             
-            // Fallback to localStorage if Firebase fails
+            // Always try localStorage as fallback
             if (responses.length === 0) {
                 const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
                 responses = localData;
                 console.log('Using localStorage data:', responses.length, 'responses');
             }
             
-            // Update comprehensive analytics
+            // Store responses for other methods
+            this.currentResponses = responses;
+            
+            // Update all dashboard components
             this.updateAnalytics(responses);
             this.displayRecentResponses(responses);
             this.updateInsightfulMetrics(responses);
+            
+            console.log('Admin data loading complete');
             
         } catch (error) {
             console.error('Error loading admin data:', error);
@@ -1261,14 +1347,28 @@ class SimpleFormSubmit {
     }
     
     updateInsightfulMetrics(responses) {
-        if (responses.length === 0) return;
+        console.log('Updating insightful metrics with', responses.length, 'responses');
         
-        // Add additional metrics section
-        const metricsHtml = this.generateInsightfulMetrics(responses);
         const existingMetrics = document.getElementById('insightfulMetrics');
-        if (existingMetrics) {
-            existingMetrics.innerHTML = metricsHtml;
+        if (!existingMetrics) {
+            console.log('insightfulMetrics element not found');
+            return;
         }
+        
+        if (responses.length === 0) {
+            existingMetrics.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-info-circle"></i>
+                    <span>No data available for insights</span>
+                </div>
+            `;
+            return;
+        }
+        
+        // Generate and display metrics
+        const metricsHtml = this.generateInsightfulMetrics(responses);
+        existingMetrics.innerHTML = metricsHtml;
+        console.log('Insightful metrics updated');
     }
     
     generateInsightfulMetrics(responses) {
@@ -1412,10 +1512,15 @@ class SimpleFormSubmit {
     }
     
     showLoadingState() {
+        console.log('Showing loading state...');
+        
         const elements = ['totalResponses', 'todayResponses', 'avgCompletionTime'];
         elements.forEach(id => {
             const element = document.getElementById(id);
-            if (element) element.textContent = '...';
+            if (element) {
+                element.textContent = '...';
+                console.log('Set loading for', id);
+            }
         });
         
         const recentResponses = document.getElementById('recentResponses');
@@ -1424,6 +1529,16 @@ class SimpleFormSubmit {
                 <div class="loading-placeholder">
                     <i class="fas fa-spinner fa-spin"></i>
                     <span>Loading responses...</span>
+                </div>
+            `;
+        }
+        
+        const insightfulMetrics = document.getElementById('insightfulMetrics');
+        if (insightfulMetrics) {
+            insightfulMetrics.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Loading insights...</span>
                 </div>
             `;
         }
@@ -1796,7 +1911,9 @@ class SimpleFormSubmit {
     }
     
     refreshData() {
+        console.log('Refreshing data...');
         this.loadAdminData();
+        this.loadFirebaseData();
         Utils.showSuccess('Data refreshed');
     }
 
@@ -1810,15 +1927,34 @@ class SimpleFormSubmit {
     }
 
     async loadFirebaseData() {
+        console.log('Loading Firebase data specifically...');
         try {
-            const responses = await window.firebaseConfig.getCollection('employer-diagnostics', 'timestamp', 50);
-            if (responses && responses.length > 0) {
-                // Update display with Firebase data
-                document.getElementById('totalResponses').textContent = responses.length;
+            if (!window.firebaseConfig || !window.firebaseConfig.getCollection) {
+                console.log('Firebase not initialized');
+                return;
+            }
+            
+            const result = await window.firebaseConfig.getCollection('employer-diagnostics');
+            console.log('Firebase collection result:', result);
+            
+            if (result && result.success && result.data && result.data.length > 0) {
+                const responses = result.data;
+                console.log('Firebase data loaded successfully:', responses.length, 'responses');
+                
+                // Update current responses
+                this.currentResponses = responses;
+                
+                // Update all dashboard components
+                this.updateAnalytics(responses);
+                this.displayRecentResponses(responses);
+                this.updateInsightfulMetrics(responses);
+                
                 Utils.showSuccess('Firebase data loaded');
+            } else {
+                console.log('No Firebase data found');
             }
         } catch (error) {
-            console.log('Firebase data not available:', error.message);
+            console.error('Firebase data error:', error);
         }
     }
 
