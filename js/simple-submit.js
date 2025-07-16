@@ -72,7 +72,13 @@ class SimpleFormSubmit {
                 'customer_friendly': 'Customer-friendly',
                 'multiple_positions_compensation': 'Multiple Positions Compensation',
                 'multiple_positions_note': 'Since you\'re hiring for multiple positions, please configure the salary ranges, benefits, and working hours for each position in the Position Details section.',
-                'company_description_placeholder': 'Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)'
+                'company_description_placeholder': 'Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)',
+                'transport_allowance': 'Transport allowance',
+                'meals_lunch': 'Meals/Lunch',
+                'health_insurance': 'Health insurance',
+                'training_development': 'Training/Development',
+                'commission_bonuses': 'Commission or Bonuses',
+                'flexible_schedule': 'Flexible schedule'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -136,7 +142,13 @@ class SimpleFormSubmit {
                 'customer_friendly': 'Wubaha abakiriya',
                 'multiple_positions_compensation': 'Imishahara y\'Imyanya Myinshi',
                 'multiple_positions_note': 'Kubera ko ushaka abakozi benshi, nyamuneka shyiraho imishahara, inyungu, n\'amasaha yo gukora kuri buri mwanya mu gice cy\'Amakuru y\'Imyanya.',
-                'company_description_placeholder': 'Tubwire mu make ibyerekeye ikigo cyawe — icyo gikora n\'icyo cyatuma gitandukana n\'ibindi (interuro 2-3)'
+                'company_description_placeholder': 'Tubwire mu make ibyerekeye ikigo cyawe — icyo gikora n\'icyo cyatuma gitandukana n\'ibindi (interuro 2-3)',
+                'transport_allowance': 'Amafaranga yo kujya no kuva',
+                'meals_lunch': 'Ifunguro/Ibiryo',
+                'health_insurance': 'Ubwishingizi bw\'ubuzima',
+                'training_development': 'Amahugurwa/Iterambere',
+                'commission_bonuses': 'Amafaranga y\'inyongera',
+                'flexible_schedule': 'Gahunda ihindagurika'
             }
         };
     }
@@ -226,6 +238,113 @@ class SimpleFormSubmit {
         
         // Update translatable elements
         this.updateTranslations();
+        
+        // Update placeholders
+        this.updatePlaceholders(lang);
+    }
+    
+    updatePlaceholders(lang) {
+        if (lang === 'rw') {
+            // Update all placeholder texts to Kinyarwanda
+            const placeholderMap = {
+                'companyDescription': 'Tubwire mu make ibyerekeye ikigo cyawe — icyo gikora n\'icyo cyatuma gitandukana n\'ibindi (interuro 2-3)',
+                'jobSummary': 'Ibisobanuro byigihe gito by\'umurimo (imirongo 2-3)',
+                'keyResponsibilities': 'Andika inshingano 4-6 z\'ingenzi z\'uyu murimo...',
+                'idealAge': 'urugero: imyaka 25-35',
+                'idealLocation': 'Ahantu hashakwa abakoresha',
+                'educationLevel': 'urugero: Ayisumbuye, Impamyabumenyi, Icyiciro cya kabiri',
+                'technicalSkills': 'Andika porogaramu, impamyabumenyi, ubuhanga busabwa...',
+                'otherBehavioralSkills': 'Nyamuneka sobanura ubundi buhanga',
+                'workEnvironment': 'Bazakora n\'ande? (Umuyobozi, itsinda, abakiriya?) Aho bakorera ni hehe?',
+                'salaryRange': 'urugero: RWF 250,000 - 350,000',
+                'otherBenefits': 'Nyamuneka sobanura izindi nyungu',
+                'workingHours': 'urugero: 9 am–5 pm, Akazi k\'amakipe',
+                'additionalNotes': 'Hari ikindi ushaka kuvuga?'
+            };
+            
+            Object.keys(placeholderMap).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.placeholder = placeholderMap[id];
+                }
+            });
+            
+            // Update dynamic position placeholders
+            document.querySelectorAll('[id^="pos"][id$="_jobSummary"]').forEach(el => {
+                el.placeholder = 'Ibisobanuro byigihe gito by\'umurimo (imirongo 2-3)';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_keyResponsibilities"]').forEach(el => {
+                el.placeholder = 'Andika inshingano 4-6 z\'ingenzi z\'uyu murimo...';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_educationLevel"]').forEach(el => {
+                el.placeholder = 'urugero: Ayisumbuye, Impamyabumenyi, Icyiciro cya kabiri';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_technicalSkills"]').forEach(el => {
+                el.placeholder = 'Andika porogaramu, impamyabumenyi, ubuhanga busabwa...';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_salaryRange"]').forEach(el => {
+                el.placeholder = 'urugero: RWF 250,000 - 350,000';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_otherBenefits"]').forEach(el => {
+                el.placeholder = 'Nyamuneka sobanura izindi nyungu';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_workingHours"]').forEach(el => {
+                el.placeholder = 'urugero: 9 am–5 pm, Akazi k\'amakipe';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_additionalNotes"]').forEach(el => {
+                el.placeholder = 'Hari ikindi ushaka kuvuga kubyerekeye uyu murimo?';
+            });
+        } else {
+            // Reset to English placeholders
+            const placeholderMap = {
+                'companyDescription': 'Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)',
+                'jobSummary': 'Brief description of the role\'s purpose (2-3 lines)',
+                'keyResponsibilities': 'List 4-6 main tasks and responsibilities for this role...',
+                'idealAge': 'e.g., 25-35 years',
+                'idealLocation': 'Preferred candidate location',
+                'educationLevel': 'e.g., High School, Certificate, Degree',
+                'technicalSkills': 'List required software, certificates, specific skills...',
+                'otherBehavioralSkills': 'Please specify any other qualities',
+                'workEnvironment': 'Who will they work with? (Supervisor, team, customers?) What\'s the workplace like?',
+                'salaryRange': 'e.g., RWF 250,000 - 350,000',
+                'otherBenefits': 'Please specify any other benefits',
+                'workingHours': 'e.g., 9am–5pm, Shift work',
+                'additionalNotes': 'Any extra info you\'d like to share?'
+            };
+            
+            Object.keys(placeholderMap).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.placeholder = placeholderMap[id];
+                }
+            });
+            
+            // Update dynamic position placeholders
+            document.querySelectorAll('[id^="pos"][id$="_jobSummary"]').forEach(el => {
+                el.placeholder = 'Brief description of the role\'s purpose (2-3 lines)';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_keyResponsibilities"]').forEach(el => {
+                el.placeholder = 'List 4-6 main tasks and responsibilities for this role...';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_educationLevel"]').forEach(el => {
+                el.placeholder = 'e.g., High School, Certificate, Degree';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_technicalSkills"]').forEach(el => {
+                el.placeholder = 'List required software, certificates, specific skills...';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_salaryRange"]').forEach(el => {
+                el.placeholder = 'e.g., RWF 250,000 - 350,000';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_otherBenefits"]').forEach(el => {
+                el.placeholder = 'Please specify any other benefits';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_workingHours"]').forEach(el => {
+                el.placeholder = 'e.g., 9am–5pm, Shift work';
+            });
+            document.querySelectorAll('[id^="pos"][id$="_additionalNotes"]').forEach(el => {
+                el.placeholder = 'Any extra info you\'d like to share about this position?';
+            });
+        }
     }
 
     updateTranslations() {
@@ -2841,27 +2960,27 @@ class SimpleFormSubmit {
                 <div class="position-benefits-grid">
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="transport-allowance">
-                        <span>Transport allowance</span>
+                        <span data-translate="transport_allowance">Transport allowance</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="meals-lunch">
-                        <span>Meals/Lunch</span>
+                        <span data-translate="meals_lunch">Meals/Lunch</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="health-insurance">
-                        <span>Health insurance</span>
+                        <span data-translate="health_insurance">Health insurance</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="training-development">
-                        <span>Training/Development</span>
+                        <span data-translate="training_development">Training/Development</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="commission-bonuses">
-                        <span>Commission or Bonuses</span>
+                        <span data-translate="commission_bonuses">Commission or Bonuses</span>
                     </label>
                     <label class="position-checkbox-label">
                         <input type="checkbox" name="pos${positionNumber}_benefits" value="flexible-schedule">
-                        <span>Flexible schedule</span>
+                        <span data-translate="flexible_schedule">Flexible schedule</span>
                     </label>
                 </div>
             </div>
