@@ -24,17 +24,17 @@ class SimpleFormSubmit {
                 'previous': 'Previous'
             },
             rw: {
-                'page_title': 'Inama y\'Ubushakashatsi - Gusuzuma Abakoresha',
-                'intro_title': 'Inama y\'Ubushakashatsi - Gusuzuma Abakoresha',
-                'intro_subtitle': 'Dufashe gusobanukirwa ibyo ukeneye mu gushaka abakozi n\'ibisabwa by\'ubuhanga mu nama izaza.',
-                'got_it': 'Byasobanuye',
+                'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
+                'intro_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
+                'intro_subtitle': 'Dufashe kumenya ibyo ukeneye mu gushaka abakozi mu nama y\'akazi izaza.',
+                'got_it': 'Byumvise',
                 'company_info': 'Amakuru y\'Ikigo',
-                'position_details': 'Ibisobanuro by\'Umwanya n\'Incamake y\'Akazi',
-                'candidate_profile': 'Umwirondoro w\'Umunyakandida n\'Ibidukikije by\'Akazi',
+                'position_details': 'Umurimo n\'Ibisobanuro byawo',
+                'candidate_profile': 'Abakozi Bashaka n\'Aho Bakorera',
                 'what_you_offer': 'Icyo Utanga',
-                'submit_form': 'KOHEREZA IFISHI',
-                'next': 'Ibikurikira',
-                'previous': 'Ibimbere'
+                'submit_form': 'OHEREZA',
+                'next': 'Komeza',
+                'previous': 'Subira'
             }
         };
     }
