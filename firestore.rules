@@ -62,6 +62,11 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
+    // Admin collection - allow read/write for simple admin authentication
+    match /admins/{adminId} {
+      allow read, write: if true;
+    }
+    
     // Settings collection - only admins can access settings
     match /settings/{document} {
       allow read, write: if request.auth != null && 

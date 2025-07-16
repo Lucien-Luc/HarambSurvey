@@ -132,7 +132,168 @@ class SimpleFormSubmit {
         console.log(`Admin access setup complete - long press any BPN logo (${logos.length} logos found)`);
     }
 
-    showAdminAccess() {
+    async showAdminAccess() {
+        // Check if admin exists and authenticate
+        const adminExists = await this.checkAdminExists();
+        
+        if (!adminExists) {
+            this.showAdminSetup();
+        } else {
+            this.showAdminLogin();
+        }
+    }
+
+    async checkAdminExists() {
+        try {
+            if (window.firebaseConfig && window.firebaseConfig.getCollection) {
+                const admins = await window.firebaseConfig.getCollection('admins');
+                return admins && admins.length > 0;
+            }
+            return false;
+        } catch (error) {
+            console.log('Error checking admin existence:', error);
+            return false;
+        }
+    }
+
+    showAdminSetup() {
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup" style="max-width: 400px;">
+                <div class="notification-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1 class="notification-title">Admin Setup</h1>
+                <p class="notification-message">Set up the admin password. This can only be done once.</p>
+                <div class="auth-form">
+                    <input type="password" id="adminSetupPassword" placeholder="Enter admin password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="password" id="adminConfirmPassword" placeholder="Confirm password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+                    <button onclick="window.simpleFormSubmit.createAdmin()" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Create Admin
+                    </button>
+                </div>
+                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
+                    Cancel
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+
+    showAdminLogin() {
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup" style="max-width: 400px;">
+                <div class="notification-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1 class="notification-title">Admin Login</h1>
+                <p class="notification-message">Enter admin password to access the panel.</p>
+                <div class="auth-form">
+                    <input type="password" id="adminLoginPassword" placeholder="Enter password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+                    <button onclick="window.simpleFormSubmit.loginAdmin()" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Login
+                    </button>
+                </div>
+                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
+                    Cancel
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+        
+        // Focus on password input
+        setTimeout(() => {
+            document.getElementById('adminLoginPassword').focus();
+        }, 200);
+    }
+
+    async createAdmin() {
+        const password = document.getElementById('adminSetupPassword').value;
+        const confirmPassword = document.getElementById('adminConfirmPassword').value;
+        
+        if (!password || password.length < 6) {
+            alert('Password must be at least 6 characters long');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        
+        try {
+            // Create admin in Firebase
+            if (window.firebaseConfig && window.firebaseConfig.createDocument) {
+                await window.firebaseConfig.createDocument('admins', {
+                    password: password,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
+                });
+                
+                // Close popup and show admin panel
+                document.querySelector('.notification-overlay').remove();
+                this.showAdminPanel();
+                
+                Utils.showSuccess('Admin account created successfully');
+            } else {
+                alert('Firebase not available. Cannot create admin account.');
+            }
+        } catch (error) {
+            console.error('Error creating admin:', error);
+            alert('Error creating admin account: ' + error.message);
+        }
+    }
+
+    async loginAdmin() {
+        const password = document.getElementById('adminLoginPassword').value;
+        
+        if (!password) {
+            alert('Please enter password');
+            return;
+        }
+        
+        try {
+            // Check password in Firebase
+            if (window.firebaseConfig && window.firebaseConfig.getCollection) {
+                const admins = await window.firebaseConfig.getCollection('admins');
+                
+                if (admins && admins.length > 0) {
+                    const admin = admins[0];
+                    
+                    if (admin.password === password) {
+                        // Update last login
+                        await window.firebaseConfig.updateDocument('admins', admin.id, {
+                            lastLogin: new Date().toISOString()
+                        });
+                        
+                        // Close popup and show admin panel
+                        document.querySelector('.notification-overlay').remove();
+                        this.showAdminPanel();
+                        
+                        Utils.showSuccess('Login successful');
+                    } else {
+                        alert('Invalid password');
+                    }
+                } else {
+                    alert('No admin account found');
+                }
+            } else {
+                alert('Firebase not available. Cannot authenticate.');
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            alert('Error logging in: ' + error.message);
+        }
+    }
+
+    showAdminPanel() {
         // Create admin interface
         this.showView('adminView');
         
