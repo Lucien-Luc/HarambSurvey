@@ -61,7 +61,18 @@ class SimpleFormSubmit {
                 'trainee': 'Trainee',
                 'entry_level': 'Entry-Level',
                 'mid_career': 'Mid-Career',
-                'senior_level': 'Senior-Level'
+                'senior_level': 'Senior-Level',
+                'positive_attitude': 'Positive attitude',
+                'team_player': 'Team player',
+                'self_motivated': 'Self-motivated',
+                'reliable': 'Reliable',
+                'good_time_manager': 'Good time manager',
+                'adaptable': 'Adaptable',
+                'takes_initiative': 'Takes initiative',
+                'customer_friendly': 'Customer-friendly',
+                'multiple_positions_compensation': 'Multiple Positions Compensation',
+                'multiple_positions_note': 'Since you\'re hiring for multiple positions, please configure the salary ranges, benefits, and working hours for each position in the Position Details section.',
+                'company_description_placeholder': 'Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -114,7 +125,18 @@ class SimpleFormSubmit {
                 'trainee': 'Uwitoza',
                 'entry_level': 'Urwego rwo Gutangira',
                 'mid_career': 'Urwego rwo Hagati',
-                'senior_level': 'Urwego rwo Hejuru'
+                'senior_level': 'Urwego rwo Hejuru',
+                'positive_attitude': 'Imyitwarire myiza',
+                'team_player': 'Ukora mu itsinda',
+                'self_motivated': 'Ukwishongoza',
+                'reliable': 'Uwizeye',
+                'good_time_manager': 'Ukoresha neza igihe',
+                'adaptable': 'Uhindagurika',
+                'takes_initiative': 'Ufata inshingano',
+                'customer_friendly': 'Wubaha abakiriya',
+                'multiple_positions_compensation': 'Imishahara y\'Imyanya Myinshi',
+                'multiple_positions_note': 'Kubera ko ushaka abakozi benshi, nyamuneka shyiraho imishahara, inyungu, n\'amasaha yo gukora kuri buri mwanya mu gice cy\'Amakuru y\'Imyanya.',
+                'company_description_placeholder': 'Tubwire mu make ibyerekeye ikigo cyawe — icyo gikora n\'icyo cyatuma gitandukana n\'ibindi (interuro 2-3)'
             }
         };
     }
