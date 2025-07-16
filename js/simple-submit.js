@@ -1684,16 +1684,31 @@ class SimpleFormSubmit {
     }
 
     async exportResponses() {
+        console.log('Export button clicked');
+        
+        // Check if XLSX is loaded
+        if (typeof XLSX === 'undefined') {
+            alert('Excel library not loaded. Please refresh the page and try again.');
+            return;
+        }
+        
         let responses = this.currentResponses || [];
         
+        // If no current responses, try to load from localStorage
         if (responses.length === 0) {
-            Utils.showWarning('No responses to export');
+            responses = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
+        }
+        
+        if (responses.length === 0) {
+            alert('No responses to export. Please ensure there are survey responses available.');
             return;
         }
         
         try {
-            // Show loading
-            Utils.showLoading('Preparing Excel export...');
+            console.log('Starting export with', responses.length, 'responses');
+            
+            // Show simple loading message
+            alert('Preparing Excel export...');
             
             // Create comprehensive Excel data
             const excelData = this.prepareExcelData(responses);
@@ -1701,37 +1716,48 @@ class SimpleFormSubmit {
             // Export with multiple sheets
             await this.exportToExcelAdvanced(excelData);
             
-            Utils.hideLoading();
-            Utils.showSuccess(`Successfully exported ${responses.length} responses to Excel`);
+            alert(`Successfully exported ${responses.length} responses to Excel`);
+            console.log('Export completed successfully');
+            
         } catch (error) {
-            Utils.hideLoading();
-            Utils.showError('Failed to export responses: ' + error.message);
+            console.error('Export error:', error);
+            alert('Failed to export responses: ' + error.message);
         }
     }
     
     prepareExcelData(responses) {
-        // Main responses sheet
+        // Main responses sheet - map all form fields
         const mainSheet = responses.map((response, index) => ({
             'Response ID': index + 1,
             'Company Name': response.companyName || 'Not provided',
+            'Contact Person': response.contactPerson || 'Not provided',
+            'Company Website': response.companyWebsite || 'Not provided',
+            'Company Location': response.companyLocation || 'Not provided',
             'Industry': response.industry || 'Not specified',
-            'Company Size': response.companySize || 'Not specified',
-            'Years in Business': response.yearsInBusiness || 'Not specified',
-            'Hiring Goals': response.hiringGoals || 'Not specified',
-            'Specific Roles': response.specificRoles || 'Not specified',
-            'Experience Level': response.experienceLevel || 'Not specified',
-            'Budget Range': response.budgetRange || 'Not specified',
-            'Timeline': response.timeline || 'Not specified',
-            'Challenges': response.challenges || 'Not specified',
-            'Skills Required': response.skillsRequired || 'Not specified',
-            'Location': response.location || 'Not specified',
-            'Remote Work': response.remoteWork || 'Not specified',
-            'Additional Comments': response.additionalComments || 'Not specified',
+            'Company Description': response.companyDescription || 'Not provided',
+            'Job Title': response.jobTitle || 'Not provided',
+            'Number of Positions': response.numberOfPositions || 'Not provided',
+            'Expected Start Date': response.startDate || 'Not provided',
+            'Contract Type': response.contractType || 'Not provided',
+            'Job Summary': response.jobSummary || 'Not provided',
+            'Key Responsibilities': response.keyResponsibilities || 'Not provided',
+            'Preferred Age Range': response.idealAge || 'Not provided',
+            'Gender Preference': response.idealGender || 'Not provided',
+            'Preferred Location': response.idealLocation || 'Not provided',
+            'Experience Level': response.experienceLevel || 'Not provided',
+            'Education Level': response.educationLevel || 'Not provided',
+            'Technical Skills': response.technicalSkills || 'Not provided',
+            'Behavioral Skills': Array.isArray(response.behavioralSkills) ? response.behavioralSkills.join(', ') : (response.behavioralSkills || 'Not provided'),
+            'Other Behavioral Skills': response.otherBehavioralSkills || 'Not provided',
+            'Work Environment': response.workEnvironment || 'Not provided',
+            'Salary Range': response.salaryRange || 'Not provided',
+            'Benefits': Array.isArray(response.benefits) ? response.benefits.join(', ') : (response.benefits || 'Not provided'),
+            'Other Benefits': response.otherBenefits || 'Not provided',
+            'Working Hours': response.workingHours || 'Not provided',
+            'Additional Notes': response.additionalNotes || 'Not provided',
             'Submission Date': new Date(response.timestamp).toLocaleDateString(),
             'Submission Time': new Date(response.timestamp).toLocaleTimeString(),
-            'Completion Time (minutes)': response.completionTime ? Math.round(response.completionTime / 60000) : 'Not tracked',
-            'User Agent': response.userAgent || 'Not available',
-            'IP Address': response.ipAddress || 'Not tracked'
+            'Completion Time (minutes)': response.completionTime ? Math.round(response.completionTime / 60000) : 'Not tracked'
         }));
         
         // Analytics summary sheet
