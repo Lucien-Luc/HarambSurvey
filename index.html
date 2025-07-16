@@ -79,8 +79,8 @@
             <div id="surveyView" class="view">
                 <div class="survey-container">
                     <div class="survey-header">
-                        <h1 id="surveyTitle">Employer Diagnostic Form</h1>
-                        <p id="surveyDescription">Please complete this form to help us better match your company with the right talent at the fair.</p>
+                        <h1 id="surveyTitle" data-translate="survey_title">Employer Diagnostic Form</h1>
+                        <p id="surveyDescription" data-translate="survey_description">Please complete this form to help us better match your company with the right talent at the fair.</p>
                         <div class="survey-progress">
                             <div class="progress-bar">
                                 <div class="progress-fill" id="progressFill"></div>
@@ -94,30 +94,35 @@
                         <div class="survey-section active" id="section1">
                             <div class="section-header">
                                 <i class="fas fa-building"></i>
-                                <h2>Company Information</h2>
+                                <h2 data-translate="company_info">Company Information</h2>
                             </div>
                             <div class="form-group">
-                                <label for="companyName">Company Name *</label>
+                                <label for="companyName" data-translate="company_name">Company Name</label>
+                                <span class="required"> *</span>
                                 <input type="text" id="companyName" name="companyName" required>
                             </div>
                             <div class="form-group">
-                                <label for="contactPerson">Contact Person (Name & Role) *</label>
+                                <label for="contactPerson" data-translate="contact_person">Contact Person (Name & Role)</label>
+                                <span class="required"> *</span>
                                 <input type="text" id="contactPerson" name="contactPerson" required>
                             </div>
                             <div class="form-group">
-                                <label for="companyWebsite">Company Website (if available)</label>
+                                <label for="companyWebsite" data-translate="company_website">Company Website (if available)</label>
                                 <input type="url" id="companyWebsite" name="companyWebsite">
                             </div>
                             <div class="form-group">
-                                <label for="companyLocation">Company Location (City/Area) *</label>
+                                <label for="companyLocation" data-translate="company_location">Company Location (City/Area)</label>
+                                <span class="required"> *</span>
                                 <input type="text" id="companyLocation" name="companyLocation" required>
                             </div>
                             <div class="form-group">
-                                <label for="industry">Industry/Field *</label>
+                                <label for="industry" data-translate="industry">Industry/Field</label>
+                                <span class="required"> *</span>
                                 <input type="text" id="industry" name="industry" required>
                             </div>
                             <div class="form-group">
-                                <label for="companyDescription">Company Description *</label>
+                                <label for="companyDescription" data-translate="company_description">Company Description</label>
+                                <span class="required"> *</span>
                                 <textarea id="companyDescription" name="companyDescription" rows="4" placeholder="Tell us briefly about your company — what you do and what makes your business unique (2-3 sentences)" required></textarea>
                             </div>
                         </div>
@@ -126,50 +131,54 @@
                         <div class="survey-section" id="section2">
                             <div class="section-header">
                                 <i class="fas fa-briefcase"></i>
-                                <h2>Position Details & Job Summary</h2>
+                                <h2 data-translate="position_details">Position Details & Job Summary</h2>
                             </div>
                             
                             <!-- Single Position Mode (Default) -->
                             <div id="singlePositionMode">
                                 <div class="form-group">
-                                    <label for="jobTitle">Job Title *</label>
+                                    <label for="jobTitle" data-translate="job_title">Job Title</label>
+                                    <span class="required"> *</span>
                                     <input type="text" id="jobTitle" name="jobTitle" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="positionsAvailable">Number of Positions Available *</label>
+                                    <label for="positionsAvailable" data-translate="positions_available">Number of Positions Available</label>
+                                    <span class="required"> *</span>
                                     <input type="number" id="positionsAvailable" name="positionsAvailable" min="1" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Work Type *</label>
+                                    <label data-translate="work_type">Work Type</label>
+                                    <span class="required"> *</span>
                                     <div class="checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="radio" name="workType" value="full-time" required>
-                                            <span>Full-time</span>
+                                            <span data-translate="full_time">Full-time</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="workType" value="part-time" required>
-                                            <span>Part-time</span>
+                                            <span data-translate="part_time">Part-time</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="workType" value="internship" required>
-                                            <span>Internship</span>
+                                            <span data-translate="internship">Internship</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Work Mode *</label>
+                                    <label data-translate="work_mode">Work Mode</label>
+                                    <span class="required"> *</span>
                                     <div class="checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="radio" name="workMode" value="onsite" required>
-                                            <span>Onsite</span>
+                                            <span data-translate="onsite">Onsite</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="workMode" value="remote" required>
-                                            <span>Remote</span>
+                                            <span data-translate="remote">Remote</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="radio" name="workMode" value="hybrid" required>
-                                            <span>Hybrid</span>
+                                            <span data-translate="hybrid">Hybrid</span>
                                         </label>
                                     </div>
                                 </div>
@@ -395,15 +404,15 @@
                         <div class="survey-navigation">
                             <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                                 <i class="fas fa-arrow-left"></i>
-                                Previous
+                                <span data-translate="previous">Previous</span>
                             </button>
                             <button type="button" class="btn btn-primary" id="nextBtn">
-                                Next
+                                <span data-translate="next">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                             <button type="button" class="btn btn-success" id="submitBtn" style="display: none;">
                                 <i class="fas fa-check"></i>
-                                Submit Form
+                                <span data-translate="submit_form">Submit Form</span>
                             </button>
                         </div>
                     </form>

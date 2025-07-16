@@ -375,6 +375,12 @@ body {
     transform: scale(0.95);
 }
 
+/* Required field indicator */
+.required {
+    color: #EF4444;
+    font-weight: bold;
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .header-content {
