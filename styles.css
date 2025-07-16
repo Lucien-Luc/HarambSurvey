@@ -2881,3 +2881,179 @@ textarea.form-control {
         width: fit-content;
     }
 }
+
+/* Analytics Detail Popup Styles */
+.analytics-detail-popup {
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.analytics-detail-content {
+    padding: 1.5rem;
+}
+
+.detail-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+}
+
+.summary-stat {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.summary-stat .stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-tertiary);
+    margin-bottom: 0.5rem;
+}
+
+.summary-stat .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.detail-breakdown h3 {
+    margin-bottom: 1rem;
+    color: var(--color-dark);
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+}
+
+.employers-list, .positions-list, .industry-list, .urgent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.employer-item, .position-item, .industry-item, .urgent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.employer-item:hover, .position-item:hover, .industry-item:hover, .urgent-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.employer-info, .position-info, .industry-info, .urgent-info {
+    flex: 1;
+}
+
+.employer-name, .position-company, .industry-name, .urgent-company {
+    font-weight: 600;
+    color: var(--color-dark);
+    margin-bottom: 0.25rem;
+}
+
+.employer-industry, .position-title, .industry-percentage, .urgent-position {
+    font-size: 0.9rem;
+    color: var(--color-tertiary);
+}
+
+.urgent-start {
+    font-size: 0.8rem;
+    color: var(--color-warning);
+    margin-top: 0.25rem;
+}
+
+.employer-date, .position-count, .industry-count {
+    font-size: 0.9rem;
+    color: var(--color-tertiary);
+    font-weight: 500;
+}
+
+.urgent-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-error);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.no-urgent {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-tertiary);
+    font-style: italic;
+}
+
+.stat-card {
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 0;
+}
+
+.notification-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.notification-header i {
+    color: var(--color-primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-tertiary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: var(--color-light);
+    color: var(--color-dark);
+}
+
+@media (max-width: 768px) {
+    .detail-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics-detail-popup {
+        width: 95%;
+        max-height: 85vh;
+    }
+}

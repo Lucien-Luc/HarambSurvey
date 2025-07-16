@@ -1342,8 +1342,236 @@ class SimpleFormSubmit {
         document.getElementById('topIndustry').textContent = topIndustry;
         document.getElementById('urgentHiring').textContent = urgentHiring;
         
+        // Add click handlers for detailed popups
+        this.addAnalyticsClickHandlers(responses);
+        
         // Store responses for other methods
         this.currentResponses = responses;
+    }
+    
+    addAnalyticsClickHandlers(responses) {
+        // Make analytics cards clickable
+        const totalEmployersCard = document.getElementById('totalEmployers').closest('.stat-card');
+        const totalPositionsCard = document.getElementById('totalPositions').closest('.stat-card');
+        const topIndustryCard = document.getElementById('topIndustry').closest('.stat-card');
+        const urgentHiringCard = document.getElementById('urgentHiring').closest('.stat-card');
+        
+        if (totalEmployersCard) {
+            totalEmployersCard.style.cursor = 'pointer';
+            totalEmployersCard.onclick = () => this.showEmployersDetailPopup(responses);
+        }
+        
+        if (totalPositionsCard) {
+            totalPositionsCard.style.cursor = 'pointer';
+            totalPositionsCard.onclick = () => this.showPositionsDetailPopup(responses);
+        }
+        
+        if (topIndustryCard) {
+            topIndustryCard.style.cursor = 'pointer';
+            topIndustryCard.onclick = () => this.showIndustryDetailPopup(responses);
+        }
+        
+        if (urgentHiringCard) {
+            urgentHiringCard.style.cursor = 'pointer';
+            urgentHiringCard.onclick = () => this.showUrgentHiringDetailPopup(responses);
+        }
+    }
+    
+    showEmployersDetailPopup(responses) {
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup analytics-detail-popup">
+                <div class="notification-header">
+                    <h2><i class="fas fa-building"></i> Registered Employers Details</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
+                </div>
+                <div class="analytics-detail-content">
+                    <div class="detail-summary">
+                        <div class="summary-stat">
+                            <span class="stat-label">Total Employers</span>
+                            <span class="stat-value">${responses.length}</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Today's Registrations</span>
+                            <span class="stat-value">${this.getTodayResponseCount(responses)}</span>
+                        </div>
+                    </div>
+                    <div class="detail-breakdown">
+                        <h3>Recent Employers</h3>
+                        <div class="employers-list">
+                            ${responses.slice(-10).reverse().map(response => `
+                                <div class="employer-item">
+                                    <div class="employer-info">
+                                        <div class="employer-name">${response.companyName || 'Unknown Company'}</div>
+                                        <div class="employer-industry">${response.industry || 'Not specified'}</div>
+                                    </div>
+                                    <div class="employer-date">${this.getRelativeTime(response.timestamp)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+    
+    showPositionsDetailPopup(responses) {
+        const totalPositions = this.calculateTotalPositions(responses);
+        const positionsByCompany = responses.map(response => ({
+            company: response.companyName || 'Unknown',
+            positions: response.positionsAvailable || response.numberOfPositions || 1,
+            jobTitle: response.jobTitle || 'Not specified'
+        }));
+        
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup analytics-detail-popup">
+                <div class="notification-header">
+                    <h2><i class="fas fa-users"></i> Job Openings Details</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
+                </div>
+                <div class="analytics-detail-content">
+                    <div class="detail-summary">
+                        <div class="summary-stat">
+                            <span class="stat-label">Total Job Openings</span>
+                            <span class="stat-value">${totalPositions}</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Average per Company</span>
+                            <span class="stat-value">${Math.round(totalPositions / responses.length)}</span>
+                        </div>
+                    </div>
+                    <div class="detail-breakdown">
+                        <h3>Positions by Company</h3>
+                        <div class="positions-list">
+                            ${positionsByCompany.map(item => `
+                                <div class="position-item">
+                                    <div class="position-info">
+                                        <div class="position-company">${item.company}</div>
+                                        <div class="position-title">${item.jobTitle}</div>
+                                    </div>
+                                    <div class="position-count">${item.positions} ${item.positions == 1 ? 'position' : 'positions'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+    
+    showIndustryDetailPopup(responses) {
+        const industryBreakdown = this.getIndustryBreakdown(responses);
+        const topIndustry = this.getTopIndustry(responses);
+        
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup analytics-detail-popup">
+                <div class="notification-header">
+                    <h2><i class="fas fa-industry"></i> Top Industry Details</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
+                </div>
+                <div class="analytics-detail-content">
+                    <div class="detail-summary">
+                        <div class="summary-stat">
+                            <span class="stat-label">Leading Industry</span>
+                            <span class="stat-value">${topIndustry}</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Total Industries</span>
+                            <span class="stat-value">${industryBreakdown.length}</span>
+                        </div>
+                    </div>
+                    <div class="detail-breakdown">
+                        <h3>Industry Breakdown</h3>
+                        <div class="industry-list">
+                            ${industryBreakdown.map(industry => `
+                                <div class="industry-item">
+                                    <div class="industry-info">
+                                        <div class="industry-name">${industry.name}</div>
+                                        <div class="industry-percentage">${((industry.count / responses.length) * 100).toFixed(1)}%</div>
+                                    </div>
+                                    <div class="industry-count">${industry.count} ${industry.count == 1 ? 'employer' : 'employers'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
+    }
+    
+    showUrgentHiringDetailPopup(responses) {
+        const urgentHiring = this.getUrgentHiring(responses);
+        const urgentEmployers = responses.filter(response => {
+            const startDate = response.startDate;
+            const additionalNotes = (response.additionalNotes || '').toLowerCase();
+            
+            if (startDate) {
+                const start = new Date(startDate);
+                const now = new Date();
+                const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
+                if (diffMonths <= 3) return true;
+            }
+            
+            return additionalNotes.includes('urgent') || 
+                   additionalNotes.includes('immediate') ||
+                   additionalNotes.includes('asap') ||
+                   additionalNotes.includes('soon') ||
+                   additionalNotes.includes('quickly');
+        });
+        
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup analytics-detail-popup">
+                <div class="notification-header">
+                    <h2><i class="fas fa-clock"></i> Urgent Hiring Details</h2>
+                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
+                </div>
+                <div class="analytics-detail-content">
+                    <div class="detail-summary">
+                        <div class="summary-stat">
+                            <span class="stat-label">Urgent Hiring</span>
+                            <span class="stat-value">${urgentHiring}</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="stat-label">Urgency Rate</span>
+                            <span class="stat-value">${((urgentHiring / responses.length) * 100).toFixed(1)}%</span>
+                        </div>
+                    </div>
+                    <div class="detail-breakdown">
+                        <h3>Employers with Urgent Needs</h3>
+                        <div class="urgent-list">
+                            ${urgentEmployers.length > 0 ? urgentEmployers.map(employer => `
+                                <div class="urgent-item">
+                                    <div class="urgent-info">
+                                        <div class="urgent-company">${employer.companyName || 'Unknown'}</div>
+                                        <div class="urgent-position">${employer.jobTitle || 'Not specified'}</div>
+                                        <div class="urgent-start">${employer.startDate ? 'Start: ' + new Date(employer.startDate).toLocaleDateString() : 'Immediate start needed'}</div>
+                                    </div>
+                                    <div class="urgent-indicator">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Urgent
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="no-urgent">No urgent hiring needs at the moment</div>'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.classList.add('show'), 100);
     }
     
     calculateTotalPositions(responses) {
