@@ -2050,6 +2050,7 @@ class SimpleFormSubmit {
         // Handle Next/Previous buttons for multi-step form
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
+        const positionsInput = document.getElementById('positionsAvailable');
         
         if (nextBtn) {
             nextBtn.addEventListener('click', () => this.nextSection());
@@ -2059,11 +2060,376 @@ class SimpleFormSubmit {
             prevBtn.addEventListener('click', () => this.prevSection());
         }
         
+        // Setup dynamic positions functionality
+        if (positionsInput) {
+            positionsInput.addEventListener('input', (e) => {
+                this.handlePositionsChange(e.target.value);
+            });
+        }
+        
         // Initialize form state
         this.currentSection = 1;
         this.totalSections = document.querySelectorAll('.survey-section').length;
         this.updateProgress();
         this.updateNavigation();
+        
+        // Initialize positions system
+        this.initializePositionsSystem();
+    }
+    
+    initializePositionsSystem() {
+        this.positions = []; // Array to store position data
+        this.currentPositionMode = 'single'; // 'single' or 'multiple'
+    }
+    
+    handlePositionsChange(value) {
+        const numPositions = parseInt(value) || 1;
+        
+        if (numPositions === 1) {
+            this.showSinglePositionMode();
+        } else if (numPositions > 1) {
+            this.showMultiplePositionsMode(numPositions);
+        }
+    }
+    
+    showSinglePositionMode() {
+        // Section 3 - Position Details
+        const singleMode = document.getElementById('singlePositionMode');
+        const multipleMode = document.getElementById('multiplePositionsMode');
+        
+        // Section 4 - Job Summary
+        const singlePositionSummary = document.getElementById('singlePositionMode');
+        const multiplePositionsInfo = document.getElementById('multiplePositionsInfo');
+        
+        // Section 5 - Candidate Profile
+        const singlePositionCandidate = document.getElementById('singlePositionCandidate');
+        const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
+        
+        // Show single position mode
+        if (singleMode) singleMode.style.display = 'block';
+        if (multipleMode) multipleMode.style.display = 'none';
+        
+        if (singlePositionSummary) singlePositionSummary.style.display = 'block';
+        if (multiplePositionsInfo) multiplePositionsInfo.style.display = 'none';
+        
+        if (singlePositionCandidate) singlePositionCandidate.style.display = 'block';
+        if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'none';
+        
+        this.currentPositionMode = 'single';
+    }
+    
+    showMultiplePositionsMode(numPositions) {
+        // Section 3 - Position Details
+        const singleMode = document.getElementById('singlePositionMode');
+        const multipleMode = document.getElementById('multiplePositionsMode');
+        const positionCountSpan = document.getElementById('positionCount');
+        
+        // Section 4 - Job Summary
+        const singlePositionSummary = document.getElementById('singlePositionMode');
+        const multiplePositionsInfo = document.getElementById('multiplePositionsInfo');
+        
+        // Section 5 - Candidate Profile
+        const singlePositionCandidate = document.getElementById('singlePositionCandidate');
+        const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
+        
+        // Show multiple positions mode
+        if (singleMode) singleMode.style.display = 'none';
+        if (multipleMode) multipleMode.style.display = 'block';
+        if (positionCountSpan) positionCountSpan.textContent = numPositions;
+        
+        if (singlePositionSummary) singlePositionSummary.style.display = 'none';
+        if (multiplePositionsInfo) multiplePositionsInfo.style.display = 'block';
+        
+        if (singlePositionCandidate) singlePositionCandidate.style.display = 'none';
+        if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'block';
+        
+        this.currentPositionMode = 'multiple';
+        this.createPositionCards(numPositions);
+    }
+    
+    createPositionCards(numPositions) {
+        const grid = document.getElementById('positionsGrid');
+        if (!grid) return;
+        
+        // Clear existing cards
+        grid.innerHTML = '';
+        
+        // Initialize positions array
+        this.positions = Array.from({ length: numPositions }, (_, i) => ({
+            id: i + 1,
+            jobTitle: '',
+            workType: '',
+            workMode: '',
+            startDate: '',
+            contractType: '',
+            jobSummary: '',
+            keyResponsibilities: '',
+            experienceLevel: '',
+            educationLevel: '',
+            technicalSkills: '',
+            salaryRange: '',
+            benefits: [],
+            otherBenefits: '',
+            workingHours: '',
+            additionalNotes: ''
+        }));
+        
+        // Create cards for each position
+        for (let i = 0; i < numPositions; i++) {
+            const card = this.createPositionCard(i + 1);
+            grid.appendChild(card);
+        }
+    }
+    
+    createPositionCard(positionNumber) {
+        const card = document.createElement('div');
+        card.className = 'position-card';
+        card.id = `position-card-${positionNumber}`;
+        
+        card.innerHTML = `
+            <div class="position-card-header">
+                <div class="position-card-title">
+                    <i class="fas fa-briefcase"></i>
+                    Position ${positionNumber}
+                </div>
+                ${positionNumber > 1 ? `
+                    <button type="button" class="copy-position-btn" onclick="window.simpleFormSubmit.copyFromPosition1(${positionNumber})">
+                        <i class="fas fa-copy"></i>
+                        Copy from Position 1
+                    </button>
+                ` : ''}
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_jobTitle">Job Title *</label>
+                <input type="text" id="pos${positionNumber}_jobTitle" name="pos${positionNumber}_jobTitle" required>
+            </div>
+            
+            <div class="position-form-group">
+                <label>Work Type *</label>
+                <div class="position-checkbox-group">
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workType" value="full-time" required>
+                        <span>Full-time</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workType" value="part-time" required>
+                        <span>Part-time</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workType" value="internship" required>
+                        <span>Internship</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label>Work Mode *</label>
+                <div class="position-checkbox-group">
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workMode" value="onsite" required>
+                        <span>Onsite</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workMode" value="remote" required>
+                        <span>Remote</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_workMode" value="hybrid" required>
+                        <span>Hybrid</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_startDate">Expected Start Date *</label>
+                <input type="date" id="pos${positionNumber}_startDate" name="pos${positionNumber}_startDate" required>
+            </div>
+            
+            <div class="position-form-group">
+                <label>Contract Type *</label>
+                <div class="position-checkbox-group">
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_contractType" value="permanent" required>
+                        <span>Permanent</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_contractType" value="fixed-term" required>
+                        <span>Fixed-Term</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_contractType" value="casual" required>
+                        <span>Casual</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_jobSummary">Job Summary *</label>
+                <textarea id="pos${positionNumber}_jobSummary" name="pos${positionNumber}_jobSummary" rows="3" placeholder="Brief description of the role's purpose (2-3 lines)" required></textarea>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_keyResponsibilities">Key Responsibilities *</label>
+                <textarea id="pos${positionNumber}_keyResponsibilities" name="pos${positionNumber}_keyResponsibilities" rows="4" placeholder="List 4-6 main tasks and responsibilities for this role..." required></textarea>
+            </div>
+            
+            <div class="position-form-group">
+                <label>Experience Level Required *</label>
+                <div class="position-checkbox-group">
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_experienceLevel" value="trainee" required>
+                        <span>Trainee</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_experienceLevel" value="entry-level" required>
+                        <span>Entry-Level</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_experienceLevel" value="mid-career" required>
+                        <span>Mid-Career</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_experienceLevel" value="senior-level" required>
+                        <span>Senior-Level</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_educationLevel">Education Level Required</label>
+                <input type="text" id="pos${positionNumber}_educationLevel" name="pos${positionNumber}_educationLevel" placeholder="e.g., High School, Certificate, Degree">
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_technicalSkills">Technical/Professional Skills Needed</label>
+                <textarea id="pos${positionNumber}_technicalSkills" name="pos${positionNumber}_technicalSkills" rows="3" placeholder="List required software, certificates, specific skills..."></textarea>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_salaryRange">Salary Range (Monthly) *</label>
+                <input type="text" id="pos${positionNumber}_salaryRange" name="pos${positionNumber}_salaryRange" placeholder="e.g., KSH 25,000 - 35,000" required>
+            </div>
+            
+            <div class="position-form-group">
+                <label>Benefits/Perks (Select all that apply)</label>
+                <div class="position-benefits-grid">
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="transport-allowance">
+                        <span>Transport allowance</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="meals-lunch">
+                        <span>Meals/Lunch</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="health-insurance">
+                        <span>Health insurance</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="training-development">
+                        <span>Training/Development</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="commission-bonuses">
+                        <span>Commission or Bonuses</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_benefits" value="flexible-schedule">
+                        <span>Flexible schedule</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_otherBenefits">Other benefits/perks</label>
+                <input type="text" id="pos${positionNumber}_otherBenefits" name="pos${positionNumber}_otherBenefits" placeholder="Please specify any other benefits">
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_workingHours">Working Hours *</label>
+                <input type="text" id="pos${positionNumber}_workingHours" name="pos${positionNumber}_workingHours" placeholder="e.g., 9am–5pm, Shift work" required>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_additionalNotes">Additional Notes (Optional)</label>
+                <textarea id="pos${positionNumber}_additionalNotes" name="pos${positionNumber}_additionalNotes" rows="3" placeholder="Any extra info you'd like to share about this position?"></textarea>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    copyFromPosition1(targetPosition) {
+        const pos1Data = this.getPositionData(1);
+        if (!pos1Data) return;
+        
+        // Copy data to target position
+        this.setPositionData(targetPosition, pos1Data);
+        
+        // Show success message
+        const card = document.getElementById(`position-card-${targetPosition}`);
+        if (card) {
+            const title = card.querySelector('.position-card-title');
+            const originalText = title.innerHTML;
+            title.innerHTML = '<i class="fas fa-check"></i> Copied from Position 1';
+            title.style.color = '#10b981';
+            
+            setTimeout(() => {
+                title.innerHTML = originalText;
+                title.style.color = '';
+            }, 2000);
+        }
+    }
+    
+    getPositionData(positionNumber) {
+        const data = {};
+        
+        // Get text inputs
+        const textFields = ['jobTitle', 'startDate', 'jobSummary', 'keyResponsibilities', 'educationLevel', 'technicalSkills', 'salaryRange', 'otherBenefits', 'workingHours', 'additionalNotes'];
+        textFields.forEach(field => {
+            const element = document.getElementById(`pos${positionNumber}_${field}`);
+            if (element) data[field] = element.value;
+        });
+        
+        // Get radio buttons
+        const radioFields = ['workType', 'workMode', 'contractType', 'experienceLevel'];
+        radioFields.forEach(field => {
+            const checked = document.querySelector(`input[name="pos${positionNumber}_${field}"]:checked`);
+            if (checked) data[field] = checked.value;
+        });
+        
+        // Get checkboxes
+        const benefitsChecked = document.querySelectorAll(`input[name="pos${positionNumber}_benefits"]:checked`);
+        data.benefits = Array.from(benefitsChecked).map(cb => cb.value);
+        
+        return data;
+    }
+    
+    setPositionData(positionNumber, data) {
+        // Set text inputs
+        const textFields = ['jobTitle', 'startDate', 'jobSummary', 'keyResponsibilities', 'educationLevel', 'technicalSkills', 'salaryRange', 'otherBenefits', 'workingHours', 'additionalNotes'];
+        textFields.forEach(field => {
+            const element = document.getElementById(`pos${positionNumber}_${field}`);
+            if (element && data[field]) element.value = data[field];
+        });
+        
+        // Set radio buttons
+        const radioFields = ['workType', 'workMode', 'contractType', 'experienceLevel'];
+        radioFields.forEach(field => {
+            if (data[field]) {
+                const radio = document.querySelector(`input[name="pos${positionNumber}_${field}"][value="${data[field]}"]`);
+                if (radio) radio.checked = true;
+            }
+        });
+        
+        // Set checkboxes
+        if (data.benefits && data.benefits.length > 0) {
+            data.benefits.forEach(benefit => {
+                const checkbox = document.querySelector(`input[name="pos${positionNumber}_benefits"][value="${benefit}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
     }
 
     showView(viewId) {
@@ -2224,7 +2590,65 @@ class SimpleFormSubmit {
             }
         });
         
+        // Handle dynamic positions data
+        this.processPositionsData(data);
+        
         return data;
+    }
+    
+    processPositionsData(data) {
+        // Check if we have multiple positions mode
+        if (this.currentPositionMode === 'multiple') {
+            const positionsGrid = document.getElementById('positionsGrid');
+            if (positionsGrid) {
+                const positionCards = positionsGrid.querySelectorAll('.position-card');
+                data.positions = [];
+                
+                positionCards.forEach((card, index) => {
+                    const positionNumber = index + 1;
+                    const positionData = this.getPositionData(positionNumber);
+                    
+                    if (positionData.jobTitle) { // Only add if position has a job title
+                        data.positions.push({
+                            positionNumber: positionNumber,
+                            ...positionData
+                        });
+                    }
+                });
+                
+                // Calculate total positions
+                data.totalPositions = data.positions.length;
+            }
+        } else {
+            // Single position mode - collect position data from regular form fields
+            const singlePositionData = this.collectSinglePositionData(data);
+            if (singlePositionData.jobTitle) {
+                data.positions = [singlePositionData];
+                data.totalPositions = 1;
+            }
+        }
+    }
+    
+    collectSinglePositionData(data) {
+        // Map single position fields to position structure
+        return {
+            positionNumber: 1,
+            jobTitle: data.jobTitle || '',
+            workType: data.workType || '',
+            workMode: data.workMode || '',
+            startDate: data.startDate || '',
+            contractType: data.contractType || '',
+            jobSummary: data.jobSummary || '',
+            keyResponsibilities: data.keyResponsibilities || '',
+            experienceLevel: data.experienceLevel || '',
+            educationLevel: data.educationLevel || '',
+            technicalSkills: data.technicalSkills || '',
+            salaryRange: data.salaryRange || '',
+            benefits: data.benefits || [],
+            otherBenefits: data.otherBenefits || '',
+            workingHours: data.workingHours || '',
+            additionalNotes: data.additionalNotes || ''
+        };
     }
 
     saveToLocalStorage(data) {
