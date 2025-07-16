@@ -162,10 +162,18 @@ body {
     animation-delay: 0.6s;
 }
 
-.bpn-logo, .harambee-logo {
+.bpn-logo {
     height: 75px;
     width: auto;
     max-width: 280px;
+    filter: drop-shadow(0 4px 8px rgba(45, 212, 191, 0.1));
+    transition: transform 0.3s ease;
+}
+
+.harambee-logo {
+    height: 95px;
+    width: auto;
+    max-width: 350px;
     filter: drop-shadow(0 4px 8px rgba(45, 212, 191, 0.1));
     transition: transform 0.3s ease;
 }
