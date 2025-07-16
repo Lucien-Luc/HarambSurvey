@@ -17,6 +17,7 @@ class EmployerDiagnosticForm {
     }
 
     init() {
+        console.log('Initializing EmployerDiagnosticForm...');
         this.form = document.getElementById('employerDiagnosticForm');
         this.sections = document.querySelectorAll('.survey-section');
         this.progressFill = document.getElementById('progressFill');
@@ -25,30 +26,51 @@ class EmployerDiagnosticForm {
         this.prevBtn = document.getElementById('prevBtn');
         this.submitBtn = document.getElementById('submitBtn');
 
-        if (!this.form) return;
+        console.log('Form element found:', !!this.form);
+        console.log('Submit button found:', !!this.submitBtn);
+        console.log('Sections found:', this.sections.length);
+
+        if (!this.form) {
+            console.error('EmployerDiagnosticForm: Form not found!');
+            return;
+        }
 
         this.bindEvents();
         this.updateProgress();
         this.updateNavigation();
+        console.log('EmployerDiagnosticForm initialization complete');
     }
 
     bindEvents() {
+        console.log('Binding events...');
+        
         if (this.nextBtn) {
+            console.log('Binding next button');
             this.nextBtn.addEventListener('click', () => this.nextSection());
+        } else {
+            console.log('Next button not found');
         }
 
         if (this.prevBtn) {
+            console.log('Binding prev button');
             this.prevBtn.addEventListener('click', () => this.prevSection());
+        } else {
+            console.log('Prev button not found');
         }
 
         if (this.form) {
+            console.log('Binding form submit event');
             this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+            
+            // Auto-save on input changes
+            this.form.addEventListener('input', Utils.debounce(() => {
+                this.autoSave();
+            }, 1000));
+        } else {
+            console.error('Form not found for event binding');
         }
-
-        // Auto-save on input changes
-        this.form.addEventListener('input', Utils.debounce(() => {
-            this.autoSave();
-        }, 1000));
+        
+        console.log('Event binding complete');
     }
 
     nextSection() {
@@ -177,16 +199,25 @@ class EmployerDiagnosticForm {
     async handleSubmit(e) {
         e.preventDefault();
         
+        console.log('Submit button clicked - starting validation');
+        
         if (!this.validateCurrentSection()) {
+            console.log('Validation failed for current section');
             return;
         }
 
+        console.log('Validation passed - showing loading');
         Utils.showLoading('Submitting your form...');
 
         try {
+            console.log('Collecting form data...');
             const formData = this.collectFormData();
+            console.log('Form data collected:', formData);
+            
+            console.log('Attempting Firebase submission...');
             await this.submitToFirebase(formData);
             
+            console.log('Firebase submission successful!');
             Utils.hideLoading();
             Utils.showSuccess('Thank you! Your employer diagnostic form has been submitted successfully.');
             
@@ -194,9 +225,24 @@ class EmployerDiagnosticForm {
             this.showThankYou();
             
         } catch (error) {
+            console.log('Submit error caught:', error);
             Utils.hideLoading();
             console.error('Form submission error:', error);
-            Utils.showError('There was an error submitting your form. Please try again.');
+            
+            // Show specific error message to user
+            let errorMessage = 'There was an error submitting your form. ';
+            if (error.message.includes('permission-denied')) {
+                errorMessage += 'Permission denied - please contact support.';
+            } else if (error.message.includes('network')) {
+                errorMessage += 'Network error - please check your connection.';
+            } else {
+                errorMessage += error.message || 'Please try again.';
+            }
+            
+            Utils.showError(errorMessage);
+            
+            // Also alert for immediate feedback
+            alert('Submission failed: ' + (error.message || 'Unknown error'));
         }
     }
 
@@ -369,13 +415,18 @@ class EmployerDiagnosticForm {
     }
 }
 
+// Create global instance
+window.employerDiagnosticForm = new EmployerDiagnosticForm();
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    const diagnosticForm = new EmployerDiagnosticForm();
-    diagnosticForm.init();
+    console.log('DOM loaded - initializing employer diagnostic form');
     
-    // Load any existing draft
-    setTimeout(() => {
-        diagnosticForm.loadDraft();
-    }, 100);
+    // Try to initialize immediately
+    if (document.getElementById('employerDiagnosticForm')) {
+        console.log('Form found immediately - initializing');
+        window.employerDiagnosticForm.init();
+    } else {
+        console.log('Form not found yet - will wait for manual initialization');
+    }
 });

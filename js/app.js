@@ -333,7 +333,13 @@ class SurveyApp {
             surveyView.style.display = 'block';
             
             // Initialize employer diagnostic form if it exists
+            console.log('Attempting to initialize employer diagnostic form...');
             if (window.employerDiagnosticForm) {
+                console.log('Found global employerDiagnosticForm, initializing...');
+                window.employerDiagnosticForm.init();
+            } else {
+                console.log('Global employerDiagnosticForm not found, creating new instance...');
+                window.employerDiagnosticForm = new EmployerDiagnosticForm();
                 window.employerDiagnosticForm.init();
             }
         }
