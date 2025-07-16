@@ -529,20 +529,13 @@ class SurveyApp {
                 this.analytics = new SurveyAnalytics();
             }
             
-            // Sync demo data to admin manager in case of Firebase permission errors
-            if (this.adminManager) {
-                this.adminManager.surveys = this.surveys;
-                this.adminManager.responses = this.responses;
-                
-                // Update admin UI with demo data
-                this.adminManager.updateSurveysList();
-                this.adminManager.updateResponsesList();
-                this.adminManager.updateDashboardStats();
-            }
+            // Load employer diagnostic data instead of survey data
+            await this.loadEmployerDiagnostics();
             
-            // Set data for analytics
-            this.analytics.setSurveys(this.surveys);
-            this.analytics.setResponses(this.responses);
+            // Set data for employer analytics
+            if (window.employerAnalytics) {
+                window.employerAnalytics.setDiagnostics(this.diagnostics || []);
+            }
             
             // Update survey selectors
             this.updateSurveySelectors();
@@ -794,6 +787,24 @@ class SurveyApp {
         window.analytics.loadSurveyAnalytics(filter);
     }
     
+    async loadEmployerDiagnostics() {
+        try {
+            const firebaseConfig = window.firebaseConfig || window.FirebaseConfig;
+            if (!firebaseConfig) {
+                console.error('Firebase not initialized');
+                this.diagnostics = [];
+                return;
+            }
+
+            const diagnostics = await firebaseConfig.getCollection('employer-diagnostics', 'submittedAt', 100);
+            this.diagnostics = diagnostics || [];
+            
+        } catch (error) {
+            console.error('Error loading employer diagnostics:', error);
+            this.diagnostics = [];
+        }
+    }
+
     async createNewSurvey() {
         this.showAdminView('form-builder');
         

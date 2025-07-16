@@ -461,27 +461,28 @@
                         <!-- Dashboard View -->
                         <div id="adminDashboard" class="admin-view active">
                             <div class="dashboard-header">
-                                <h1>Dashboard</h1>
-                                <p>Overview of your survey platform</p>
+                                <h1>Employer Diagnostic Dashboard</h1>
+                                <p>Overview of talent fair employer submissions</p>
+                                <div class="view-actions">
+                                    <button class="btn btn-outline" id="refreshEmployerAnalyticsBtn">
+                                        <i class="fas fa-sync-alt"></i>
+                                        Refresh
+                                    </button>
+                                    <button class="btn btn-primary" id="exportEmployerAnalyticsBtn">
+                                        <i class="fas fa-download"></i>
+                                        Export Data
+                                    </button>
+                                </div>
                             </div>
                             
                             <div class="dashboard-stats">
                                 <div class="stat-card">
                                     <div class="stat-icon">
-                                        <i class="fas fa-poll"></i>
+                                        <i class="fas fa-building"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3 id="totalSurveys">0</h3>
-                                        <p>Total Surveys</p>
-                                    </div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <h3 id="totalResponses">0</h3>
-                                        <p>Total Responses</p>
+                                        <h3 id="totalSubmissions">0</h3>
+                                        <p>Total Submissions</p>
                                     </div>
                                 </div>
                                 <div class="stat-card">
@@ -489,25 +490,86 @@
                                         <i class="fas fa-calendar-day"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3 id="todayResponses">0</h3>
-                                        <p>Today's Responses</p>
+                                        <h3 id="todaySubmissions">0</h3>
+                                        <p>Today's Submissions</p>
                                     </div>
                                 </div>
                                 <div class="stat-card">
                                     <div class="stat-icon">
-                                        <i class="fas fa-percentage"></i>
+                                        <i class="fas fa-calendar-week"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3 id="completionRate">0%</h3>
-                                        <p>Completion Rate</p>
+                                        <h3 id="weekSubmissions">0</h3>
+                                        <p>This Week</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="avgPositionsOffered">0</h3>
+                                        <p>Avg. Positions Offered</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-industry"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="topIndustry">N/A</h3>
+                                        <p>Top Industry</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="fullTimeJobs">0</h3>
+                                        <p>Full-time Positions</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="remoteJobs">0</h3>
+                                        <p>Remote Positions</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="entryLevelJobs">0</h3>
+                                        <p>Entry-level Positions</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="dashboard-charts">
                                 <div class="chart-container">
-                                    <h3>Response Trends</h3>
-                                    <canvas id="responseTrendChart"></canvas>
+                                    <h3>Submission Trends</h3>
+                                    <canvas id="submissionTrendsChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Industry Distribution</h3>
+                                    <canvas id="industryChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Work Type Distribution</h3>
+                                    <canvas id="workTypeChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Experience Level Requirements</h3>
+                                    <canvas id="experienceLevelChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Most Offered Benefits</h3>
+                                    <canvas id="benefitsChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -699,6 +761,7 @@
     <script src="js/form-builder.js"></script>
     <script src="js/analytics.js"></script>
     <script src="js/employer-diagnostic.js"></script>
+    <script src="js/employer-analytics.js"></script>
     <script src="js/app.js"></script>
     <script src="initialize-firebase.js"></script>
 </body>
