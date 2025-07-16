@@ -100,18 +100,30 @@ class SimpleFormSubmit {
     }
 
     showView(viewId) {
-        // Hide all views
-        const views = document.querySelectorAll('.view');
-        views.forEach(view => view.classList.remove('active'));
-        
-        // Show target view
+        const currentView = document.querySelector('.view.active');
         const targetView = document.getElementById(viewId);
-        if (targetView) {
+        
+        if (!targetView) {
+            console.error('View not found:', viewId);
+            return;
+        }
+        
+        // If there's a current view, slide it out
+        if (currentView) {
+            currentView.classList.add('slide-out');
+            currentView.classList.remove('active');
+            
+            // Clean up slide-out class after animation
+            setTimeout(() => {
+                currentView.classList.remove('slide-out');
+            }, 800);
+        }
+        
+        // Show target view with slide-in animation
+        setTimeout(() => {
             targetView.classList.add('active');
             console.log('Switched to view:', viewId);
-        } else {
-            console.error('View not found:', viewId);
-        }
+        }, currentView ? 100 : 0);
     }
 
     nextSection() {

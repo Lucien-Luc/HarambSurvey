@@ -253,13 +253,27 @@ body {
 }
 
 .view {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     min-height: 100vh;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    overflow-y: auto;
 }
 
 .view.active {
-    display: block;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+}
+
+.view.slide-out {
+    opacity: 0;
+    transform: translateX(-100%);
 }
 
 /* Header Styles */
@@ -319,13 +333,27 @@ body {
     padding: 2rem 1rem;
 }
 
-/* View Management */
-.view {
-    display: none;
+/* View Management with Smooth Transitions */
+#introView {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: translateX(0);
+    z-index: 2;
 }
 
-.view.active {
-    display: block;
+#introView.slide-out {
+    transform: translateX(-100%);
+    z-index: 1;
+}
+
+#surveyView {
+    background: #f8f9fa;
+    transform: translateX(100%);
+    z-index: 1;
+}
+
+#surveyView.active {
+    transform: translateX(0);
+    z-index: 2;
 }
 
 /* Survey Styles */
