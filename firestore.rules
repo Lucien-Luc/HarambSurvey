@@ -30,6 +30,22 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
+    // Employer diagnostics collection - allow public submissions for talent fair
+    match /employer-diagnostics/{diagnosticId} {
+      // Anyone can submit employer diagnostic forms (for talent fair participation)
+      allow create: if true;
+      
+      // Only admins can read all diagnostics (for admin dashboard)
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      
+      // Only admins can update/delete diagnostics
+      allow update, delete: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
     // Users collection - allow admin creation if no admin exists, then admin-only access
     match /users/{userId} {
       // Allow read access to check if admin exists (needed for initial setup)
