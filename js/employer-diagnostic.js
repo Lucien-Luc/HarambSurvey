@@ -199,10 +199,14 @@ class EmployerDiagnosticForm {
     async handleSubmit(e) {
         e.preventDefault();
         
+        console.log('=== FORM SUBMISSION STARTED ===');
+        alert('Form submission started - check console for details');
+        
         console.log('Submit button clicked - starting validation');
         
         if (!this.validateCurrentSection()) {
             console.log('Validation failed for current section');
+            alert('Validation failed');
             return;
         }
 
@@ -214,12 +218,15 @@ class EmployerDiagnosticForm {
             const formData = this.collectFormData();
             console.log('Form data collected:', formData);
             
-            console.log('Attempting Firebase submission...');
-            await this.submitToFirebase(formData);
+            console.log('Attempting submission...');
+            const result = await this.submitToFirebase(formData);
             
-            console.log('Firebase submission successful!');
+            console.log('Submission successful!', result);
             Utils.hideLoading();
             Utils.showSuccess('Thank you! Your employer diagnostic form has been submitted successfully.');
+            
+            // Show immediate feedback
+            alert('SUCCESS! Form submitted. Check console for details.');
             
             // Show thank you message
             this.showThankYou();
@@ -229,20 +236,8 @@ class EmployerDiagnosticForm {
             Utils.hideLoading();
             console.error('Form submission error:', error);
             
-            // Show specific error message to user
-            let errorMessage = 'There was an error submitting your form. ';
-            if (error.message.includes('permission-denied')) {
-                errorMessage += 'Permission denied - please contact support.';
-            } else if (error.message.includes('network')) {
-                errorMessage += 'Network error - please check your connection.';
-            } else {
-                errorMessage += error.message || 'Please try again.';
-            }
-            
-            Utils.showError(errorMessage);
-            
-            // Also alert for immediate feedback
-            alert('Submission failed: ' + (error.message || 'Unknown error'));
+            alert('ERROR: ' + (error.message || 'Unknown error'));
+            Utils.showError('Submission failed: ' + (error.message || 'Unknown error'));
         }
     }
 
