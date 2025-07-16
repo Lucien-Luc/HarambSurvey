@@ -234,17 +234,51 @@ class EmployerDiagnosticForm {
     }
 
     async submitToFirebase(formData) {
-        // Get Firebase instance
-        const firebaseConfig = window.firebaseConfig || window.FirebaseConfig;
+        console.log('Attempting to submit form data to Firebase:', formData);
+        
+        // Get Firebase instance - check both possible global references
+        let firebaseConfig = window.firebaseConfig || window.FirebaseConfig;
         
         if (!firebaseConfig) {
-            throw new Error('Firebase not initialized');
+            console.error('Firebase not found in window object. Available keys:', Object.keys(window));
+            
+            // Try to initialize if the class is available
+            if (window.FirebaseConfig && typeof window.FirebaseConfig === 'function') {
+                console.log('Attempting to create new FirebaseConfig instance...');
+                firebaseConfig = new window.FirebaseConfig();
+                window.firebaseConfig = firebaseConfig;
+            } else {
+                console.error('FirebaseConfig class not available');
+                throw new Error('Firebase not initialized. Please refresh the page and try again.');
+            }
         }
 
-        // Submit to Firestore
-        const docRef = await firebaseConfig.createDocument('employer-diagnostics', formData);
-        
-        return docRef;
+        // Verify Firebase is properly initialized
+        if (!firebaseConfig.db) {
+            console.error('Firebase database not initialized');
+            throw new Error('Firebase database not available. Please check your internet connection and try again.');
+        }
+
+        console.log('Firebase instance found, submitting to Firestore...');
+
+        try {
+            // Submit to Firestore
+            const docRef = await firebaseConfig.createDocument('employer-diagnostics', formData);
+            
+            console.log('Form submitted successfully to Firebase:', docRef);
+            return docRef;
+        } catch (error) {
+            console.error('Firebase submission error:', error);
+            
+            // Provide more specific error messages
+            if (error.code === 'permission-denied') {
+                throw new Error('Permission denied. Please check Firebase security rules.');
+            } else if (error.code === 'unavailable') {
+                throw new Error('Service temporarily unavailable. Please try again in a moment.');
+            } else {
+                throw new Error(`Submission failed: ${error.message}`);
+            }
+        }
     }
 
     autoSave() {
