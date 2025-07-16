@@ -162,10 +162,18 @@ body {
     animation-delay: 0.6s;
 }
 
-.bpn-logo, .harambee-logo, .g2s-logo {
-    height: 80px;
+.bpn-logo, .harambee-logo {
+    height: 75px;
     width: auto;
-    max-width: 300px;
+    max-width: 280px;
+    filter: drop-shadow(0 4px 8px rgba(45, 212, 191, 0.1));
+    transition: transform 0.3s ease;
+}
+
+.g2s-logo {
+    height: 90px;
+    width: auto;
+    max-width: 320px;
     filter: drop-shadow(0 4px 8px rgba(45, 212, 191, 0.1));
     transition: transform 0.3s ease;
 }
