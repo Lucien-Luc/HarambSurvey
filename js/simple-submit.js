@@ -77,6 +77,86 @@ class SimpleFormSubmit {
         } else {
             console.warn('Got it button not found');
         }
+
+        // Set up admin access via long press on logo
+        this.setupAdminAccess();
+    }
+
+    setupAdminAccess() {
+        const logo = document.querySelector('.bpn-logo');
+        if (!logo) {
+            console.warn('BPN logo not found for admin access');
+            return;
+        }
+
+        let pressTimer;
+        let isLongPress = false;
+
+        const startLongPress = (e) => {
+            isLongPress = false;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                console.log('Long press detected - showing admin access');
+                this.showAdminAccess();
+            }, 2000); // 2 second long press
+        };
+
+        const endLongPress = () => {
+            clearTimeout(pressTimer);
+            if (!isLongPress) {
+                // Short press - do nothing
+                return;
+            }
+        };
+
+        // Touch events for mobile
+        logo.addEventListener('touchstart', startLongPress);
+        logo.addEventListener('touchend', endLongPress);
+        logo.addEventListener('touchcancel', endLongPress);
+
+        // Mouse events for desktop
+        logo.addEventListener('mousedown', startLongPress);
+        logo.addEventListener('mouseup', endLongPress);
+        logo.addEventListener('mouseleave', endLongPress);
+
+        console.log('Admin access setup complete - long press BPN logo');
+    }
+
+    showAdminAccess() {
+        // Create admin access popup
+        const popup = document.createElement('div');
+        popup.className = 'notification-overlay';
+        popup.innerHTML = `
+            <div class="notification-popup" style="max-width: 400px;">
+                <div class="notification-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1 class="notification-title">Admin Access</h1>
+                <p class="notification-message">This feature requires Firebase admin authentication to be configured.</p>
+                <div class="notification-details">
+                    <strong>Note:</strong> Admin panel functionality was removed in production cleanup.<br>
+                    Contact developer to restore admin features if needed.
+                </div>
+                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
+                    Understood
+                </button>
+            </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(popup);
+        
+        // Show with animation
+        setTimeout(() => {
+            popup.classList.add('show');
+        }, 100);
+
+        // Auto-remove when clicking outside
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.remove();
+            }
+        });
     }
 
     setupFormNavigation() {
