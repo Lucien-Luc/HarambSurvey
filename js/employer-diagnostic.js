@@ -69,6 +69,20 @@ class EmployerDiagnosticForm {
         } else {
             console.error('Form not found for event binding');
         }
+
+        // Also bind click event directly to submit button as backup
+        if (this.submitBtn) {
+            console.log('Binding direct click event to submit button');
+            this.submitBtn.addEventListener('click', (e) => {
+                console.log('Submit button clicked directly');
+                if (e.target.type === 'submit') {
+                    // Let form submit event handle it
+                    return;
+                }
+                e.preventDefault();
+                this.handleSubmit(e);
+            });
+        }
         
         console.log('Event binding complete');
     }
@@ -88,6 +102,8 @@ class EmployerDiagnosticForm {
     }
 
     showSection(sectionNumber) {
+        console.log('Showing section:', sectionNumber);
+        
         // Hide current section
         this.sections.forEach(section => {
             section.classList.remove('active');
@@ -119,6 +135,8 @@ class EmployerDiagnosticForm {
     }
 
     updateNavigation() {
+        console.log('Updating navigation for section:', this.currentSection, 'of', this.totalSections);
+        
         // Show/hide previous button
         if (this.prevBtn) {
             this.prevBtn.style.display = this.currentSection > 1 ? 'flex' : 'none';
@@ -126,11 +144,26 @@ class EmployerDiagnosticForm {
 
         // Show/hide next vs submit button
         if (this.currentSection === this.totalSections) {
-            if (this.nextBtn) this.nextBtn.style.display = 'none';
-            if (this.submitBtn) this.submitBtn.style.display = 'flex';
+            console.log('On last section - showing submit button');
+            if (this.nextBtn) {
+                this.nextBtn.style.display = 'none';
+                console.log('Hiding next button');
+            }
+            if (this.submitBtn) {
+                this.submitBtn.style.display = 'flex';
+                this.submitBtn.style.visibility = 'visible';
+                console.log('Showing submit button');
+            }
         } else {
-            if (this.nextBtn) this.nextBtn.style.display = 'flex';
-            if (this.submitBtn) this.submitBtn.style.display = 'none';
+            console.log('Not on last section - showing next button');
+            if (this.nextBtn) {
+                this.nextBtn.style.display = 'flex';
+                console.log('Showing next button');
+            }
+            if (this.submitBtn) {
+                this.submitBtn.style.display = 'none';
+                console.log('Hiding submit button');
+            }
         }
     }
 
