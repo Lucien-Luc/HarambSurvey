@@ -2097,10 +2097,6 @@ class SimpleFormSubmit {
         const singleMode = document.getElementById('singlePositionMode');
         const multipleMode = document.getElementById('multiplePositionsMode');
         
-        // Section 4 - Job Summary
-        const singlePositionSummary = document.getElementById('singlePositionMode');
-        const multiplePositionsInfo = document.getElementById('multiplePositionsInfo');
-        
         // Section 5 - Candidate Profile
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
@@ -2108,9 +2104,6 @@ class SimpleFormSubmit {
         // Show single position mode
         if (singleMode) singleMode.style.display = 'block';
         if (multipleMode) multipleMode.style.display = 'none';
-        
-        if (singlePositionSummary) singlePositionSummary.style.display = 'block';
-        if (multiplePositionsInfo) multiplePositionsInfo.style.display = 'none';
         
         if (singlePositionCandidate) singlePositionCandidate.style.display = 'block';
         if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'none';
@@ -2124,10 +2117,6 @@ class SimpleFormSubmit {
         const multipleMode = document.getElementById('multiplePositionsMode');
         const positionCountSpan = document.getElementById('positionCount');
         
-        // Section 4 - Job Summary
-        const singlePositionSummary = document.getElementById('singlePositionMode');
-        const multiplePositionsInfo = document.getElementById('multiplePositionsInfo');
-        
         // Section 5 - Candidate Profile
         const singlePositionCandidate = document.getElementById('singlePositionCandidate');
         const multiplePositionsCandidate = document.getElementById('multiplePositionsCandidate');
@@ -2136,9 +2125,6 @@ class SimpleFormSubmit {
         if (singleMode) singleMode.style.display = 'none';
         if (multipleMode) multipleMode.style.display = 'block';
         if (positionCountSpan) positionCountSpan.textContent = numPositions;
-        
-        if (singlePositionSummary) singlePositionSummary.style.display = 'none';
-        if (multiplePositionsInfo) multiplePositionsInfo.style.display = 'block';
         
         if (singlePositionCandidate) singlePositionCandidate.style.display = 'none';
         if (multiplePositionsCandidate) multiplePositionsCandidate.style.display = 'block';
@@ -2308,7 +2294,7 @@ class SimpleFormSubmit {
             
             <div class="position-form-group">
                 <label for="pos${positionNumber}_salaryRange">Salary Range (Monthly) *</label>
-                <input type="text" id="pos${positionNumber}_salaryRange" name="pos${positionNumber}_salaryRange" placeholder="e.g., KSH 25,000 - 35,000" required>
+                <input type="text" id="pos${positionNumber}_salaryRange" name="pos${positionNumber}_salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
             </div>
             
             <div class="position-form-group">

@@ -11,6 +11,12 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 16, 2025 - Latest:**
+- **Dynamic Positions System**: Implemented comprehensive multi-position form with grid layout for employers hiring multiple roles
+- **Copy Functionality**: Added "Copy from Position 1" feature for efficient data entry across similar positions
+- **Currency Update**: Changed all salary ranges from Kenyan Shillings (KSH) to Rwandan Francs (RWF)
+- **Section Cleanup**: Removed redundant "Position Details Configured" section from job summary page
+- **Responsive Design**: Created mobile-friendly position cards with professional styling and hover effects
+- **Database Structure**: Updated form data collection to handle multiple positions as array within submissions
 - **Analytics Dashboard Enhanced**: Replaced generic metrics with meaningful talent fair insights
 - **Employer-Focused Analytics**: Added "Registered Employers", "Job Openings", "Top Industry", and "Urgent Hiring" metrics
 - **Event Title Integration**: Added "Talent Fair" branding throughout the application
