@@ -11,10 +11,11 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 17, 2025 - Latest:**
+- **Logo Size Hierarchy**: Adjusted partner logo sizes to emphasize G2S logo prominence over BPN
+- **BPN Logo**: 65px height (reduced for visual hierarchy)
+- **Harambee Logo**: 95px height (maintained)
+- **G2S Logo**: 300px height (increased to be most prominent)
 - **Individual Partner Logo CSS**: Created separate CSS classes for each partner logo with custom sizing and brand-appropriate drop shadows
-- **BPN Logo**: 75px height with turquoise drop shadow (rgba(45, 212, 191, 0.1))
-- **Harambee Logo**: 95px height with green drop shadow (rgba(16, 185, 129, 0.1))
-- **G2S Logo**: 180px height with grey drop shadow (rgba(107, 114, 128, 0.1))
 
 **July 16, 2025 - Previous:**
 - **Kinyarwanda Language Support**: Added dual-language switcher with country flags (🇺🇸/🇷🇼) in header

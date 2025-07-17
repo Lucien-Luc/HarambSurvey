@@ -1,8 +1,11 @@
 /* CSS Variables for BPN Brand Colors */
 :root {
-    --color-primary: #2DD4BF; /* Turquoise */
-    --color-secondary: #10B981; /* Green */
-    --color-tertiary: #6B7280; /* Grey */
+    --color-primary: #2DD4BF;
+    /* Turquoise */
+    --color-secondary: #10B981;
+    /* Green */
+    --color-tertiary: #6B7280;
+    /* Grey */
     --color-dark: #374151;
     --color-light: #F9FAFB;
     --color-white: #FFFFFF;
@@ -164,9 +167,9 @@ body {
 
 /* BPN Logo Specific Styles */
 .bpn-logo {
-    height: 75px;
+    height: 65px;
     width: auto;
-    max-width: 280px;
+    max-width: 240px;
     filter: drop-shadow(0 4px 8px rgba(45, 212, 191, 0.1));
     transition: transform 0.3s ease;
 }
@@ -182,9 +185,9 @@ body {
 
 /* G2S/Mastercard Logo Specific Styles */
 .g2s-logo {
-    height: 180px;
+    height: 300px;
     width: auto;
-    max-width: 500px;
+    max-width: 520px;
     filter: drop-shadow(0 4px 8px rgba(107, 114, 128, 0.1));
     transition: transform 0.3s ease;
 }
@@ -237,6 +240,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -248,6 +252,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -389,7 +394,7 @@ body {
     .header-content {
         padding: 0 0.5rem;
     }
-    
+
     .lang-btn {
         width: 32px;
         height: 32px;
@@ -840,10 +845,11 @@ textarea.form-control {
 }
 
 /* Admin Layout */
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 14.28%; /* 1/7 sections */
-    border-radius: 8px;
-    position: relative;
+transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+width: 14.28%;
+/* 1/7 sections */
+border-radius: 8px;
+position: relative;
 }
 
 .progress-fill::after {
@@ -877,12 +883,13 @@ textarea.form-control {
 }
 
 @keyframes slideIn {
-    from { 
-        opacity: 0; 
+    from {
+        opacity: 0;
         transform: translateX(20px);
     }
-    to { 
-        opacity: 1; 
+
+    to {
+        opacity: 1;
         transform: translateX(0);
     }
 }
@@ -897,8 +904,15 @@ textarea.form-control {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .section-header {
@@ -1085,7 +1099,7 @@ textarea.form-control {
     left: 100%;
 }
 
-.checkbox-label input:checked + span {
+.checkbox-label input:checked+span {
     color: var(--color-primary);
     font-weight: 600;
 }
@@ -1191,27 +1205,27 @@ textarea.form-control {
         margin: 0 1rem;
         border-radius: 20px;
     }
-    
+
     .intro-header h1 {
         font-size: 2rem;
     }
-    
+
     .intro-header p {
         font-size: 1.125rem;
     }
-    
+
     .bpn-logo {
         height: 90px;
     }
-    
+
     .harambee-logo {
         height: 60px;
     }
-    
+
     .g2s-logo {
         height: 75px;
     }
-    
+
     .intro-btn {
         padding: 1rem 2.5rem;
         font-size: 1rem;
@@ -1225,58 +1239,59 @@ textarea.form-control {
         margin: 0 0.75rem;
         border-radius: 16px;
     }
-    
+
     .survey-header h1 {
         font-size: 1.875rem;
     }
-    
+
     .survey-header p {
         font-size: 1rem;
     }
-    
+
     .section-header {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
         padding: 1.25rem;
     }
-    
+
     .section-header i {
         width: 3rem;
         height: 3rem;
         font-size: 1.5rem;
     }
-    
+
     .section-header h2 {
         font-size: 1.5rem;
     }
-    
+
     .checkbox-group.multi-select {
         grid-template-columns: 1fr;
     }
-    
+
     .survey-navigation {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .survey-navigation .btn {
         width: 100%;
         justify-content: center;
         padding: 1.25rem 2rem;
     }
-    
+
     .form-group input,
     .form-group textarea,
     .form-group select {
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
+        /* Prevents zoom on iOS */
         padding: 1.25rem;
     }
-    
+
     .progress-text {
         font-size: 0.8rem;
     }
-    
+
     .form-group {
         margin-bottom: 1.5rem;
     }
@@ -1287,37 +1302,37 @@ textarea.form-control {
         padding: 1.25rem;
         margin: 0 0.5rem;
     }
-    
+
     .survey-header {
         padding-bottom: 1.5rem;
     }
-    
+
     .survey-header h1 {
         font-size: 1.625rem;
     }
-    
+
     .section-header {
         padding: 1rem;
     }
-    
+
     .section-header h2 {
         font-size: 1.375rem;
     }
-    
+
     .section-header i {
         width: 2.75rem;
         height: 2.75rem;
         font-size: 1.375rem;
     }
-    
+
     .form-group {
         margin-bottom: 1.25rem;
     }
-    
+
     .checkbox-label {
         padding: 1rem;
     }
-    
+
     .survey-navigation .btn {
         padding: 1rem 1.5rem;
         font-size: 0.9rem;
@@ -1764,97 +1779,99 @@ textarea.form-control {
         padding: 0 0.5rem;
         height: 56px;
     }
-    
+
     .logo-container img {
         height: 32px;
         width: auto;
     }
-    
+
     .main-content {
         padding: 1rem 0.5rem;
     }
-    
+
     /* Survey specific mobile styles */
     .survey-container {
         padding: 1rem;
         margin: 0 0.5rem;
     }
-    
+
     .survey-header h1 {
         font-size: 1.5rem;
     }
-    
+
     .survey-header p {
         font-size: 1rem;
     }
-    
+
     .question-container {
         padding: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .question-title {
         font-size: 1rem;
     }
-    
+
     /* Form controls mobile optimization */
     .form-control {
         padding: 0.875rem;
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
+        /* Prevents zoom on iOS */
     }
-    
+
     textarea.form-control {
         min-height: 120px;
     }
-    
+
     /* Radio and checkbox mobile styles */
     .radio-group,
     .checkbox-group {
         gap: 1rem;
     }
-    
+
     .radio-option,
     .checkbox-option {
         padding: 1rem;
-        min-height: 48px; /* Touch target size */
+        min-height: 48px;
+        /* Touch target size */
     }
-    
+
     /* Rating scale mobile optimization */
     .rating-scale {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    
+
     .rating-option {
         min-width: 60px;
         min-height: 60px;
         padding: 0.75rem;
     }
-    
+
     /* Button optimizations for mobile */
     .btn {
         padding: 0.875rem 1.25rem;
         font-size: 1rem;
         min-height: 48px;
     }
-    
+
     .btn-sm {
         padding: 0.75rem 1rem;
         min-height: 44px;
     }
-    
+
     /* Survey navigation mobile */
     .survey-navigation {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
-    
+
     .survey-navigation .btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .question-counter {
         order: -1;
         text-align: center;
@@ -1863,18 +1880,18 @@ textarea.form-control {
         background: var(--color-light);
         border-radius: var(--border-radius);
     }
-    
+
     /* Progress bar mobile */
     .progress-bar {
         height: 6px;
         margin-bottom: 1.5rem;
     }
-    
+
     /* Admin layout mobile */
     .admin-layout {
         flex-direction: column;
     }
-    
+
     .admin-sidebar {
         width: 100%;
         order: 2;
@@ -1882,159 +1899,159 @@ textarea.form-control {
         border-right: none;
         border-top: 1px solid #E5E7EB;
     }
-    
+
     .sidebar-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .sidebar-nav {
         flex-direction: row;
         overflow-x: auto;
         gap: 0.25rem;
         padding-bottom: 0.5rem;
     }
-    
+
     .sidebar-link {
         white-space: nowrap;
         min-width: auto;
         font-size: 0.9rem;
         padding: 0.5rem 0.75rem;
     }
-    
+
     .admin-content {
         padding: 1rem;
     }
-    
+
     /* Dashboard stats mobile */
     .dashboard-stats {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
-    
+
     .stat-card {
         padding: 1rem;
         flex-direction: column;
         text-align: center;
     }
-    
+
     .stat-icon {
         font-size: 1.5rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .stat-content h3 {
         font-size: 1.5rem;
     }
-    
+
     /* Form builder mobile */
     .form-builder-layout {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .question-types {
         order: 2;
     }
-    
+
     .question-type-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
-    
+
     .question-type {
         padding: 0.75rem;
         font-size: 0.9rem;
         text-align: center;
     }
-    
+
     .question-type span {
         display: block;
         margin-top: 0.25rem;
     }
-    
+
     .form-preview {
         order: 1;
     }
-    
+
     .question-item {
         padding: 0.75rem;
     }
-    
+
     .question-item-actions {
         flex-wrap: wrap;
         gap: 0.25rem;
     }
-    
+
     .question-item-actions button {
         min-width: 36px;
         min-height: 36px;
         padding: 0.5rem;
     }
-    
+
     /* Surveys list mobile */
     .survey-item {
         padding: 1rem;
     }
-    
+
     .survey-item-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .survey-item-actions {
         width: 100%;
         justify-content: flex-end;
     }
-    
+
     .survey-item-meta {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     /* Responses table mobile */
     .responses-table-container {
         overflow-x: auto;
     }
-    
+
     .responses-table {
         min-width: 600px;
     }
-    
+
     .responses-table th,
     .responses-table td {
         padding: 0.75rem 0.5rem;
         font-size: 0.9rem;
     }
-    
+
     /* Analytics mobile */
     .analytics-summary {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
     }
-    
+
     .summary-card {
         padding: 0.75rem;
         text-align: center;
     }
-    
+
     .summary-value {
         font-size: 1.25rem;
     }
-    
+
     .summary-label {
         font-size: 0.8rem;
     }
-    
+
     /* Auth mobile */
     .auth-container {
         margin: 2rem auto;
         padding: 1.5rem;
         max-width: 100%;
     }
-    
+
     /* Modal mobile */
     .modal {
         width: 95%;
@@ -2042,37 +2059,37 @@ textarea.form-control {
         margin: 1rem;
         max-height: calc(100vh - 2rem);
     }
-    
+
     .modal-header,
     .modal-content {
         padding: 1rem;
     }
-    
+
     /* Messages mobile */
     .message {
         margin: 0 0.5rem;
         padding: 0.75rem;
         font-size: 0.9rem;
     }
-    
+
     /* View actions mobile */
     .view-actions {
         flex-direction: column;
         gap: 0.5rem;
         align-items: stretch;
     }
-    
+
     .view-actions .btn,
     .view-actions .form-select {
         width: 100%;
     }
-    
+
     /* Form builder actions mobile */
     .form-builder-actions {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .form-builder-actions .btn {
         width: 100%;
     }
@@ -2083,47 +2100,47 @@ textarea.form-control {
     .header-content {
         height: 52px;
     }
-    
+
     .logo-container img {
         height: 28px;
         width: auto;
     }
-    
+
     .survey-container {
         margin: 0;
         border-radius: 0;
         padding: 0.75rem;
     }
-    
+
     .survey-header {
         padding-bottom: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .survey-header h1 {
         font-size: 1.25rem;
     }
-    
+
     .question-container {
         padding: 0.75rem;
         border-radius: 6px;
     }
-    
+
     .dashboard-stats {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-    
+
     .analytics-summary {
         grid-template-columns: 1fr;
     }
-    
+
     .form-builder-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .question-type-list {
         grid-template-columns: 1fr;
     }
@@ -2136,25 +2153,27 @@ textarea.form-control {
     .intro-container {
         padding: 3rem 2rem;
     }
-    
+
     .survey-container {
         padding: 2.5rem 2rem;
         margin: 0 1rem;
     }
-    
+
     .partner-logos {
         flex-direction: column;
         gap: 2rem;
     }
-    
-    .bpn-logo, .harambee-logo, .g2s-logo {
+
+    .bpn-logo,
+    .harambee-logo,
+    .g2s-logo {
         max-height: 60px;
     }
-    
+
     .form-group {
         margin-bottom: 1.75rem;
     }
-    
+
     .survey-navigation .btn {
         padding: 0.875rem 1.5rem;
         font-size: 1rem;
@@ -2163,6 +2182,7 @@ textarea.form-control {
 
 /* Enhanced mobile styles */
 @media (max-width: 768px) {
+
     /* Intro page mobile improvements */
     .intro-container {
         padding: 2rem 1rem;
@@ -2171,34 +2191,36 @@ textarea.form-control {
         display: flex;
         align-items: center;
     }
-    
+
     .intro-content {
         width: 100%;
     }
-    
+
     .intro-header h1 {
         font-size: 1.8rem !important;
         line-height: 1.3;
         margin-bottom: 1rem;
     }
-    
+
     .intro-header p {
         font-size: 1rem !important;
         line-height: 1.5;
         margin-bottom: 2rem;
     }
-    
+
     .partner-logos {
         margin: 2rem 0;
         gap: 1.5rem;
         flex-direction: column;
     }
-    
-    .bpn-logo, .harambee-logo, .g2s-logo {
+
+    .bpn-logo,
+    .harambee-logo,
+    .g2s-logo {
         max-height: 50px !important;
         width: auto;
     }
-    
+
     .intro-btn {
         padding: 1rem 2rem !important;
         font-size: 1.1rem !important;
@@ -2206,70 +2228,71 @@ textarea.form-control {
         max-width: 280px;
         margin: 0 auto;
     }
-    
+
     /* Survey form mobile improvements */
     .survey-container {
         margin: 0 0.5rem !important;
         padding: 1.5rem 1rem !important;
         border-radius: 15px !important;
     }
-    
+
     .survey-header h1 {
         font-size: 1.5rem !important;
         line-height: 1.3;
     }
-    
+
     .survey-header p {
         font-size: 0.95rem !important;
     }
-    
+
     .progress-bar {
         height: 8px !important;
         border-radius: 4px;
     }
-    
+
     .progress-text {
         font-size: 0.9rem !important;
         margin-top: 0.75rem;
     }
-    
+
     .section-header h2 {
         font-size: 1.3rem !important;
     }
-    
+
     .form-group {
         margin-bottom: 1.5rem;
     }
-    
+
     .form-group label {
         font-size: 0.95rem !important;
         margin-bottom: 0.75rem;
     }
-    
+
     /* Touch-friendly form controls */
-    .form-control, 
-    input[type="text"], 
-    input[type="email"], 
-    input[type="url"], 
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
     input[type="number"],
-    textarea, 
+    textarea,
     select {
         padding: 0.875rem !important;
         font-size: 1rem !important;
         border-radius: 8px !important;
-        min-height: 48px; /* Touch-friendly */
+        min-height: 48px;
+        /* Touch-friendly */
     }
-    
+
     textarea {
         min-height: 120px !important;
     }
-    
-    .checkbox-group, 
+
+    .checkbox-group,
     .radio-group {
         gap: 0.75rem;
     }
-    
-    .checkbox-label, 
+
+    .checkbox-label,
     .radio-label {
         padding: 0.75rem !important;
         font-size: 0.95rem !important;
@@ -2277,14 +2300,14 @@ textarea.form-control {
         display: flex;
         align-items: center;
     }
-    
+
     /* Navigation buttons mobile */
     .survey-navigation {
         flex-direction: column !important;
         gap: 1rem;
         margin-top: 2rem;
     }
-    
+
     .survey-navigation .btn {
         width: 100% !important;
         padding: 1rem !important;
@@ -2292,21 +2315,21 @@ textarea.form-control {
         min-height: 48px;
         justify-content: center;
     }
-    
+
     /* Header mobile */
     .header {
         padding: 0.75rem 0 !important;
     }
-    
+
     .header-content {
         padding: 0 1rem;
         height: 52px;
     }
-    
+
     .logo img {
         height: 32px !important;
     }
-    
+
     /* Notification popup mobile */
     .notification-popup {
         margin: 1rem !important;
@@ -2315,33 +2338,33 @@ textarea.form-control {
         max-width: none !important;
         border-radius: 15px !important;
     }
-    
+
     .notification-icon {
         width: 70px !important;
         height: 70px !important;
         margin-bottom: 1rem;
     }
-    
+
     .notification-icon i {
         font-size: 2rem !important;
     }
-    
+
     .notification-title {
         font-size: 1.75rem !important;
         margin-bottom: 0.75rem;
     }
-    
+
     .notification-message {
         font-size: 1rem !important;
         margin-bottom: 0.75rem;
     }
-    
+
     .notification-details {
         padding: 0.875rem !important;
         margin-bottom: 1.5rem;
         font-size: 0.85rem !important;
     }
-    
+
     .notification-action {
         width: 100% !important;
         padding: 1rem !important;
@@ -2355,35 +2378,39 @@ textarea.form-control {
     .intro-header h1 {
         font-size: 1.6rem !important;
     }
-    
+
     .survey-container {
         margin: 0 !important;
         border-radius: 0 !important;
         padding: 1rem !important;
     }
-    
+
     .partner-logos {
         gap: 1rem;
     }
-    
-    .bpn-logo, .harambee-logo, .g2s-logo {
+
+    .bpn-logo,
+    .harambee-logo,
+    .g2s-logo {
         max-height: 40px !important;
     }
-    
-    .form-control, 
-    input[type="text"], 
-    input[type="email"], 
-    input[type="url"], 
+
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
     input[type="number"],
-    textarea, 
+    textarea,
     select {
         padding: 0.75rem !important;
-        font-size: 16px !important; /* Prevents zoom on iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
     }
 }
 
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
+
     .btn:hover,
     .nav-link:hover,
     .sidebar-link:hover,
@@ -2393,14 +2420,14 @@ textarea.form-control {
         transform: none;
         background-color: var(--color-light);
     }
-    
+
     .btn:active,
     .nav-link:active,
     .sidebar-link:active {
         transform: scale(0.98);
         transition: transform 0.1s ease;
     }
-    
+
     .logo-container:active {
         transform: scale(0.95);
     }
@@ -2418,13 +2445,13 @@ textarea.form-control {
         -webkit-text-size-adjust: 100%;
         text-size-adjust: 100%;
     }
-    
+
     .question-title,
     .survey-header h1,
     .stat-content h3 {
         line-height: 1.4;
     }
-    
+
     .question-description,
     .survey-header p {
         line-height: 1.5;
@@ -2433,63 +2460,64 @@ textarea.form-control {
 
 /* Hide scrollbars on mobile for better UX */
 @media (max-width: 768px) {
+
     .sidebar-nav::-webkit-scrollbar,
     .responses-table-container::-webkit-scrollbar {
         display: none;
     }
-    
+
     .sidebar-nav,
     .responses-table-container {
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
 }
-    
-    .admin-content {
-        order: 1;
-    }
-    
-    .form-builder-layout {
-        grid-template-columns: 1fr;
-    }
-    
-    .question-types {
-        order: 2;
-    }
-    
-    .form-preview {
-        order: 1;
-    }
-    
-    .dashboard-stats {
-        grid-template-columns: 1fr;
-    }
-    
-    .view-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .view-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    
-    .survey-item-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .responses-table-container {
-        overflow-x: auto;
-    }
-    
-    .modal {
-        width: 95%;
-        margin: 1rem;
-    }
+
+.admin-content {
+    order: 1;
+}
+
+.form-builder-layout {
+    grid-template-columns: 1fr;
+}
+
+.question-types {
+    order: 2;
+}
+
+.form-preview {
+    order: 1;
+}
+
+.dashboard-stats {
+    grid-template-columns: 1fr;
+}
+
+.view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.view-actions {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.survey-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.responses-table-container {
+    overflow-x: auto;
+}
+
+.modal {
+    width: 95%;
+    margin: 1rem;
+}
 }
 
 @media (max-width: 480px) {
@@ -2497,12 +2525,12 @@ textarea.form-control {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .survey-item-actions {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .survey-navigation {
         flex-direction: column;
         gap: 1rem;
@@ -2515,6 +2543,7 @@ textarea.form-control {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -2657,14 +2686,29 @@ textarea.form-control {
 
 /* Animations */
 @keyframes pulseSuccess {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 @keyframes checkmarkDrop {
-    0% { transform: scale(0) rotate(-45deg); }
-    50% { transform: scale(1.2) rotate(-45deg); }
-    100% { transform: scale(1) rotate(0deg); }
+    0% {
+        transform: scale(0) rotate(-45deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(-45deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
 }
 
 @keyframes slideUp {
@@ -2896,8 +2940,8 @@ textarea.form-control {
     border-color: #d1d5db;
 }
 
-.position-checkbox-label input[type="radio"]:checked + span,
-.position-checkbox-label input[type="checkbox"]:checked + span {
+.position-checkbox-label input[type="radio"]:checked+span,
+.position-checkbox-label input[type="checkbox"]:checked+span {
     background: #2dd4bf;
     color: white;
     border-radius: 16px;
@@ -2932,17 +2976,17 @@ textarea.form-control {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .position-card {
         padding: 1rem;
     }
-    
+
     .position-card-header {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
-    
+
     .copy-position-btn {
         align-self: center;
         width: fit-content;
@@ -3001,13 +3045,19 @@ textarea.form-control {
     padding-bottom: 0.5rem;
 }
 
-.employers-list, .positions-list, .industry-list, .urgent-list {
+.employers-list,
+.positions-list,
+.industry-list,
+.urgent-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.employer-item, .position-item, .industry-item, .urgent-item {
+.employer-item,
+.position-item,
+.industry-item,
+.urgent-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -3018,22 +3068,34 @@ textarea.form-control {
     transition: var(--transition);
 }
 
-.employer-item:hover, .position-item:hover, .industry-item:hover, .urgent-item:hover {
+.employer-item:hover,
+.position-item:hover,
+.industry-item:hover,
+.urgent-item:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
-.employer-info, .position-info, .industry-info, .urgent-info {
+.employer-info,
+.position-info,
+.industry-info,
+.urgent-info {
     flex: 1;
 }
 
-.employer-name, .position-company, .industry-name, .urgent-company {
+.employer-name,
+.position-company,
+.industry-name,
+.urgent-company {
     font-weight: 600;
     color: var(--color-dark);
     margin-bottom: 0.25rem;
 }
 
-.employer-industry, .position-title, .industry-percentage, .urgent-position {
+.employer-industry,
+.position-title,
+.industry-percentage,
+.urgent-position {
     font-size: 0.9rem;
     color: var(--color-tertiary);
 }
@@ -3044,7 +3106,9 @@ textarea.form-control {
     margin-top: 0.25rem;
 }
 
-.employer-date, .position-count, .industry-count {
+.employer-date,
+.position-count,
+.industry-count {
     font-size: 0.9rem;
     color: var(--color-tertiary);
     font-weight: 500;
@@ -3118,7 +3182,7 @@ textarea.form-control {
     .detail-summary {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-detail-popup {
         width: 95%;
         max-height: 85vh;
@@ -3170,7 +3234,7 @@ textarea.form-control {
     .subtle-footer {
         padding: 0.4rem 0;
     }
-    
+
     .powered-by {
         font-size: 0.7rem;
     }
