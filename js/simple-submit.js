@@ -78,7 +78,14 @@ class SimpleFormSubmit {
                 'health_insurance': 'Health insurance',
                 'training_development': 'Training/Development',
                 'commission_bonuses': 'Commission or Bonuses',
-                'flexible_schedule': 'Flexible schedule'
+                'flexible_schedule': 'Flexible schedule',
+                'preferred_age_range': 'Preferred Age Range',
+                'gender_preference': 'Gender Preference',
+                'preferred_location': 'Preferred Location',
+                'no_preference': 'No preference',
+                'male': 'Male',
+                'female': 'Female',
+                'any': 'Any'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -148,7 +155,14 @@ class SimpleFormSubmit {
                 'health_insurance': 'Ubwishingizi bw\'ubuzima',
                 'training_development': 'Amahugurwa/Iterambere',
                 'commission_bonuses': 'Amafaranga y\'inyongera',
-                'flexible_schedule': 'Gahunda ihindagurika'
+                'flexible_schedule': 'Gahunda ihindagurika',
+                'preferred_age_range': 'Imyaka Ishakwa',
+                'gender_preference': 'Igitsina Gishakwa',
+                'preferred_location': 'Ahantu Hashakwa',
+                'no_preference': 'Nta kigena',
+                'male': 'Gabo',
+                'female': 'Gore',
+                'any': 'Igitsina cyose'
             }
         };
     }
@@ -355,7 +369,11 @@ class SimpleFormSubmit {
         document.querySelectorAll('[data-translate]').forEach(element => {
             const key = element.getAttribute('data-translate');
             if (translations[key]) {
-                element.textContent = translations[key];
+                if (element.tagName === 'OPTION') {
+                    element.textContent = translations[key];
+                } else {
+                    element.textContent = translations[key];
+                }
             }
         });
     }
