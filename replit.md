@@ -10,7 +10,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**July 16, 2025 - Latest:**
+**July 17, 2025 - Latest:**
+- **Individual Partner Logo CSS**: Created separate CSS classes for each partner logo with custom sizing and brand-appropriate drop shadows
+- **BPN Logo**: 75px height with turquoise drop shadow (rgba(45, 212, 191, 0.1))
+- **Harambee Logo**: 95px height with green drop shadow (rgba(16, 185, 129, 0.1))
+- **G2S Logo**: 180px height with grey drop shadow (rgba(107, 114, 128, 0.1))
+
+**July 16, 2025 - Previous:**
 - **Kinyarwanda Language Support**: Added dual-language switcher with country flags (🇺🇸/🇷🇼) in header
 - **Simple Kinyarwanda**: Used accessible, easy-to-understand Kinyarwanda translations for better user experience
 - **Smart Language Positioning**: Placed language switcher in header's top-right corner for optimal visibility
