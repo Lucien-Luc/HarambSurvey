@@ -3264,6 +3264,12 @@ class SimpleFormSubmit {
             experienceLevel: '',
             educationLevel: '',
             technicalSkills: '',
+            behavioralSkills: [],
+            otherBehavioralSkills: '',
+            workEnvironment: '',
+            idealAge: '',
+            idealGender: '',
+            idealLocation: '',
             salaryRange: '',
             benefits: [],
             otherBenefits: '',
@@ -3415,6 +3421,82 @@ class SimpleFormSubmit {
             </div>
             
             <div class="position-form-group">
+                <label data-translate="behavioral_skills">Behavioral/Soft Skills Needed (Check all that apply)</label>
+                <div class="position-checkbox-group position-behavioral-skills">
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="positive-attitude">
+                        <span data-translate="positive_attitude">Positive attitude</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="team-player">
+                        <span data-translate="team_player">Team player</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="self-motivated">
+                        <span data-translate="self_motivated">Self-motivated</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="reliable">
+                        <span data-translate="reliable">Reliable</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="good-time-manager">
+                        <span data-translate="good_time_manager">Good time manager</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="adaptable">
+                        <span data-translate="adaptable">Adaptable</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="takes-initiative">
+                        <span data-translate="takes_initiative">Takes initiative</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="checkbox" name="pos${positionNumber}_behavioralSkills" value="customer-friendly">
+                        <span data-translate="customer_friendly">Customer-friendly</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_otherBehavioralSkills" data-translate="other_behavioral_skills">Other behavioral skills needed</label>
+                <input type="text" id="pos${positionNumber}_otherBehavioralSkills" name="pos${positionNumber}_otherBehavioralSkills" placeholder="Please specify any other qualities">
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_workEnvironment" data-translate="work_environment">Work Environment & Social Aspects</label>
+                <textarea id="pos${positionNumber}_workEnvironment" name="pos${positionNumber}_workEnvironment" rows="3" placeholder="Who will they work with? (Supervisor, team, customers?) What's the workplace like?"></textarea>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_idealAge" data-translate="preferred_age_range">Preferred Age Range</label>
+                <input type="text" id="pos${positionNumber}_idealAge" name="pos${positionNumber}_idealAge" placeholder="e.g., 25-35 years">
+            </div>
+            
+            <div class="position-form-group">
+                <label data-translate="gender_preference">Gender Preference</label>
+                <div class="position-checkbox-group">
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_idealGender" value="no-preference">
+                        <span data-translate="no_preference">No preference</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_idealGender" value="male">
+                        <span data-translate="male">Male</span>
+                    </label>
+                    <label class="position-checkbox-label">
+                        <input type="radio" name="pos${positionNumber}_idealGender" value="female">
+                        <span data-translate="female">Female</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="position-form-group">
+                <label for="pos${positionNumber}_idealLocation" data-translate="preferred_location">Preferred Location</label>
+                <input type="text" id="pos${positionNumber}_idealLocation" name="pos${positionNumber}_idealLocation" placeholder="Preferred candidate location">
+            </div>
+            
+            <div class="position-form-group">
                 <label for="pos${positionNumber}_salaryRange" data-translate="salary_range">Salary Range (Monthly)</label>
                 <span class="required"> *</span>
                 <input type="text" id="pos${positionNumber}_salaryRange" name="pos${positionNumber}_salaryRange" placeholder="e.g., RWF 250,000 - 350,000" required>
@@ -3509,9 +3591,29 @@ class SimpleFormSubmit {
             if (checked) data[field] = checked.value;
         });
         
-        // Get checkboxes
+        // Get checkboxes - benefits
         const benefitsChecked = document.querySelectorAll(`input[name="pos${positionNumber}_benefits"]:checked`);
         data.benefits = Array.from(benefitsChecked).map(cb => cb.value);
+        
+        // Get checkboxes - behavioral skills  
+        const behavioralSkillsChecked = document.querySelectorAll(`input[name="pos${positionNumber}_behavioralSkills"]:checked`);
+        data.behavioralSkills = Array.from(behavioralSkillsChecked).map(cb => cb.value);
+        
+        // Get other text fields that were missing
+        const otherTextField = document.getElementById(`pos${positionNumber}_otherBehavioralSkills`);
+        if (otherTextField) data.otherBehavioralSkills = otherTextField.value;
+        
+        const workEnvironmentField = document.getElementById(`pos${positionNumber}_workEnvironment`);
+        if (workEnvironmentField) data.workEnvironment = workEnvironmentField.value;
+        
+        const idealAgeField = document.getElementById(`pos${positionNumber}_idealAge`);
+        if (idealAgeField) data.idealAge = idealAgeField.value;
+        
+        const idealGenderField = document.querySelector(`input[name="pos${positionNumber}_idealGender"]:checked`);
+        if (idealGenderField) data.idealGender = idealGenderField.value;
+        
+        const idealLocationField = document.getElementById(`pos${positionNumber}_idealLocation`);
+        if (idealLocationField) data.idealLocation = idealLocationField.value;
         
         return data;
     }
@@ -3533,12 +3635,46 @@ class SimpleFormSubmit {
             }
         });
         
-        // Set checkboxes
+        // Set checkboxes - benefits
         if (data.benefits && data.benefits.length > 0) {
             data.benefits.forEach(benefit => {
                 const checkbox = document.querySelector(`input[name="pos${positionNumber}_benefits"][value="${benefit}"]`);
                 if (checkbox) checkbox.checked = true;
             });
+        }
+        
+        // Set checkboxes - behavioral skills
+        if (data.behavioralSkills && data.behavioralSkills.length > 0) {
+            data.behavioralSkills.forEach(skill => {
+                const checkbox = document.querySelector(`input[name="pos${positionNumber}_behavioralSkills"][value="${skill}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+        
+        // Set other text fields
+        if (data.otherBehavioralSkills) {
+            const field = document.getElementById(`pos${positionNumber}_otherBehavioralSkills`);
+            if (field) field.value = data.otherBehavioralSkills;
+        }
+        
+        if (data.workEnvironment) {
+            const field = document.getElementById(`pos${positionNumber}_workEnvironment`);
+            if (field) field.value = data.workEnvironment;
+        }
+        
+        if (data.idealAge) {
+            const field = document.getElementById(`pos${positionNumber}_idealAge`);
+            if (field) field.value = data.idealAge;
+        }
+        
+        if (data.idealGender) {
+            const radio = document.querySelector(`input[name="pos${positionNumber}_idealGender"][value="${data.idealGender}"]`);
+            if (radio) radio.checked = true;
+        }
+        
+        if (data.idealLocation) {
+            const field = document.getElementById(`pos${positionNumber}_idealLocation`);
+            if (field) field.value = data.idealLocation;
         }
     }
 

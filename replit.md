@@ -18,6 +18,8 @@ Preferred communication style: Simple, everyday language.
 - **POPUP SIZE ENHANCEMENT**: Increased admin detail popup from 800px to 1200px width with 90% max height for better readability
 - **DATE FORMATTING FIX**: Implemented safe date formatting to eliminate "Invalid Date" errors throughout admin panel and Excel exports
 - **Error-Proof DATE HANDLING**: Added comprehensive date validation and fallback text for empty or malformed dates
+- **MULTIPLE POSITION DATA CAPTURE FIX**: Fixed critical issue where behavioral skills, work environment, and candidate preference fields were not being captured for multiple position submissions
+- **COMPLETE FIELD COLLECTION**: Added missing fields to position card generation and data collection functions including behavioral skills checkboxes, work environment, age/gender/location preferences
 
 
 **July 18, 2025 - Previous:**
