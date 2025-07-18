@@ -639,6 +639,68 @@ class SimpleFormSubmit {
     showAdminPanel() {
         console.log('showAdminPanel called');
         
+        // Show impressive loader first
+        this.showAdminLoader();
+        
+        // Simulate authentication process with realistic timing
+        setTimeout(() => {
+            this.completeAdminLogin();
+        }, 2500);
+    }
+    
+    showAdminLoader() {
+        const loader = document.createElement('div');
+        loader.id = 'adminLoader';
+        loader.className = 'admin-loader-overlay';
+        loader.innerHTML = `
+            <div class="admin-loader-container">
+                <div class="admin-loader-animation">
+                    <div class="admin-loader-circles">
+                        <div class="admin-loader-circle"></div>
+                        <div class="admin-loader-circle"></div>
+                        <div class="admin-loader-circle"></div>
+                        <div class="admin-loader-circle"></div>
+                    </div>
+                    <div class="admin-loader-pulse"></div>
+                </div>
+                <div class="admin-loader-content">
+                    <div class="admin-loader-logo">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2 class="admin-loader-title">Authenticating Admin Access</h2>
+                    <div class="admin-loader-progress">
+                        <div class="admin-loader-progress-bar"></div>
+                    </div>
+                    <p class="admin-loader-status">Verifying credentials...</p>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(loader);
+        
+        // Animate loader entrance
+        setTimeout(() => {
+            loader.classList.add('show');
+        }, 100);
+        
+        // Update status messages
+        setTimeout(() => {
+            const status = loader.querySelector('.admin-loader-status');
+            if (status) status.textContent = 'Establishing secure connection...';
+        }, 800);
+        
+        setTimeout(() => {
+            const status = loader.querySelector('.admin-loader-status');
+            if (status) status.textContent = 'Loading admin dashboard...';
+        }, 1600);
+        
+        setTimeout(() => {
+            const status = loader.querySelector('.admin-loader-status');
+            if (status) status.textContent = 'Access granted. Welcome!';
+        }, 2200);
+    }
+    
+    completeAdminLogin() {
         // Create admin view if it doesn't exist
         if (!document.getElementById('adminView')) {
             console.log('Creating admin view...');
@@ -659,6 +721,20 @@ class SimpleFormSubmit {
             console.log('Loading admin data...');
             this.loadAdminData();
         }, 100);
+        
+        // Hide loader with success animation
+        const loader = document.getElementById('adminLoader');
+        if (loader) {
+            loader.classList.add('success');
+            setTimeout(() => {
+                loader.classList.remove('show');
+                setTimeout(() => {
+                    if (loader.parentNode) {
+                        loader.parentNode.removeChild(loader);
+                    }
+                }, 500);
+            }, 800);
+        }
     }
     
     ensureTestData() {
