@@ -1501,20 +1501,23 @@ class SimpleFormSubmit {
             
             /* Response Detail Popup Styles */
             .response-detail-popup {
-                max-width: 90%;
-                max-height: 85%;
+                max-width: 95%;
+                max-height: 90%;
                 overflow-y: auto;
-                width: 800px;
+                width: 1200px;
+                min-height: 600px;
             }
             
             .response-detail-content {
-                padding: 1rem;
+                padding: 1.5rem;
+                max-height: calc(90vh - 120px);
+                overflow-y: auto;
             }
             
             .detail-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1rem;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 1.5rem;
             }
             
             .detail-item {
@@ -1589,6 +1592,16 @@ class SimpleFormSubmit {
                 .company-info-section, .positions-info-section {
                     margin-bottom: 1.5rem;
                     padding: 1rem;
+                }
+                
+                .response-detail-popup {
+                    width: 95%;
+                    max-width: 95%;
+                }
+                
+                .detail-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
                 }
             }
             
