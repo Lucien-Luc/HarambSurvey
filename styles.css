@@ -372,45 +372,7 @@ body {
     border-color: var(--color-primary);
 }
 
-/* Admin Sign In Button */
-.admin-signin-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    margin-left: 1rem;
-    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-}
 
-.admin-signin-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #5a67d8, #6c5ce7);
-}
-
-.admin-signin-btn i {
-    font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-    .admin-signin-btn {
-        margin-left: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-    
-    .admin-signin-btn span {
-        display: none;
-    }
-}
 
 .lang-btn.active {
     border-color: var(--color-primary);
