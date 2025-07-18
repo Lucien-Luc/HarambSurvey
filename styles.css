@@ -2959,6 +2959,34 @@ position: relative;
     }
 }
 
+/* Single position layout styles */
+.single-position-section {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.single-position-section h3 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.position-details-grid {
+    display: grid;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .single-position-section {
+        margin: 0.75rem 0;
+        padding: 0.75rem;
+    }
+}
+
 .notification-title {
     font-size: 2rem;
     font-weight: 700;

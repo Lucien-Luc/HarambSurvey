@@ -2670,95 +2670,113 @@ class SimpleFormSubmit {
                 </div>
             `;
         } else {
-            // Single position display (existing format)
+            // Single position display - clean format without position numbering
+            const position = positions[0];
             return `
-                <div class="detail-item">
-                    <label>Job Title:</label>
-                    <span>${this.getFieldValue(response, 'jobTitle')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Positions Available:</label>
-                    <span>${response.positionsAvailable || 'Not specified'}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Work Type:</label>
-                    <span>${this.getFieldValue(response, 'workType')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Work Mode:</label>
-                    <span>${this.getFieldValue(response, 'workMode')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Expected Start Date:</label>
-                    <span>${this.getFieldValue(response, 'startDate')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Contract Type:</label>
-                    <span>${this.getFieldValue(response, 'contractType')}</span>
-                </div>
-                <div class="detail-item full-width">
-                    <label>Job Summary:</label>
-                    <span>${this.getFieldValue(response, 'jobSummary', 'Not provided')}</span>
-                </div>
-                <div class="detail-item full-width">
-                    <label>Key Responsibilities:</label>
-                    <span>${this.getFieldValue(response, 'keyResponsibilities', 'Not provided')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Experience Level:</label>
-                    <span>${this.getFieldValue(response, 'experienceLevel')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Education Level:</label>
-                    <span>${this.getFieldValue(response, 'educationLevel')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Technical Skills:</label>
-                    <span>${this.getFieldValue(response, 'technicalSkills')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Behavioral Skills:</label>
-                    <span>${this.formatArrayField(this.getFieldValue(response, 'behavioralSkills', []))}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Other Behavioral Skills:</label>
-                    <span>${this.getFieldValue(response, 'otherBehavioralSkills')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Work Environment:</label>
-                    <span>${this.getFieldValue(response, 'workEnvironment')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Preferred Age Range:</label>
-                    <span>${this.getFieldValue(response, 'idealAge')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Gender Preference:</label>
-                    <span>${this.getFieldValue(response, 'idealGender')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Preferred Location:</label>
-                    <span>${this.getFieldValue(response, 'idealLocation')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Salary Range:</label>
-                    <span>${this.getFieldValue(response, 'salaryRange')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Benefits:</label>
-                    <span>${this.formatArrayField(this.getFieldValue(response, 'benefits', []))}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Other Benefits:</label>
-                    <span>${this.getFieldValue(response, 'otherBenefits')}</span>
-                </div>
-                <div class="detail-item">
-                    <label>Working Hours:</label>
-                    <span>${this.getFieldValue(response, 'workingHours')}</span>
-                </div>
-                <div class="detail-item full-width">
-                    <label>Additional Notes:</label>
-                    <span>${this.getFieldValue(response, 'additionalNotes')}</span>
+                <div class="single-position-section">
+                    <h3>Position Details</h3>
+                    <div class="position-details-grid">
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Job Title:</label>
+                                <span>${position.jobTitle || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Positions Available:</label>
+                                <span>${response.positionsAvailable || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Work Type:</label>
+                                <span>${position.workType || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Work Mode:</label>
+                                <span>${position.workMode || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Expected Start Date:</label>
+                                <span>${position.startDate || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Contract Type:</label>
+                                <span>${position.contractType || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Job Summary:</label>
+                            <span>${position.jobSummary || 'Not provided'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Key Responsibilities:</label>
+                            <span>${position.keyResponsibilities || 'Not provided'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Experience Level:</label>
+                                <span>${position.experienceLevel || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Education Level:</label>
+                                <span>${position.educationLevel || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Technical Skills:</label>
+                            <span>${position.technicalSkills || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Behavioral Skills:</label>
+                            <span>${this.formatArrayField(position.behavioralSkills || [])}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Other Behavioral Skills:</label>
+                            <span>${position.otherBehavioralSkills || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Work Environment:</label>
+                                <span>${position.workEnvironment || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Preferred Age Range:</label>
+                                <span>${position.idealAge || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Gender Preference:</label>
+                                <span>${position.idealGender || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Preferred Location:</label>
+                                <span>${position.idealLocation || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Salary Range:</label>
+                            <span>${position.salaryRange || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Benefits:</label>
+                            <span>${this.formatArrayField(position.benefits || [])}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Other Benefits:</label>
+                            <span>${position.otherBenefits || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Working Hours:</label>
+                            <span>${position.workingHours || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <label>Additional Notes:</label>
+                            <span>${position.additionalNotes || 'Not specified'}</span>
+                        </div>
+                    </div>
                 </div>
             `;
         }
