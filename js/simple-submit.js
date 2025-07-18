@@ -393,6 +393,9 @@ class SimpleFormSubmit {
 
         // Set up admin access via long press on logo
         this.setupAdminAccess();
+        
+        // Set up admin sign-in button
+        this.setupAdminSignIn();
     }
 
     setupAdminAccess() {
@@ -443,6 +446,19 @@ class SimpleFormSubmit {
         });
 
         console.log(`Admin access setup complete - long press any BPN logo (${logos.length} logos found)`);
+    }
+    
+    setupAdminSignIn() {
+        const signInBtn = document.getElementById('adminSignInBtn');
+        if (signInBtn) {
+            signInBtn.addEventListener('click', () => {
+                console.log('Admin Sign In button clicked');
+                this.showAdminAccess();
+            });
+            console.log('Admin Sign In button setup complete');
+        } else {
+            console.warn('Admin Sign In button not found');
+        }
     }
 
     async showAdminAccess() {
@@ -2901,14 +2917,7 @@ class SimpleFormSubmit {
                             <span>${response.companyDescription || 'Not provided'}</span>
                         </div>
                         ${this.generatePositionDetailsHtml(response)}
-                        <div class="detail-item metadata">
-                            <label>Submitted:</label>
-                            <span>${response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded')}</span>
-                        </div>
-                        <div class="detail-item metadata">
-                            <label>Completion Time:</label>
-                            <span>${response.completionTime ? Math.round(response.completionTime / 60000) + ' minutes' : 'Not tracked'}</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
