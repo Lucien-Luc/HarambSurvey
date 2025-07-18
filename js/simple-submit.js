@@ -1539,6 +1539,38 @@ class SimpleFormSubmit {
                 border-color: #bee3f8;
             }
             
+            /* Section styling for better organization */
+            .company-info-section, .positions-info-section {
+                margin-bottom: 2rem;
+                padding: 1.5rem;
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            
+            .company-info-section h3, .positions-info-section h3 {
+                margin: 0 0 1.5rem 0;
+                color: #2d3748;
+                font-size: 1.1rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 2px solid #e2e8f0;
+            }
+            
+            .company-info-section h3 i {
+                color: #667eea;
+                font-size: 1rem;
+            }
+            
+            .positions-info-section h3 i {
+                color: #f56565;
+                font-size: 1rem;
+            }
+            
             @media (max-width: 768px) {
                 .detail-grid {
                     grid-template-columns: 1fr;
@@ -1552,6 +1584,11 @@ class SimpleFormSubmit {
                 .detail-item.metadata {
                     padding: 0.4rem 0.6rem;
                     min-width: auto;
+                }
+                
+                .company-info-section, .positions-info-section {
+                    margin-bottom: 1.5rem;
+                    padding: 1rem;
                 }
             }
             
@@ -2598,16 +2635,18 @@ class SimpleFormSubmit {
         
         if (hasMultiplePositions) {
             return `
-                <div class="detail-item full-width">
-                    <label>Total Positions:</label>
-                    <span>${positions.length} job openings</span>
-                </div>
-                <div class="detail-item full-width">
-                    <label>Available Positions:</label>
-                    <span>${response.positionsAvailable || 'Not specified'}</span>
+                <h3><i class="fas fa-briefcase"></i> Position Details</h3>
+                <div class="detail-grid" style="margin-bottom: 1.5rem;">
+                    <div class="detail-item">
+                        <label>Total Positions:</label>
+                        <span>${positions.length} job openings</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Available Positions:</label>
+                        <span>${response.positionsAvailable || 'Not specified'}</span>
+                    </div>
                 </div>
                 <div class="positions-section">
-                    <h3>Position Details</h3>
                     ${positions.map((position, index) => `
                         <div class="position-card">
                             <div class="position-header">
@@ -2713,8 +2752,14 @@ class SimpleFormSubmit {
             // Single position display - clean format without position numbering
             const position = positions[0];
             return `
+                <h3><i class="fas fa-briefcase"></i> Position Details</h3>
+                <div class="detail-grid" style="margin-bottom: 1.5rem;">
+                    <div class="detail-item">
+                        <label>Available Positions:</label>
+                        <span>${response.positionsAvailable || '1'}</span>
+                    </div>
+                </div>
                 <div class="single-position-section">
-                    <h3>Position Details</h3>
                     <div class="position-details-grid">
                         <div class="detail-row">
                             <div class="detail-item">
@@ -2877,31 +2922,39 @@ class SimpleFormSubmit {
                     <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
                 </div>
                 <div class="response-detail-content">
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <label>Company Name:</label>
-                            <span>${response.companyName || 'Not provided'}</span>
+                    <!-- Company Information Section -->
+                    <div class="company-info-section">
+                        <h3><i class="fas fa-building"></i> Company Information</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Company Name:</label>
+                                <span>${response.companyName || 'Not provided'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Contact Person:</label>
+                                <span>${response.contactPerson || 'Not provided'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Industry:</label>
+                                <span>${response.industry || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Location:</label>
+                                <span>${response.companyLocation || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Website:</label>
+                                <span>${response.companyWebsite || 'Not provided'}</span>
+                            </div>
+                            <div class="detail-item full-width">
+                                <label>Company Description:</label>
+                                <span>${response.companyDescription || 'Not provided'}</span>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <label>Contact Person:</label>
-                            <span>${response.contactPerson || 'Not provided'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Industry:</label>
-                            <span>${response.industry || 'Not specified'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Company Location:</label>
-                            <span>${response.companyLocation || 'Not specified'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Website:</label>
-                            <span>${response.companyWebsite || 'Not provided'}</span>
-                        </div>
-                        <div class="detail-item full-width">
-                            <label>Company Description:</label>
-                            <span>${response.companyDescription || 'Not provided'}</span>
-                        </div>
+                    </div>
+                    
+                    <!-- Position Information Section -->
+                    <div class="positions-info-section">
                         ${this.generatePositionDetailsHtml(response)}
 
                     </div>
