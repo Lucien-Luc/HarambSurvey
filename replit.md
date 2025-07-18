@@ -15,6 +15,9 @@ Preferred communication style: Simple, everyday language.
 - **Visual Section Separation**: Added distinct sections with headers, icons, and clean borders for better information hierarchy  
 - **Enhanced Organization**: Company info (building icon) and position details (briefcase icon) clearly separated with professional styling
 - **Removed Metadata Clutter**: Eliminated submission timestamps to focus on essential business information
+- **POPUP SIZE ENHANCEMENT**: Increased admin detail popup from 800px to 1200px width with 90% max height for better readability
+- **DATE FORMATTING FIX**: Implemented safe date formatting to eliminate "Invalid Date" errors throughout admin panel and Excel exports
+- **Error-Proof DATE HANDLING**: Added comprehensive date validation and fallback text for empty or malformed dates
 
 
 **July 18, 2025 - Previous:**

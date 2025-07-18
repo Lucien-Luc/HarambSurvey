@@ -1885,7 +1885,7 @@ class SimpleFormSubmit {
                                         <div class="employer-name">${response.companyName || 'Unknown Company'}</div>
                                         <div class="employer-industry">${response.industry || 'Not specified'}</div>
                                     </div>
-                                    <div class="employer-date">${this.getRelativeTime(response.timestamp)}</div>
+                                    <div class="employer-date">${this.getRelativeTime(response.timestamp || response.submittedAt)}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -1996,10 +1996,16 @@ class SimpleFormSubmit {
             const additionalNotes = (this.getFieldValue(response, 'additionalNotes', '') || '').toLowerCase();
             
             if (startDate) {
-                const start = new Date(startDate);
-                const now = new Date();
-                const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
-                if (diffMonths <= 3) return true;
+                try {
+                    const start = new Date(startDate);
+                    if (!isNaN(start.getTime())) {
+                        const now = new Date();
+                        const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
+                        if (diffMonths <= 3) return true;
+                    }
+                } catch (error) {
+                    // Invalid date, skip this check
+                }
             }
             
             return additionalNotes.includes('urgent') || 
@@ -2036,7 +2042,7 @@ class SimpleFormSubmit {
                                     <div class="urgent-info">
                                         <div class="urgent-company">${employer.companyName || 'Unknown'}</div>
                                         <div class="urgent-position">${this.getFieldValue(employer, 'jobTitle')}</div>
-                                        <div class="urgent-start">${this.getFieldValue(employer, 'startDate', '') ? 'Start: ' + new Date(this.getFieldValue(employer, 'startDate')).toLocaleDateString() : 'Immediate start needed'}</div>
+                                        <div class="urgent-start">${this.getFieldValue(employer, 'startDate', '') ? 'Start: ' + this.formatDate(this.getFieldValue(employer, 'startDate')) : 'Immediate start needed'}</div>
                                     </div>
                                     <div class="urgent-indicator">
                                         <i class="fas fa-exclamation-triangle"></i>
@@ -2090,10 +2096,16 @@ class SimpleFormSubmit {
             const additionalNotes = (this.getFieldValue(response, 'additionalNotes', '') || '').toLowerCase();
             
             if (startDate) {
-                const start = new Date(startDate);
-                const now = new Date();
-                const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
-                if (diffMonths <= 3) return true;
+                try {
+                    const start = new Date(startDate);
+                    if (!isNaN(start.getTime())) {
+                        const now = new Date();
+                        const diffMonths = (start - now) / (1000 * 60 * 60 * 24 * 30);
+                        if (diffMonths <= 3) return true;
+                    }
+                } catch (error) {
+                    // Invalid date, skip this check
+                }
             }
             
             // Check for urgent keywords in additional notes and other fields
@@ -2107,7 +2119,15 @@ class SimpleFormSubmit {
 
     getTodayResponseCount(responses) {
         const today = new Date().toDateString();
-        return responses.filter(r => new Date(r.timestamp).toDateString() === today).length;
+        return responses.filter(r => {
+            const timestamp = r.timestamp || r.submittedAt;
+            if (!timestamp) return false;
+            try {
+                return new Date(timestamp).toDateString() === today;
+            } catch (error) {
+                return false;
+            }
+        }).length;
     }
 
     getAverageCompletionTime(responses) {
@@ -2524,7 +2544,7 @@ class SimpleFormSubmit {
                 'Company Description': response.companyDescription || 'Not provided',
                 'Total Positions': positions.length,
                 'Positions Available': response.positionsAvailable || 'Not provided',
-                'Submitted Date': response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded'),
+                'Submitted Date': this.formatDate(response.submittedAt || response.timestamp, 'Not recorded'),
                 'Completion Time': response.completionTime ? Math.round(response.completionTime / 60000) + ' minutes' : 'Not tracked'
             });
             
@@ -2538,7 +2558,7 @@ class SimpleFormSubmit {
                     'Job Title': position.jobTitle || 'Not specified',
                     'Work Type': position.workType || 'Not specified',
                     'Work Mode': position.workMode || 'Not specified',
-                    'Expected Start Date': position.startDate || 'Not specified',
+                    'Expected Start Date': this.formatDate(position.startDate, 'Not specified'),
                     'Contract Type': position.contractType || 'Not specified',
                     'Job Summary': position.jobSummary || 'Not provided',
                     'Key Responsibilities': position.keyResponsibilities || 'Not provided',
@@ -2568,7 +2588,7 @@ class SimpleFormSubmit {
             { 'Metric': 'Top Industry', 'Value': this.getTopIndustry(responses) },
             { 'Metric': 'Urgent Hiring Count', 'Value': this.getUrgentHiring(responses) },
             { 'Metric': 'Today\'s Submissions', 'Value': this.getTodayResponseCount(responses) },
-            { 'Metric': 'Export Date', 'Value': new Date().toLocaleString() }
+            { 'Metric': 'Export Date', 'Value': this.formatDate(new Date(), 'Now') }
         ];
         
         // Create breakdown sheets
@@ -2605,6 +2625,49 @@ class SimpleFormSubmit {
             return arrayField.join(', ');
         }
         return arrayField || 'Not specified';
+    }
+    
+    // Safe date formatting function to prevent "Invalid Date" errors
+    formatDate(dateValue, defaultText = 'Not specified') {
+        if (!dateValue) return defaultText;
+        
+        try {
+            const date = new Date(dateValue);
+            if (isNaN(date.getTime())) {
+                // If it's a string that looks like a date, try parsing it
+                if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    return dateValue; // Return as-is if it's already in YYYY-MM-DD format
+                }
+                return defaultText;
+            }
+            return date.toLocaleDateString();
+        } catch (error) {
+            console.warn('Date formatting error:', error, 'for value:', dateValue);
+            return defaultText;
+        }
+    }
+    
+    // Safe relative time formatting
+    getRelativeTime(timestamp, defaultText = 'Recently') {
+        if (!timestamp) return defaultText;
+        
+        try {
+            const date = new Date(timestamp);
+            if (isNaN(date.getTime())) return defaultText;
+            
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffHours < 1) return 'Just now';
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString();
+        } catch (error) {
+            console.warn('Relative time formatting error:', error, 'for timestamp:', timestamp);
+            return defaultText;
+        }
     }
 
     // Helper function to safely extract position data from response
@@ -3009,7 +3072,7 @@ class SimpleFormSubmit {
                                 <div class="table-cell">${response.companyName || 'Unknown'}</div>
                                 <div class="table-cell">${response.industry || 'Not specified'}</div>
                                 <div class="table-cell">${response.jobTitle || 'Not specified'}</div>
-                                <div class="table-cell">${new Date(response.timestamp).toLocaleDateString()}</div>
+                                <div class="table-cell">${this.formatDate(response.timestamp || response.submittedAt)}</div>
                                 <div class="table-cell">
                                     <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.length - 1 - index})">
                                         <i class="fas fa-eye"></i>
@@ -3764,7 +3827,7 @@ class SimpleFormSubmit {
                 <p class="notification-message">Your employer diagnostic form has been submitted successfully.</p>
                 <div class="notification-details">
                     <strong>Submission ID:</strong> ${data.submissionId}<br>
-                    <strong>Time:</strong> ${new Date(data.submittedAt).toLocaleString()}
+                    <strong>Time:</strong> ${this.formatDate(data.submittedAt, 'Just now')}
                 </div>
                 <button class="notification-action" onclick="window.location.reload()">
                     Submit Another Form
