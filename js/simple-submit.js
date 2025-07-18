@@ -1826,8 +1826,8 @@ class SimpleFormSubmit {
     showUrgentHiringDetailPopup(responses) {
         const urgentHiring = this.getUrgentHiring(responses);
         const urgentEmployers = responses.filter(response => {
-            const startDate = response.startDate;
-            const additionalNotes = (response.additionalNotes || '').toLowerCase();
+            const startDate = this.getFieldValue(response, 'startDate', '');
+            const additionalNotes = (this.getFieldValue(response, 'additionalNotes', '') || '').toLowerCase();
             
             if (startDate) {
                 const start = new Date(startDate);
@@ -1869,8 +1869,8 @@ class SimpleFormSubmit {
                                 <div class="urgent-item">
                                     <div class="urgent-info">
                                         <div class="urgent-company">${employer.companyName || 'Unknown'}</div>
-                                        <div class="urgent-position">${employer.jobTitle || 'Not specified'}</div>
-                                        <div class="urgent-start">${employer.startDate ? 'Start: ' + new Date(employer.startDate).toLocaleDateString() : 'Immediate start needed'}</div>
+                                        <div class="urgent-position">${this.getFieldValue(employer, 'jobTitle')}</div>
+                                        <div class="urgent-start">${this.getFieldValue(employer, 'startDate', '') ? 'Start: ' + new Date(this.getFieldValue(employer, 'startDate')).toLocaleDateString() : 'Immediate start needed'}</div>
                                     </div>
                                     <div class="urgent-indicator">
                                         <i class="fas fa-exclamation-triangle"></i>
@@ -1920,8 +1920,8 @@ class SimpleFormSubmit {
     getUrgentHiring(responses) {
         // Count employers with urgent hiring needs (looking for immediate start or less than 3 months)
         return responses.filter(response => {
-            const startDate = response.startDate;
-            const additionalNotes = (response.additionalNotes || '').toLowerCase();
+            const startDate = this.getFieldValue(response, 'startDate', '');
+            const additionalNotes = (this.getFieldValue(response, 'additionalNotes', '') || '').toLowerCase();
             
             if (startDate) {
                 const start = new Date(startDate);
@@ -2108,7 +2108,7 @@ class SimpleFormSubmit {
     getExperienceLevelBreakdown(responses) {
         const breakdown = {};
         responses.forEach(r => {
-            const level = r.experienceLevel || 'Not specified';
+            const level = this.getFieldValue(r, 'experienceLevel');
             breakdown[level] = (breakdown[level] || 0) + 1;
         });
         return Object.entries(breakdown)
@@ -2119,7 +2119,7 @@ class SimpleFormSubmit {
     getWorkModeBreakdown(responses) {
         const breakdown = {};
         responses.forEach(r => {
-            const mode = r.workMode || 'Not specified';
+            const mode = this.getFieldValue(r, 'workMode');
             breakdown[mode] = (breakdown[mode] || 0) + 1;
         });
         return Object.entries(breakdown)
@@ -2130,7 +2130,7 @@ class SimpleFormSubmit {
     getSalaryRangeBreakdown(responses) {
         const breakdown = {};
         responses.forEach(r => {
-            const range = r.salaryRange || 'Not specified';
+            const range = this.getFieldValue(r, 'salaryRange');
             breakdown[range] = (breakdown[range] || 0) + 1;
         });
         return Object.entries(breakdown)
@@ -2141,7 +2141,7 @@ class SimpleFormSubmit {
     getJobTypeBreakdown(responses) {
         const breakdown = {};
         responses.forEach(r => {
-            const type = r.workType || 'Not specified';
+            const type = this.getFieldValue(r, 'workType');
             breakdown[type] = (breakdown[type] || 0) + 1;
         });
         return Object.entries(breakdown)
@@ -2264,11 +2264,11 @@ class SimpleFormSubmit {
                     </div>
                     <div class="response-detail">
                         <i class="fas fa-briefcase"></i>
-                        <span>${response.jobTitle || 'Not specified'}</span>
+                        <span>${this.getFieldValue(response, 'jobTitle')}</span>
                     </div>
                     <div class="response-detail">
                         <i class="fas fa-money-bill-wave"></i>
-                        <span>${response.salaryRange || 'Not specified'}</span>
+                        <span>${this.getFieldValue(response, 'salaryRange')}</span>
                     </div>
                 </div>
                 <div class="response-actions">
@@ -2449,6 +2449,22 @@ class SimpleFormSubmit {
         }
         return arrayField || 'Not specified';
     }
+
+    // Helper function to safely extract position data from response
+    getPositionData(response) {
+        // If response has positions array, use the first position
+        if (response.positions && Array.isArray(response.positions) && response.positions.length > 0) {
+            return response.positions[0];
+        }
+        // Otherwise, return the response itself (for backward compatibility)
+        return response;
+    }
+
+    // Helper function to get field value from response with position fallback
+    getFieldValue(response, fieldName, defaultValue = 'Not specified') {
+        const positionData = this.getPositionData(response);
+        return positionData[fieldName] || response[fieldName] || defaultValue;
+    }
     
     async exportToExcelAdvanced(data) {
         // Create workbook
@@ -2532,7 +2548,7 @@ class SimpleFormSubmit {
                         </div>
                         <div class="detail-item">
                             <label>Job Title:</label>
-                            <span>${response.jobTitle || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'jobTitle')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Positions Available:</label>
@@ -2540,59 +2556,87 @@ class SimpleFormSubmit {
                         </div>
                         <div class="detail-item">
                             <label>Work Type:</label>
-                            <span>${response.workType || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'workType')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Work Mode:</label>
-                            <span>${response.workMode || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'workMode')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Expected Start Date:</label>
-                            <span>${response.startDate || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'startDate')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Contract Type:</label>
-                            <span>${response.contractType || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'contractType')}</span>
                         </div>
                         <div class="detail-item full-width">
                             <label>Job Summary:</label>
-                            <span>${response.jobSummary || 'Not provided'}</span>
+                            <span>${this.getFieldValue(response, 'jobSummary', 'Not provided')}</span>
                         </div>
                         <div class="detail-item full-width">
                             <label>Key Responsibilities:</label>
-                            <span>${response.keyResponsibilities || 'Not provided'}</span>
+                            <span>${this.getFieldValue(response, 'keyResponsibilities', 'Not provided')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Experience Level:</label>
-                            <span>${response.experienceLevel || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'experienceLevel')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Education Level:</label>
+                            <span>${this.getFieldValue(response, 'educationLevel')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Technical Skills:</label>
-                            <span>${response.technicalSkills || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'technicalSkills')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Behavioral Skills:</label>
-                            <span>${Array.isArray(response.behavioralSkills) ? response.behavioralSkills.join(', ') : (response.behavioralSkills || 'Not specified')}</span>
+                            <span>${this.formatArrayField(this.getFieldValue(response, 'behavioralSkills', []))}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Other Behavioral Skills:</label>
+                            <span>${this.getFieldValue(response, 'otherBehavioralSkills')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Work Environment:</label>
+                            <span>${this.getFieldValue(response, 'workEnvironment')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Preferred Age Range:</label>
+                            <span>${this.getFieldValue(response, 'idealAge')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Gender Preference:</label>
+                            <span>${this.getFieldValue(response, 'idealGender')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Preferred Location:</label>
+                            <span>${this.getFieldValue(response, 'idealLocation')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Salary Range:</label>
-                            <span>${response.salaryRange || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'salaryRange')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Benefits:</label>
-                            <span>${Array.isArray(response.benefits) ? response.benefits.join(', ') : (response.benefits || 'Not specified')}</span>
+                            <span>${this.formatArrayField(this.getFieldValue(response, 'benefits', []))}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Other Benefits:</label>
+                            <span>${this.getFieldValue(response, 'otherBenefits')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Working Hours:</label>
-                            <span>${response.workingHours || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'workingHours')}</span>
                         </div>
                         <div class="detail-item full-width">
                             <label>Additional Notes:</label>
-                            <span>${response.additionalNotes || 'Not specified'}</span>
+                            <span>${this.getFieldValue(response, 'additionalNotes')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Submitted:</label>
-                            <span>${new Date(response.timestamp).toLocaleString()}</span>
+                            <span>${response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded')}</span>
                         </div>
                         <div class="detail-item">
                             <label>Completion Time:</label>
