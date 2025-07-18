@@ -1725,11 +1725,18 @@ class SimpleFormSubmit {
         const topIndustry = this.getTopIndustry(responses);
         const urgentHiring = this.getUrgentHiring(responses);
         
-        // Update display
-        document.getElementById('totalEmployers').textContent = totalEmployers;
-        document.getElementById('totalPositions').textContent = totalPositions;
-        document.getElementById('topIndustry').textContent = topIndustry;
-        document.getElementById('urgentHiring').textContent = urgentHiring;
+        // Update display - use correct element IDs
+        const totalEmployersEl = document.getElementById('totalEmployers');
+        const totalPositionsEl = document.getElementById('totalPositions');
+        const topIndustryEl = document.getElementById('topIndustry');
+        const urgentHiringEl = document.getElementById('urgentHiring');
+        
+        if (totalEmployersEl) totalEmployersEl.textContent = totalEmployers;
+        if (totalPositionsEl) totalPositionsEl.textContent = totalPositions;
+        if (topIndustryEl) topIndustryEl.textContent = topIndustry;
+        if (urgentHiringEl) urgentHiringEl.textContent = urgentHiring;
+        
+        console.log('Analytics updated:', { totalEmployers, totalPositions, topIndustry, urgentHiring });
         
         // Add click handlers for detailed popups
         this.addAnalyticsClickHandlers(responses);
@@ -1740,10 +1747,15 @@ class SimpleFormSubmit {
     
     addAnalyticsClickHandlers(responses) {
         // Make analytics cards clickable
-        const totalEmployersCard = document.getElementById('totalEmployers').closest('.stat-card');
-        const totalPositionsCard = document.getElementById('totalPositions').closest('.stat-card');
-        const topIndustryCard = document.getElementById('topIndustry').closest('.stat-card');
-        const urgentHiringCard = document.getElementById('urgentHiring').closest('.stat-card');
+        const totalEmployersEl = document.getElementById('totalEmployers');
+        const totalPositionsEl = document.getElementById('totalPositions');
+        const topIndustryEl = document.getElementById('topIndustry');
+        const urgentHiringEl = document.getElementById('urgentHiring');
+        
+        const totalEmployersCard = totalEmployersEl ? totalEmployersEl.closest('.stat-card') : null;
+        const totalPositionsCard = totalPositionsEl ? totalPositionsEl.closest('.stat-card') : null;
+        const topIndustryCard = topIndustryEl ? topIndustryEl.closest('.stat-card') : null;
+        const urgentHiringCard = urgentHiringEl ? urgentHiringEl.closest('.stat-card') : null;
         
         if (totalEmployersCard) {
             totalEmployersCard.style.cursor = 'pointer';
@@ -1764,6 +1776,8 @@ class SimpleFormSubmit {
             urgentHiringCard.style.cursor = 'pointer';
             urgentHiringCard.onclick = () => this.showUrgentHiringDetailPopup(responses);
         }
+        
+        console.log('Analytics click handlers added');
     }
     
     showEmployersDetailPopup(responses) {
