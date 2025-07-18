@@ -2338,41 +2338,46 @@ class SimpleFormSubmit {
     }
     
     prepareExcelData(responses) {
-        // Main responses sheet - map all form fields exactly as stored in database
-        const mainSheet = responses.map((response, index) => ({
-            'Response ID': index + 1,
-            'Company Name': response.companyName || 'Not provided',
-            'Contact Person': response.contactPerson || 'Not provided',
-            'Company Website': response.companyWebsite || 'Not provided',
-            'Company Location': response.companyLocation || 'Not provided',
-            'Industry': response.industry || 'Not provided',
-            'Company Description': response.companyDescription || 'Not provided',
-            'Job Title': response.jobTitle || 'Not provided',
-            'Positions Available': response.positionsAvailable || 'Not provided',
-            'Work Type': response.workType || 'Not provided',
-            'Work Mode': response.workMode || 'Not provided',
-            'Expected Start Date': response.startDate || 'Not provided',
-            'Contract Type': response.contractType || 'Not provided',
-            'Job Summary': response.jobSummary || 'Not provided',
-            'Key Responsibilities': response.keyResponsibilities || 'Not provided',
-            'Preferred Age Range': response.idealAge || 'Not provided',
-            'Gender Preference': response.idealGender || 'Not provided',
-            'Preferred Location': response.idealLocation || 'Not provided',
-            'Experience Level': response.experienceLevel || 'Not provided',
-            'Education Level': response.educationLevel || 'Not provided',
-            'Technical Skills': response.technicalSkills || 'Not provided',
-            'Behavioral Skills': Array.isArray(response.behavioralSkills) ? response.behavioralSkills.join(', ') : (response.behavioralSkills || 'Not provided'),
-            'Other Behavioral Skills': response.otherBehavioralSkills || 'Not provided',
-            'Work Environment': response.workEnvironment || 'Not provided',
-            'Salary Range': response.salaryRange || 'Not provided',
-            'Benefits': Array.isArray(response.benefits) ? response.benefits.join(', ') : (response.benefits || 'Not provided'),
-            'Other Benefits': response.otherBenefits || 'Not provided',
-            'Working Hours': response.workingHours || 'Not provided',
-            'Additional Notes': response.additionalNotes || 'Not provided',
-            'Submission Date': new Date(response.timestamp).toLocaleDateString(),
-            'Submission Time': new Date(response.timestamp).toLocaleTimeString(),
-            'Completion Time (minutes)': response.completionTime ? Math.round(response.completionTime / 60000) : 'Not tracked'
-        }));
+        // Main responses sheet - map all form fields with proper position handling
+        const mainSheet = responses.map((response, index) => {
+            // Get position data from either single position or positions array
+            const positionData = response.positions && response.positions.length > 0 ? response.positions[0] : {};
+            
+            return {
+                'Response ID': index + 1,
+                'Company Name': response.companyName || 'Not provided',
+                'Contact Person': response.contactPerson || 'Not provided',
+                'Company Website': response.companyWebsite || 'Not provided',
+                'Company Location': response.companyLocation || 'Not provided',
+                'Industry': response.industry || 'Not provided',
+                'Company Description': response.companyDescription || 'Not provided',
+                'Job Title': positionData.jobTitle || response.jobTitle || 'Not specified',
+                'Positions Available': response.positionsAvailable || 'Not provided',
+                'Work Type': positionData.workType || response.workType || 'Not specified',
+                'Work Mode': positionData.workMode || response.workMode || 'Not specified',
+                'Expected Start Date': positionData.startDate || response.startDate || 'Not specified',
+                'Contract Type': positionData.contractType || response.contractType || 'Not specified',
+                'Job Summary': positionData.jobSummary || response.jobSummary || 'Not provided',
+                'Key Responsibilities': positionData.keyResponsibilities || response.keyResponsibilities || 'Not provided',
+                'Preferred Age Range': positionData.idealAge || response.idealAge || 'Not specified',
+                'Gender Preference': positionData.idealGender || response.idealGender || 'Not specified',
+                'Preferred Location': positionData.idealLocation || response.idealLocation || 'Not specified',
+                'Experience Level': positionData.experienceLevel || response.experienceLevel || 'Not specified',
+                'Education Level': positionData.educationLevel || response.educationLevel || 'Not specified',
+                'Technical Skills': positionData.technicalSkills || response.technicalSkills || 'Not specified',
+                'Behavioral Skills': this.formatArrayField(positionData.behavioralSkills || response.behavioralSkills),
+                'Other Behavioral Skills': positionData.otherBehavioralSkills || response.otherBehavioralSkills || 'Not specified',
+                'Work Environment': positionData.workEnvironment || response.workEnvironment || 'Not specified',
+                'Salary Range': positionData.salaryRange || response.salaryRange || 'Not specified',
+                'Benefits': this.formatArrayField(positionData.benefits || response.benefits),
+                'Other Benefits': positionData.otherBenefits || response.otherBenefits || 'Not specified',
+                'Working Hours': positionData.workingHours || response.workingHours || 'Not specified',
+                'Additional Notes': positionData.additionalNotes || response.additionalNotes || 'Not specified',
+                'Submission Date': response.submittedAt ? new Date(response.submittedAt).toLocaleDateString() : 'Not recorded',
+                'Submission Time': response.submittedAt ? new Date(response.submittedAt).toLocaleTimeString() : 'Not recorded',
+                'Completion Time (minutes)': response.completionTime ? Math.round(response.completionTime / 60000) : 'Not tracked'
+            };
+        });
         
         // Analytics summary sheet
         const analyticsSheet = [
@@ -2436,6 +2441,13 @@ class SimpleFormSubmit {
             'Work Type Breakdown': workTypeSheet,
             'Work Mode Breakdown': workModeSheet
         };
+    }
+    
+    formatArrayField(arrayField) {
+        if (Array.isArray(arrayField) && arrayField.length > 0) {
+            return arrayField.join(', ');
+        }
+        return arrayField || 'Not specified';
     }
     
     async exportToExcelAdvanced(data) {
@@ -3248,9 +3260,18 @@ class SimpleFormSubmit {
                 if (input.checked) {
                     data[name] = input.value;
                 }
-            } else if (input.value && input.value.trim()) {
-                data[name] = input.value.trim();
+            } else {
+                // CRITICAL FIX: Always capture the value, even if empty
+                // This ensures all form fields are recorded, whether filled or not
+                data[name] = input.value ? input.value.trim() : '';
             }
+        });
+        
+        // Ensure checkbox groups are properly initialized as arrays
+        // This fixes the issue where unchecked checkboxes weren't being captured
+        const checkboxNames = ['behavioralSkills', 'benefits'];
+        checkboxNames.forEach(name => {
+            if (!data[name]) data[name] = [];
         });
         
         // Handle dynamic positions data
@@ -3293,24 +3314,30 @@ class SimpleFormSubmit {
     }
     
     collectSinglePositionData(data) {
-        // Map single position fields to position structure
+        // Map single position fields to position structure with comprehensive field coverage
         return {
             positionNumber: 1,
-            jobTitle: data.jobTitle || '',
-            workType: data.workType || '',
-            workMode: data.workMode || '',
-            startDate: data.startDate || '',
-            contractType: data.contractType || '',
-            jobSummary: data.jobSummary || '',
-            keyResponsibilities: data.keyResponsibilities || '',
-            experienceLevel: data.experienceLevel || '',
-            educationLevel: data.educationLevel || '',
-            technicalSkills: data.technicalSkills || '',
-            salaryRange: data.salaryRange || '',
+            jobTitle: data.jobTitle || 'Not specified',
+            workType: data.workType || 'Not specified',
+            workMode: data.workMode || 'Not specified',
+            startDate: data.startDate || 'Not specified',
+            contractType: data.contractType || 'Not specified',
+            jobSummary: data.jobSummary || 'Not provided',
+            keyResponsibilities: data.keyResponsibilities || 'Not provided',
+            experienceLevel: data.experienceLevel || 'Not specified',
+            educationLevel: data.educationLevel || 'Not specified',
+            technicalSkills: data.technicalSkills || 'Not specified',
+            behavioralSkills: data.behavioralSkills || [],
+            otherBehavioralSkills: data.otherBehavioralSkills || 'Not specified',
+            workEnvironment: data.workEnvironment || 'Not specified',
+            idealAge: data.idealAge || 'Not specified',
+            idealGender: data.idealGender || 'Not specified',
+            idealLocation: data.idealLocation || 'Not specified',
+            salaryRange: data.salaryRange || 'Not specified',
             benefits: data.benefits || [],
-            otherBenefits: data.otherBenefits || '',
-            workingHours: data.workingHours || '',
-            additionalNotes: data.additionalNotes || ''
+            otherBenefits: data.otherBenefits || 'Not specified',
+            workingHours: data.workingHours || 'Not specified',
+            additionalNotes: data.additionalNotes || 'Not specified'
         };
     }
 
