@@ -1511,7 +1511,7 @@ class SimpleFormSubmit {
             
             .detail-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 1rem;
             }
             
@@ -1519,7 +1519,7 @@ class SimpleFormSubmit {
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
-                padding: 1rem;
+                padding: 0.75rem;
                 background: #f8f9fa;
                 border-radius: 8px;
                 border: 1px solid #e2e8f0;
@@ -1527,6 +1527,30 @@ class SimpleFormSubmit {
             
             .detail-item.full-width {
                 grid-column: 1 / -1;
+            }
+            
+            .detail-item.metadata {
+                grid-column: span 1;
+                min-width: 200px;
+                padding: 0.5rem 0.75rem;
+                background: #e8f4fd;
+                border-color: #bee3f8;
+            }
+            
+            @media (max-width: 768px) {
+                .detail-grid {
+                    grid-template-columns: 1fr;
+                    gap: 0.75rem;
+                }
+                
+                .detail-item {
+                    padding: 0.5rem;
+                }
+                
+                .detail-item.metadata {
+                    padding: 0.4rem 0.6rem;
+                    min-width: auto;
+                }
             }
             
             .detail-item label {
@@ -2877,11 +2901,11 @@ class SimpleFormSubmit {
                             <span>${response.companyDescription || 'Not provided'}</span>
                         </div>
                         ${this.generatePositionDetailsHtml(response)}
-                        <div class="detail-item">
+                        <div class="detail-item metadata">
                             <label>Submitted:</label>
                             <span>${response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded')}</span>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item metadata">
                             <label>Completion Time:</label>
                             <span>${response.completionTime ? Math.round(response.completionTime / 60000) + ' minutes' : 'Not tracked'}</span>
                         </div>
