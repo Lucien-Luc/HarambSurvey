@@ -2264,7 +2264,7 @@ class SimpleFormSubmit {
                     </div>
                     <div class="response-detail">
                         <i class="fas fa-briefcase"></i>
-                        <span>${this.getFieldValue(response, 'jobTitle')}</span>
+                        <span>${this.getPositionSummary(response)}</span>
                     </div>
                     <div class="response-detail">
                         <i class="fas fa-money-bill-wave"></i>
@@ -2338,24 +2338,101 @@ class SimpleFormSubmit {
     }
     
     prepareExcelData(responses) {
-        // Main responses sheet - map all form fields with proper position handling
-        const mainSheet = responses.map((response, index) => {
-            // Get position data from either single position or positions array
-            const positionData = response.positions && response.positions.length > 0 ? response.positions[0] : {};
+        // Create multiple sheets for comprehensive data export
+        const mainSheet = [];
+        const positionDetailSheet = [];
+        let positionCounter = 1;
+        
+        // Process each response
+        responses.forEach((response, responseIndex) => {
+            const positions = this.getAllPositions(response);
             
-            return {
-                'Response ID': index + 1,
+            // Add company info to main sheet (one row per company)
+            mainSheet.push({
+                'Response ID': responseIndex + 1,
                 'Company Name': response.companyName || 'Not provided',
                 'Contact Person': response.contactPerson || 'Not provided',
                 'Company Website': response.companyWebsite || 'Not provided',
                 'Company Location': response.companyLocation || 'Not provided',
                 'Industry': response.industry || 'Not provided',
                 'Company Description': response.companyDescription || 'Not provided',
-                'Job Title': positionData.jobTitle || response.jobTitle || 'Not specified',
+                'Total Positions': positions.length,
                 'Positions Available': response.positionsAvailable || 'Not provided',
-                'Work Type': positionData.workType || response.workType || 'Not specified',
-                'Work Mode': positionData.workMode || response.workMode || 'Not specified',
-                'Expected Start Date': positionData.startDate || response.startDate || 'Not specified',
+                'Submitted Date': response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded'),
+                'Completion Time': response.completionTime ? Math.round(response.completionTime / 60000) + ' minutes' : 'Not tracked'
+            });
+            
+            // Add detailed position information (one row per position)
+            positions.forEach((position, positionIndex) => {
+                positionDetailSheet.push({
+                    'Position ID': positionCounter++,
+                    'Response ID': responseIndex + 1,
+                    'Company Name': response.companyName || 'Not provided',
+                    'Position Number': positionIndex + 1,
+                    'Job Title': position.jobTitle || 'Not specified',
+                    'Work Type': position.workType || 'Not specified',
+                    'Work Mode': position.workMode || 'Not specified',
+                    'Expected Start Date': position.startDate || 'Not specified',
+                    'Contract Type': position.contractType || 'Not specified',
+                    'Job Summary': position.jobSummary || 'Not provided',
+                    'Key Responsibilities': position.keyResponsibilities || 'Not provided',
+                    'Experience Level': position.experienceLevel || 'Not specified',
+                    'Education Level': position.educationLevel || 'Not specified',
+                    'Technical Skills': position.technicalSkills || 'Not specified',
+                    'Behavioral Skills': this.formatArrayField(position.behavioralSkills || []),
+                    'Other Behavioral Skills': position.otherBehavioralSkills || 'Not specified',
+                    'Work Environment': position.workEnvironment || 'Not specified',
+                    'Preferred Age Range': position.idealAge || 'Not specified',
+                    'Gender Preference': position.idealGender || 'Not specified',
+                    'Preferred Location': position.idealLocation || 'Not specified',
+                    'Salary Range': position.salaryRange || 'Not specified',
+                    'Benefits': this.formatArrayField(position.benefits || []),
+                    'Other Benefits': position.otherBenefits || 'Not specified',
+                    'Working Hours': position.workingHours || 'Not specified',
+                    'Additional Notes': position.additionalNotes || 'Not specified'
+                });
+            });
+        });
+        
+        // Create analytics sheet
+        const analyticsSheet = [
+            { 'Metric': 'Total Responses', 'Value': responses.length },
+            { 'Metric': 'Total Job Openings', 'Value': this.calculateTotalPositions(responses) },
+            { 'Metric': 'Average Positions per Company', 'Value': responses.length > 0 ? (this.calculateTotalPositions(responses) / responses.length).toFixed(1) : 0 },
+            { 'Metric': 'Top Industry', 'Value': this.getTopIndustry(responses) },
+            { 'Metric': 'Urgent Hiring Count', 'Value': this.getUrgentHiring(responses) },
+            { 'Metric': 'Today\'s Submissions', 'Value': this.getTodayResponseCount(responses) },
+            { 'Metric': 'Export Date', 'Value': new Date().toLocaleString() }
+        ];
+        
+        // Create breakdown sheets
+        const industrySheet = this.getIndustryBreakdown(responses).map(item => ({
+            'Industry': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        const workTypeSheet = this.getJobTypeBreakdown(responses).map(item => ({
+            'Work Type': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        const workModeSheet = this.getWorkModeBreakdown(responses).map(item => ({
+            'Work Mode': item.name,
+            'Count': item.count,
+            'Percentage': ((item.count / responses.length) * 100).toFixed(1) + '%'
+        }));
+        
+        return {
+            'Companies Summary': mainSheet,
+            'Position Details': positionDetailSheet,
+            'Analytics Summary': analyticsSheet,
+            'Industry Breakdown': industrySheet,
+            'Work Type Breakdown': workTypeSheet,
+            'Work Mode Breakdown': workModeSheet
+        };
+    }
                 'Contract Type': positionData.contractType || response.contractType || 'Not specified',
                 'Job Summary': positionData.jobSummary || response.jobSummary || 'Not provided',
                 'Key Responsibilities': positionData.keyResponsibilities || response.keyResponsibilities || 'Not provided',
@@ -2460,10 +2537,241 @@ class SimpleFormSubmit {
         return response;
     }
 
+    // Helper function to get all positions from response
+    getAllPositions(response) {
+        if (response.positions && Array.isArray(response.positions) && response.positions.length > 0) {
+            return response.positions;
+        }
+        // Return single position as array for consistency
+        return [response];
+    }
+
+    // Helper function to get summary of all positions for display
+    getPositionSummary(response) {
+        const positions = this.getAllPositions(response);
+        if (positions.length === 1) {
+            return this.getFieldValue(response, 'jobTitle');
+        }
+        return `${positions.length} positions: ${positions.map(pos => pos.jobTitle || 'Untitled').join(', ')}`;
+    }
+
     // Helper function to get field value from response with position fallback
     getFieldValue(response, fieldName, defaultValue = 'Not specified') {
         const positionData = this.getPositionData(response);
         return positionData[fieldName] || response[fieldName] || defaultValue;
+    }
+
+    // Generate comprehensive position details HTML for multi-position display
+    generatePositionDetailsHtml(response) {
+        const positions = this.getAllPositions(response);
+        const hasMultiplePositions = positions.length > 1;
+        
+        if (hasMultiplePositions) {
+            return `
+                <div class="detail-item full-width">
+                    <label>Total Positions:</label>
+                    <span>${positions.length} job openings</span>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Available Positions:</label>
+                    <span>${response.positionsAvailable || 'Not specified'}</span>
+                </div>
+                <div class="positions-section">
+                    <h3>Position Details</h3>
+                    ${positions.map((position, index) => `
+                        <div class="position-card">
+                            <div class="position-header">
+                                <h4>Position ${index + 1}: ${position.jobTitle || 'Untitled Position'}</h4>
+                            </div>
+                            <div class="position-details">
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <label>Work Type:</label>
+                                        <span>${position.workType || 'Not specified'}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>Work Mode:</label>
+                                        <span>${position.workMode || 'Not specified'}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <label>Expected Start Date:</label>
+                                        <span>${position.startDate || 'Not specified'}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>Contract Type:</label>
+                                        <span>${position.contractType || 'Not specified'}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Job Summary:</label>
+                                    <span>${position.jobSummary || 'Not provided'}</span>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Key Responsibilities:</label>
+                                    <span>${position.keyResponsibilities || 'Not provided'}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <label>Experience Level:</label>
+                                        <span>${position.experienceLevel || 'Not specified'}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>Education Level:</label>
+                                        <span>${position.educationLevel || 'Not specified'}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Technical Skills:</label>
+                                    <span>${position.technicalSkills || 'Not specified'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Behavioral Skills:</label>
+                                    <span>${this.formatArrayField(position.behavioralSkills || [])}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Other Behavioral Skills:</label>
+                                    <span>${position.otherBehavioralSkills || 'Not specified'}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <label>Work Environment:</label>
+                                        <span>${position.workEnvironment || 'Not specified'}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>Preferred Age Range:</label>
+                                        <span>${position.idealAge || 'Not specified'}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <label>Gender Preference:</label>
+                                        <span>${position.idealGender || 'Not specified'}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>Preferred Location:</label>
+                                        <span>${position.idealLocation || 'Not specified'}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Salary Range:</label>
+                                    <span>${position.salaryRange || 'Not specified'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Benefits:</label>
+                                    <span>${this.formatArrayField(position.benefits || [])}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Other Benefits:</label>
+                                    <span>${position.otherBenefits || 'Not specified'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Working Hours:</label>
+                                    <span>${position.workingHours || 'Not specified'}</span>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Additional Notes:</label>
+                                    <span>${position.additionalNotes || 'Not specified'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            // Single position display (existing format)
+            return `
+                <div class="detail-item">
+                    <label>Job Title:</label>
+                    <span>${this.getFieldValue(response, 'jobTitle')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Positions Available:</label>
+                    <span>${response.positionsAvailable || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Work Type:</label>
+                    <span>${this.getFieldValue(response, 'workType')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Work Mode:</label>
+                    <span>${this.getFieldValue(response, 'workMode')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Expected Start Date:</label>
+                    <span>${this.getFieldValue(response, 'startDate')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Contract Type:</label>
+                    <span>${this.getFieldValue(response, 'contractType')}</span>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Job Summary:</label>
+                    <span>${this.getFieldValue(response, 'jobSummary', 'Not provided')}</span>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Key Responsibilities:</label>
+                    <span>${this.getFieldValue(response, 'keyResponsibilities', 'Not provided')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Experience Level:</label>
+                    <span>${this.getFieldValue(response, 'experienceLevel')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Education Level:</label>
+                    <span>${this.getFieldValue(response, 'educationLevel')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Technical Skills:</label>
+                    <span>${this.getFieldValue(response, 'technicalSkills')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Behavioral Skills:</label>
+                    <span>${this.formatArrayField(this.getFieldValue(response, 'behavioralSkills', []))}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Other Behavioral Skills:</label>
+                    <span>${this.getFieldValue(response, 'otherBehavioralSkills')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Work Environment:</label>
+                    <span>${this.getFieldValue(response, 'workEnvironment')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Preferred Age Range:</label>
+                    <span>${this.getFieldValue(response, 'idealAge')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Gender Preference:</label>
+                    <span>${this.getFieldValue(response, 'idealGender')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Preferred Location:</label>
+                    <span>${this.getFieldValue(response, 'idealLocation')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Salary Range:</label>
+                    <span>${this.getFieldValue(response, 'salaryRange')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Benefits:</label>
+                    <span>${this.formatArrayField(this.getFieldValue(response, 'benefits', []))}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Other Benefits:</label>
+                    <span>${this.getFieldValue(response, 'otherBenefits')}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Working Hours:</label>
+                    <span>${this.getFieldValue(response, 'workingHours')}</span>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Additional Notes:</label>
+                    <span>${this.getFieldValue(response, 'additionalNotes')}</span>
+                </div>
+            `;
+        }
     }
     
     async exportToExcelAdvanced(data) {
@@ -2546,94 +2854,7 @@ class SimpleFormSubmit {
                             <label>Company Description:</label>
                             <span>${response.companyDescription || 'Not provided'}</span>
                         </div>
-                        <div class="detail-item">
-                            <label>Job Title:</label>
-                            <span>${this.getFieldValue(response, 'jobTitle')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Positions Available:</label>
-                            <span>${response.positionsAvailable || 'Not specified'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Work Type:</label>
-                            <span>${this.getFieldValue(response, 'workType')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Work Mode:</label>
-                            <span>${this.getFieldValue(response, 'workMode')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Expected Start Date:</label>
-                            <span>${this.getFieldValue(response, 'startDate')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Contract Type:</label>
-                            <span>${this.getFieldValue(response, 'contractType')}</span>
-                        </div>
-                        <div class="detail-item full-width">
-                            <label>Job Summary:</label>
-                            <span>${this.getFieldValue(response, 'jobSummary', 'Not provided')}</span>
-                        </div>
-                        <div class="detail-item full-width">
-                            <label>Key Responsibilities:</label>
-                            <span>${this.getFieldValue(response, 'keyResponsibilities', 'Not provided')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Experience Level:</label>
-                            <span>${this.getFieldValue(response, 'experienceLevel')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Education Level:</label>
-                            <span>${this.getFieldValue(response, 'educationLevel')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Technical Skills:</label>
-                            <span>${this.getFieldValue(response, 'technicalSkills')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Behavioral Skills:</label>
-                            <span>${this.formatArrayField(this.getFieldValue(response, 'behavioralSkills', []))}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Other Behavioral Skills:</label>
-                            <span>${this.getFieldValue(response, 'otherBehavioralSkills')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Work Environment:</label>
-                            <span>${this.getFieldValue(response, 'workEnvironment')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Preferred Age Range:</label>
-                            <span>${this.getFieldValue(response, 'idealAge')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Gender Preference:</label>
-                            <span>${this.getFieldValue(response, 'idealGender')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Preferred Location:</label>
-                            <span>${this.getFieldValue(response, 'idealLocation')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Salary Range:</label>
-                            <span>${this.getFieldValue(response, 'salaryRange')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Benefits:</label>
-                            <span>${this.formatArrayField(this.getFieldValue(response, 'benefits', []))}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Other Benefits:</label>
-                            <span>${this.getFieldValue(response, 'otherBenefits')}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Working Hours:</label>
-                            <span>${this.getFieldValue(response, 'workingHours')}</span>
-                        </div>
-                        <div class="detail-item full-width">
-                            <label>Additional Notes:</label>
-                            <span>${this.getFieldValue(response, 'additionalNotes')}</span>
-                        </div>
+                        ${this.generatePositionDetailsHtml(response)}
                         <div class="detail-item">
                             <label>Submitted:</label>
                             <span>${response.submittedAt ? new Date(response.submittedAt).toLocaleString() : (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Not recorded')}</span>
