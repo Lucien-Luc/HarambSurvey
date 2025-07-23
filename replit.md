@@ -11,6 +11,8 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 23, 2025 - Latest:**
+- **ONE-TIME REFRESH NOTIFICATION**: Added post-login popup notification for admins to refresh browser for latest improvements (appears only once per user)
+- **ENHANCED USER EXPERIENCE**: Notification includes rocket emoji, clear messaging, and two action options (Got it / Refresh Now)
 - **ADMIN LOGIN BUTTON STYLING FIX**: Updated admin login and setup buttons to use consistent CSS classes (btn, btn-primary, btn-full) instead of inline styles
 - **FORM CONSISTENCY ENHANCEMENT**: Replaced inline form styles with proper form-control and form-group classes for professional appearance
 - **MIGRATION COMPLETE**: Successfully completed migration from Replit Agent to standard Replit environment with all functionality intact

@@ -997,6 +997,9 @@ class SimpleFormSubmit {
         setTimeout(() => {
             console.log('Loading admin data...');
             this.loadAdminData();
+            
+            // Show one-time refresh message for app improvements
+            this.showRefreshNotification();
         }, 100);
         
         // Hide loader with success animation
@@ -1078,6 +1081,49 @@ class SimpleFormSubmit {
             
             localStorage.setItem('employer-submissions', JSON.stringify(testData));
             console.log('Test data created');
+        }
+    }
+
+    showRefreshNotification() {
+        // Check if this notification has already been shown
+        const notificationShown = localStorage.getItem('adminRefreshNotificationShown');
+        
+        if (!notificationShown) {
+            // Show the notification popup
+            const notification = document.createElement('div');
+            notification.className = 'notification-overlay';
+            notification.innerHTML = `
+                <div class="notification-popup" style="max-width: 450px; text-align: center;">
+                    <div class="notification-icon" style="background: linear-gradient(135deg, #10B981, #059669); font-size: 2.5rem;">
+                        🚀
+                    </div>
+                    <h1 class="notification-title">App Improvements Applied!</h1>
+                    <p class="notification-message" style="font-size: 1rem; line-height: 1.6; margin: 1.5rem 0;">
+                        Please <strong>hard refresh</strong> your browser for the latest changes to take place. 
+                        There have been a few improvements to stabilize the entire app. Thanks! 🙏
+                    </p>
+                    <div class="notification-actions" style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button onclick="this.closest('.notification-overlay').remove(); localStorage.setItem('adminRefreshNotificationShown', 'true');" class="btn btn-secondary" style="flex: 1;">
+                            <i class="fas fa-check"></i>
+                            Got it
+                        </button>
+                        <button onclick="window.location.reload(true); localStorage.setItem('adminRefreshNotificationShown', 'true');" class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh Now
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show with animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Mark as shown in localStorage so it only appears once
+            // This will be set when user clicks either button
         }
     }
 
