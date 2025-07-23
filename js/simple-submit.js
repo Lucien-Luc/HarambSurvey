@@ -2021,8 +2021,8 @@ class SimpleFormSubmit {
         document.head.appendChild(style);
     }
 
-    async loadAdminData() {
-        console.log('Loading admin data...');
+    async loadAdminData(forceRefresh = false) {
+        console.log('Loading admin data...', forceRefresh ? '(Force refresh)' : '');
         
         // Show loading state
         this.showLoadingState();
@@ -2030,41 +2030,54 @@ class SimpleFormSubmit {
         try {
             let responses = [];
             
-            // Try Firebase first
+            // Always prioritize Firebase for accurate live data
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
-                console.log('Attempting Firebase connection...');
-                const result = await window.firebaseConfig.getCollection('employer-diagnostics');
-                console.log('Firebase result:', result);
+                console.log('Fetching live data from Firestore...');
                 
-                if (result && result.success && result.data && result.data.length > 0) {
+                // Get data with timestamp ordering for most recent first
+                const result = await window.firebaseConfig.getCollection('employer-diagnostics', {
+                    field: 'createdAt',
+                    direction: 'desc'
+                });
+                console.log('Firestore query result:', result);
+                
+                if (result && result.success && result.data) {
                     responses = result.data;
-                    console.log('Firebase data loaded:', responses.length, 'responses');
+                    console.log('✅ Firestore data loaded:', responses.length, 'responses');
+                    
+                    // Store fresh data in localStorage as backup
+                    if (responses.length > 0) {
+                        localStorage.setItem('employer-submissions', JSON.stringify(responses));
+                        console.log('Data cached to localStorage');
+                    }
                 } else {
-                    console.log('No Firebase data found, trying localStorage...');
+                    console.log('⚠️ No Firestore data found or query failed');
                 }
             } else {
-                console.log('Firebase not available, using localStorage...');
+                console.log('⚠️ Firebase not available, using localStorage...');
             }
             
-            // Always try localStorage as fallback
-            if (responses.length === 0) {
+            // Fallback to localStorage only if Firestore completely fails
+            if (responses.length === 0 && !forceRefresh) {
                 const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
-                responses = localData;
-                console.log('Using localStorage data:', responses.length, 'responses');
+                if (localData.length > 0) {
+                    responses = localData;
+                    console.log('📦 Using cached localStorage data:', responses.length, 'responses');
+                }
             }
             
             // Store responses for other methods
             this.currentResponses = responses;
             
-            // Update all dashboard components
+            // Update all dashboard components with fresh data
             this.updateAnalytics(responses);
             this.displayRecentResponses(responses);
             this.updateInsightfulMetrics(responses);
             
-            console.log('Admin data loading complete');
+            console.log('✅ Admin dashboard updated with', responses.length, 'employer submissions');
             
         } catch (error) {
-            console.error('Error loading admin data:', error);
+            console.error('❌ Error loading admin data:', error);
             this.showErrorState();
         }
     }
@@ -2075,6 +2088,38 @@ class SimpleFormSubmit {
         const totalPositions = this.calculateTotalPositions(responses);
         const topIndustry = this.getTopIndustry(responses);
         const urgentHiring = this.getUrgentHiring(responses);
+        
+        // Enhanced logging to verify Firestore data accuracy
+        console.log('=== FIRESTORE DATA VERIFICATION ===');
+        console.log('Total responses from Firestore:', responses.length);
+        console.log('Sample response structure:', responses[0] ? {
+            id: responses[0].id,
+            companyName: responses[0].companyName,
+            industry: responses[0].industry,
+            positionsAvailable: responses[0].positionsAvailable,
+            numberOfPositions: responses[0].numberOfPositions,
+            positions: responses[0].positions ? responses[0].positions.length : 'N/A',
+            timestamp: responses[0].timestamp || responses[0].createdAt
+        } : 'No responses');
+        
+        // Detailed position calculation logging
+        let positionBreakdown = [];
+        responses.forEach((response, index) => {
+            let posCount = 1;
+            if (response.positions && Array.isArray(response.positions)) {
+                posCount = response.positions.length;
+            } else {
+                posCount = parseInt(response.positionsAvailable || response.numberOfPositions || 1);
+            }
+            positionBreakdown.push({
+                company: response.companyName || `Company ${index + 1}`,
+                positions: posCount
+            });
+        });
+        
+        console.log('Position breakdown:', positionBreakdown);
+        console.log('Total positions calculated:', totalPositions);
+        console.log('===================================');
         
         // Update display - use correct element IDs
         const totalEmployersEl = document.getElementById('totalEmployers');
@@ -3365,10 +3410,10 @@ class SimpleFormSubmit {
     }
     
     refreshData() {
-        console.log('Refreshing data...');
-        this.loadAdminData();
+        console.log('Refreshing data with force refresh...');
+        this.loadAdminData(true); // Force refresh from Firestore
         this.loadFirebaseData();
-        Utils.showSuccess('Data refreshed');
+        Utils.showSuccess('Data refreshed from database');
     }
 
     clearLocalStorage() {
