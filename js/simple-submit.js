@@ -2021,8 +2021,8 @@ class SimpleFormSubmit {
         document.head.appendChild(style);
     }
 
-    async loadAdminData(forceRefresh = false) {
-        console.log('Loading admin data...', forceRefresh ? '(Force refresh)' : '');
+    async loadAdminData() {
+        console.log('Loading admin data...');
         
         // Show loading state
         this.showLoadingState();
@@ -2030,54 +2030,41 @@ class SimpleFormSubmit {
         try {
             let responses = [];
             
-            // Always prioritize Firebase for accurate live data
+            // Try Firebase first
             if (window.firebaseConfig && window.firebaseConfig.getCollection) {
-                console.log('Fetching live data from Firestore...');
+                console.log('Attempting Firebase connection...');
+                const result = await window.firebaseConfig.getCollection('employer-diagnostics');
+                console.log('Firebase result:', result);
                 
-                // Get data with timestamp ordering for most recent first
-                const result = await window.firebaseConfig.getCollection('employer-diagnostics', {
-                    field: 'createdAt',
-                    direction: 'desc'
-                });
-                console.log('Firestore query result:', result);
-                
-                if (result && result.success && result.data) {
+                if (result && result.success && result.data && result.data.length > 0) {
                     responses = result.data;
-                    console.log('✅ Firestore data loaded:', responses.length, 'responses');
-                    
-                    // Store fresh data in localStorage as backup
-                    if (responses.length > 0) {
-                        localStorage.setItem('employer-submissions', JSON.stringify(responses));
-                        console.log('Data cached to localStorage');
-                    }
+                    console.log('Firebase data loaded:', responses.length, 'responses');
                 } else {
-                    console.log('⚠️ No Firestore data found or query failed');
+                    console.log('No Firebase data found, trying localStorage...');
                 }
             } else {
-                console.log('⚠️ Firebase not available, using localStorage...');
+                console.log('Firebase not available, using localStorage...');
             }
             
-            // Fallback to localStorage only if Firestore completely fails
-            if (responses.length === 0 && !forceRefresh) {
+            // Always try localStorage as fallback
+            if (responses.length === 0) {
                 const localData = JSON.parse(localStorage.getItem('employer-submissions') || '[]');
-                if (localData.length > 0) {
-                    responses = localData;
-                    console.log('📦 Using cached localStorage data:', responses.length, 'responses');
-                }
+                responses = localData;
+                console.log('Using localStorage data:', responses.length, 'responses');
             }
             
             // Store responses for other methods
             this.currentResponses = responses;
             
-            // Update all dashboard components with fresh data
+            // Update all dashboard components
             this.updateAnalytics(responses);
-            await this.displayRecentResponses(responses);
+            this.displayRecentResponses(responses);
             this.updateInsightfulMetrics(responses);
             
-            console.log('✅ Admin dashboard updated with', responses.length, 'employer submissions');
+            console.log('Admin data loading complete');
             
         } catch (error) {
-            console.error('❌ Error loading admin data:', error);
+            console.error('Error loading admin data:', error);
             this.showErrorState();
         }
     }
@@ -2088,38 +2075,6 @@ class SimpleFormSubmit {
         const totalPositions = this.calculateTotalPositions(responses);
         const topIndustry = this.getTopIndustry(responses);
         const urgentHiring = this.getUrgentHiring(responses);
-        
-        // Enhanced logging to verify Firestore data accuracy
-        console.log('=== FIRESTORE DATA VERIFICATION ===');
-        console.log('Total responses from Firestore:', responses.length);
-        console.log('Sample response structure:', responses[0] ? {
-            id: responses[0].id,
-            companyName: responses[0].companyName,
-            industry: responses[0].industry,
-            positionsAvailable: responses[0].positionsAvailable,
-            numberOfPositions: responses[0].numberOfPositions,
-            positions: responses[0].positions ? responses[0].positions.length : 'N/A',
-            timestamp: responses[0].timestamp || responses[0].createdAt
-        } : 'No responses');
-        
-        // Detailed position calculation logging
-        let positionBreakdown = [];
-        responses.forEach((response, index) => {
-            let posCount = 1;
-            if (response.positions && Array.isArray(response.positions)) {
-                posCount = response.positions.length;
-            } else {
-                posCount = parseInt(response.positionsAvailable || response.numberOfPositions || 1);
-            }
-            positionBreakdown.push({
-                company: response.companyName || `Company ${index + 1}`,
-                positions: posCount
-            });
-        });
-        
-        console.log('Position breakdown:', positionBreakdown);
-        console.log('Total positions calculated:', totalPositions);
-        console.log('===================================');
         
         // Update display - use correct element IDs
         const totalEmployersEl = document.getElementById('totalEmployers');
@@ -2736,88 +2691,20 @@ class SimpleFormSubmit {
         }
     }
 
-    async displayRecentResponses(responses) {
+    displayRecentResponses(responses) {
         const container = document.getElementById('recentResponses');
         
-        // If no responses provided, fetch directly from Firestore
-        if (!responses || responses.length === 0) {
-            console.log('No responses provided, fetching fresh data from Firestore for last 2 days...');
-            try {
-                // Calculate 2 days ago timestamp
-                const twoDaysAgo = new Date();
-                twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-                twoDaysAgo.setHours(0, 0, 0, 0);
-                
-                const snapshot = await firebase.firestore()
-                    .collection('employer-diagnostics')
-                    .where('timestamp', '>=', twoDaysAgo)
-                    .orderBy('timestamp', 'desc')
-                    .limit(10)
-                    .get();
-                
-                if (snapshot.empty) {
-                    container.innerHTML = `
-                        <div class="loading-placeholder">
-                            <i class="fas fa-inbox"></i>
-                            <span>No responses yet</span>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                responses = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                
-                console.log('Fetched fresh responses from Firestore:', responses.length);
-            } catch (error) {
-                console.error('Error fetching fresh responses:', error);
-                container.innerHTML = `
-                    <div class="loading-placeholder">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Error loading responses</span>
-                    </div>
-                `;
-                return;
-            }
-        }
-        
-        // Filter responses from the last 2 days only
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-        twoDaysAgo.setHours(0, 0, 0, 0); // Start of day 2 days ago
-        
-        const recentResponses = responses.filter(response => {
-            const timestamp = this.parseTimestamp(response.timestamp || response.createdAt || response.submittedAt);
-            return timestamp >= twoDaysAgo;
-        });
-        
-        // Sort filtered responses by timestamp (most recent first)
-        const sortedResponses = recentResponses.sort((a, b) => {
-            const timestampA = this.parseTimestamp(a.timestamp || a.createdAt || a.submittedAt);
-            const timestampB = this.parseTimestamp(b.timestamp || b.createdAt || b.submittedAt);
-            return timestampB - timestampA; // Descending order (newest first)
-        });
-        
-        const recent = sortedResponses.slice(0, 10); // Take first 10 (most recent from last 2 days)
-        
-        console.log(`Recent responses from last 2 days (${recentResponses.length} total, showing ${recent.length}):`, recent.map(r => ({
-            company: r.companyName,
-            timestamp: r.timestamp || r.createdAt || r.submittedAt,
-            formatted: this.getAccurateTime(r.timestamp || r.createdAt || r.submittedAt)
-        })));
-        
-        // If no responses in last 2 days, show a message
-        if (recent.length === 0) {
+        if (responses.length === 0) {
             container.innerHTML = `
                 <div class="loading-placeholder">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>No submissions in the last 2 days</span>
+                    <i class="fas fa-inbox"></i>
+                    <span>No responses yet</span>
                 </div>
             `;
             return;
         }
+        
+        const recent = responses.slice(-10).reverse(); // Last 10 responses
         
         container.innerHTML = recent.map((response, index) => `
             <div class="response-item enhanced">
@@ -2827,8 +2714,8 @@ class SimpleFormSubmit {
                         <strong>${response.companyName || 'Unknown Company'}</strong>
                     </div>
                     <div class="response-time">
-                        <i class="fas fa-calendar-alt"></i>
-                        ${this.getAccurateTime(response.timestamp || response.createdAt || response.submittedAt)}
+                        <i class="fas fa-clock"></i>
+                        ${this.getRelativeTime(response.timestamp)}
                     </div>
                 </div>
                 <div class="response-details">
@@ -2867,91 +2754,6 @@ class SimpleFormSubmit {
         if (hours < 24) return `${hours}h ago`;
         if (days < 7) return `${days}d ago`;
         return date.toLocaleDateString();
-    }
-
-    getAccurateTime(timestamp) {
-        if (!timestamp) return 'Date not recorded';
-        
-        try {
-            let date;
-            
-            // Handle different timestamp formats
-            if (typeof timestamp === 'object' && timestamp.seconds) {
-                // Firestore Timestamp object
-                date = new Date(timestamp.seconds * 1000);
-            } else if (typeof timestamp === 'object' && timestamp._seconds) {
-                // Firestore Timestamp object (alternative format)
-                date = new Date(timestamp._seconds * 1000);
-            } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
-                // ISO string or Unix timestamp
-                date = new Date(timestamp);
-            } else {
-                console.warn('Unknown timestamp format:', timestamp);
-                return 'Date not recorded';
-            }
-            
-            // Validate the date
-            if (isNaN(date.getTime())) {
-                console.warn('Invalid date parsed from timestamp:', timestamp);
-                return 'Date not recorded';
-            }
-            
-            const now = new Date();
-            const diff = now - date;
-            
-            // Handle future dates (clock sync issues)
-            if (diff < 0) {
-                return 'Just submitted';
-            }
-            
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            
-            // Show "Just now" only for very recent submissions (within 5 minutes)
-            if (diff < 5 * 60 * 1000) {
-                return 'Just now';
-            }
-            
-            // Show date and time for all other submissions
-            const timeOptions = {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            };
-            
-            // Add year if not current year
-            if (date.getFullYear() !== now.getFullYear()) {
-                timeOptions.year = 'numeric';
-            }
-            
-            return date.toLocaleDateString('en-US', timeOptions);
-            
-        } catch (error) {
-            console.warn('Error formatting timestamp:', error, 'for value:', timestamp);
-            return 'Date not recorded';
-        }
-    }
-
-    parseTimestamp(timestamp) {
-        if (!timestamp) return new Date(0);
-        
-        try {
-            if (typeof timestamp === 'object' && timestamp.seconds) {
-                // Firestore Timestamp object
-                return new Date(timestamp.seconds * 1000);
-            } else if (typeof timestamp === 'object' && timestamp._seconds) {
-                // Firestore Timestamp object (alternative format)
-                return new Date(timestamp._seconds * 1000);
-            } else {
-                // ISO string or Unix timestamp
-                const date = new Date(timestamp);
-                return isNaN(date.getTime()) ? new Date(0) : date;
-            }
-        } catch (error) {
-            console.warn('Error parsing timestamp:', error, timestamp);
-            return new Date(0);
-        }
     }
 
     async exportResponses() {
@@ -3523,19 +3325,6 @@ class SimpleFormSubmit {
             return;
         }
         
-        // Sort responses by timestamp (most recent first)
-        const sortedResponses = [...responses].sort((a, b) => {
-            const timestampA = this.parseTimestamp(a.timestamp || a.createdAt || a.submittedAt);
-            const timestampB = this.parseTimestamp(b.timestamp || b.createdAt || b.submittedAt);
-            return timestampB - timestampA; // Descending order (newest first)
-        });
-        
-        console.log('All responses sorted by timestamp (newest first):', sortedResponses.map(r => ({
-            company: r.companyName,
-            timestamp: r.timestamp || r.createdAt || r.submittedAt,
-            formatted: this.formatDate(r.timestamp || r.submittedAt)
-        })));
-        
         const popup = document.createElement('div');
         popup.className = 'notification-overlay';
         popup.innerHTML = `
@@ -3553,14 +3342,14 @@ class SimpleFormSubmit {
                             <div class="table-cell">Submitted</div>
                             <div class="table-cell">Actions</div>
                         </div>
-                        ${sortedResponses.map((response, index) => `
+                        ${responses.map((response, index) => `
                             <div class="table-row">
                                 <div class="table-cell">${response.companyName || 'Unknown'}</div>
                                 <div class="table-cell">${response.industry || 'Not specified'}</div>
-                                <div class="table-cell">${this.getFieldValue(response, 'jobTitle')}</div>
+                                <div class="table-cell">${response.jobTitle || 'Not specified'}</div>
                                 <div class="table-cell">${this.formatDate(response.timestamp || response.submittedAt)}</div>
                                 <div class="table-cell">
-                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.findIndex(r => r === response)})">
+                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.length - 1 - index})">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
@@ -3573,14 +3362,13 @@ class SimpleFormSubmit {
         
         document.body.appendChild(popup);
         setTimeout(() => popup.classList.add('show'), 100);
-        
     }
     
     refreshData() {
-        console.log('Refreshing data with force refresh...');
-        this.loadAdminData(true); // Force refresh from Firestore
+        console.log('Refreshing data...');
+        this.loadAdminData();
         this.loadFirebaseData();
-        Utils.showSuccess('Data refreshed from database');
+        Utils.showSuccess('Data refreshed');
     }
 
     clearLocalStorage() {
