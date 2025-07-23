@@ -2749,7 +2749,20 @@ class SimpleFormSubmit {
             return;
         }
         
-        const recent = responses.slice(-10).reverse(); // Last 10 responses
+        // Sort responses by timestamp (most recent first) and take top 10
+        const sortedResponses = [...responses].sort((a, b) => {
+            const timestampA = new Date(a.timestamp || a.createdAt || a.submittedAt || 0);
+            const timestampB = new Date(b.timestamp || b.createdAt || b.submittedAt || 0);
+            return timestampB - timestampA; // Descending order (newest first)
+        });
+        
+        const recent = sortedResponses.slice(0, 10); // Take first 10 (most recent)
+        
+        console.log('Recent responses sorted by timestamp:', recent.map(r => ({
+            company: r.companyName,
+            timestamp: r.timestamp || r.createdAt || r.submittedAt,
+            formatted: this.getAccurateTime(r.timestamp || r.createdAt || r.submittedAt)
+        })));
         
         container.innerHTML = recent.map((response, index) => `
             <div class="response-item enhanced">
@@ -2760,7 +2773,7 @@ class SimpleFormSubmit {
                     </div>
                     <div class="response-time">
                         <i class="fas fa-clock"></i>
-                        ${this.getRelativeTime(response.timestamp)}
+                        ${this.getAccurateTime(response.timestamp || response.createdAt || response.submittedAt)}
                     </div>
                 </div>
                 <div class="response-details">
@@ -2799,6 +2812,40 @@ class SimpleFormSubmit {
         if (hours < 24) return `${hours}h ago`;
         if (days < 7) return `${days}d ago`;
         return date.toLocaleDateString();
+    }
+
+    getAccurateTime(timestamp) {
+        if (!timestamp) return 'Unknown time';
+        
+        try {
+            const date = new Date(timestamp);
+            if (isNaN(date.getTime())) return 'Invalid date';
+            
+            const now = new Date();
+            const diff = now - date;
+            
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(diff / (1000 * 60));
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            // More precise time formatting
+            if (seconds < 60) return seconds <= 5 ? 'Just now' : `${seconds}s ago`;
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            if (days < 30) return `${Math.floor(days / 7)}w ago`;
+            
+            // For older submissions, show the actual date
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
+        } catch (error) {
+            console.warn('Error formatting timestamp:', error, timestamp);
+            return 'Unknown time';
+        }
     }
 
     async exportResponses() {
