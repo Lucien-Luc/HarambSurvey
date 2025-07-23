@@ -11,6 +11,12 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 23, 2025 - Latest:**
+- **PERSISTENT ADMIN SESSIONS**: Admin users now stay logged in permanently after first authentication
+- **SESSION MANAGEMENT SYSTEM**: Added localStorage-based session persistence with security checks
+- **AUTOMATIC LOGIN BYPASS**: Admin panel access skips password prompt if valid session exists
+- **SECURE SESSION STORAGE**: Session data includes timestamps and user agent for basic security
+- **LOGOUT FUNCTIONALITY**: Proper logout clears persistent session and returns to survey view
+- **BILINGUAL LOGOUT MESSAGES**: Logout success messages support English/Kinyarwanda translation
 - **ENHANCED ERROR HANDLING SYSTEM**: Implemented comprehensive error handling with bilingual toast notifications
 - **OFFLINE STORAGE CAPABILITIES**: Added automatic form draft saving and offline submission queuing with retry functionality
 - **NETWORK CONNECTIVITY DETECTION**: Real-time network monitoring with automatic retry when connection is restored

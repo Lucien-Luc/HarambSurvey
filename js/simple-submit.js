@@ -92,7 +92,8 @@ class SimpleFormSubmit {
                 'network_error': 'Network error. Form saved, will retry when online.',
                 'submission_failed': 'Submission failed. Please check your internet connection.',
                 'connecting': 'Connecting...',
-                'retrying': 'Retrying...'
+                'retrying': 'Retrying...',
+                'admin_logout_success': 'Logged out successfully - session cleared'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -176,7 +177,8 @@ class SimpleFormSubmit {
                 'network_error': 'Ikibazo cyo kuragurana. Ifishi yarabitswe, tuzongera tugerageze.',
                 'submission_failed': 'Kohereza byanze. Suzuma niba ukoresha interineti neza.',
                 'connecting': 'Twiragurana...',
-                'retrying': 'Twongera tugerageza...'
+                'retrying': 'Twongera tugerageza...',
+                'admin_logout_success': 'Byasuye neza - ubwiyunge bwasibwe'
             }
         };
     }
@@ -644,6 +646,13 @@ class SimpleFormSubmit {
 
 
     async showAdminAccess() {
+        // Check if admin is already logged in (persistent session)
+        if (this.isAdminLoggedIn()) {
+            console.log('Admin session found - skipping authentication');
+            this.showAdminPanel();
+            return;
+        }
+        
         // Check if admin exists and authenticate
         const adminExists = await this.checkAdminExists();
         
@@ -651,6 +660,56 @@ class SimpleFormSubmit {
             this.showAdminSetup();
         } else {
             this.showAdminLogin();
+        }
+    }
+
+    // Check if admin has a persistent session
+    isAdminLoggedIn() {
+        try {
+            const adminSession = localStorage.getItem('bpn_admin_session');
+            if (!adminSession) return false;
+            
+            const session = JSON.parse(adminSession);
+            
+            // Check if session is valid (not expired and has valid data)
+            if (session.isAuthenticated && session.loginTime) {
+                console.log('Valid admin session found:', session.loginTime);
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('Error checking admin session:', error);
+            // Clear corrupted session data
+            localStorage.removeItem('bpn_admin_session');
+            return false;
+        }
+    }
+
+    // Create persistent admin session
+    createAdminSession() {
+        try {
+            const sessionData = {
+                isAuthenticated: true,
+                loginTime: new Date().toISOString(),
+                sessionId: 'admin_' + Date.now(),
+                userAgent: navigator.userAgent.substring(0, 100) // Store partial user agent for basic security
+            };
+            
+            localStorage.setItem('bpn_admin_session', JSON.stringify(sessionData));
+            console.log('Admin session created:', sessionData.loginTime);
+        } catch (error) {
+            console.error('Error creating admin session:', error);
+        }
+    }
+
+    // Clear admin session (for logout)
+    clearAdminSession() {
+        try {
+            localStorage.removeItem('bpn_admin_session');
+            console.log('Admin session cleared');
+        } catch (error) {
+            console.error('Error clearing admin session:', error);
         }
     }
 
@@ -759,6 +818,9 @@ class SimpleFormSubmit {
                 });
                 
                 if (result.success) {
+                    // Create persistent session for new admin
+                    this.createAdminSession();
+                    
                     // Close popup and show admin panel
                     const popup = document.querySelector('.notification-overlay');
                     if (popup) {
@@ -799,7 +861,10 @@ class SimpleFormSubmit {
                     console.log('Admin found:', admin);
                     
                     if (admin.password === password) {
-                        console.log('Password matches - logging in...');
+                        console.log('Password matches - creating persistent session...');
+                        
+                        // Create persistent admin session
+                        this.createAdminSession();
                         
                         // Update last login
                         await window.firebaseConfig.updateDocument('admins', admin.id, {
@@ -815,7 +880,7 @@ class SimpleFormSubmit {
                         console.log('Showing admin panel...');
                         this.showAdminPanel();
                         
-                        Utils.showSuccess('Login successful');
+                        Utils.showSuccess('Login successful - session saved');
                     } else {
                         console.log('Password mismatch');
                         alert('Invalid password');
@@ -3334,9 +3399,14 @@ class SimpleFormSubmit {
     }
 
     logoutAdmin() {
-        // Simple logout - just go back to survey
+        // Clear persistent admin session
+        this.clearAdminSession();
+        
+        // Switch back to survey view
         this.showView('surveyView');
-        Utils.showSuccess('Logged out successfully');
+        
+        console.log('Admin logged out - persistent session cleared');
+        this.showToast('admin_logout_success', 'success');
     }
 
     setupFormNavigation() {
