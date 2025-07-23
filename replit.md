@@ -11,7 +11,9 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 23, 2025 - Latest:**
-- **ADMIN LOGIN BUTTON STYLING FIX**: Updated admin login and setup buttons to use consistent CSS classes (btn, btn-primary, btn-full) instead of inline styles
+- **RECENT ACTIVITY SORTING FIX**: Fixed Recent Activity section to properly sort submissions by timestamp (newest first, oldest last) with proper chronological order
+- **DATA INTEGRITY PRESERVATION**: Implemented safe index mapping to prevent data mix-ups between different submissions when viewing details
+- **ADMIN LOGIN LAYOUT IMPROVEMENT**: Updated admin login buttons to horizontal layout (Cancel/Login side-by-side) for better user experience
 - **FORM CONSISTENCY ENHANCEMENT**: Replaced inline form styles with proper form-control and form-group classes for professional appearance
 - **MIGRATION COMPLETE**: Successfully completed migration from Replit Agent to standard Replit environment with all functionality intact
 - **CONDITIONAL NAVIGATION VISIBILITY**: Navigation bar now hidden in admin panel and visible only on survey side using admin-mode body class

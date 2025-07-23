@@ -2704,41 +2704,58 @@ class SimpleFormSubmit {
             return;
         }
         
-        const recent = responses.slice(-10).reverse(); // Last 10 responses
+        // Sort responses by timestamp (newest first) to ensure correct chronological order
+        const sortedResponses = [...responses].sort((a, b) => {
+            const timeA = new Date(a.timestamp || a.submittedAt || a.createdAt || 0).getTime();
+            const timeB = new Date(b.timestamp || b.submittedAt || b.createdAt || 0).getTime();
+            return timeB - timeA; // Newest first
+        });
         
-        container.innerHTML = recent.map((response, index) => `
-            <div class="response-item enhanced">
-                <div class="response-header">
-                    <div class="response-company">
-                        <i class="fas fa-building"></i>
-                        <strong>${response.companyName || 'Unknown Company'}</strong>
+        // Get the 10 most recent responses (already sorted newest first)
+        const recent = sortedResponses.slice(0, 10);
+        
+        container.innerHTML = recent.map((response, displayIndex) => {
+            // Find the original index in the unsorted responses array to preserve data integrity
+            const originalIndex = responses.findIndex(r => 
+                r.timestamp === response.timestamp && 
+                r.companyName === response.companyName &&
+                r.industry === response.industry
+            );
+            
+            return `
+                <div class="response-item enhanced">
+                    <div class="response-header">
+                        <div class="response-company">
+                            <i class="fas fa-building"></i>
+                            <strong>${response.companyName || 'Unknown Company'}</strong>
+                        </div>
+                        <div class="response-time">
+                            <i class="fas fa-clock"></i>
+                            ${this.getRelativeTime(response.timestamp)}
+                        </div>
                     </div>
-                    <div class="response-time">
-                        <i class="fas fa-clock"></i>
-                        ${this.getRelativeTime(response.timestamp)}
+                    <div class="response-details">
+                        <div class="response-detail">
+                            <i class="fas fa-industry"></i>
+                            <span>${response.industry || 'Not specified'}</span>
+                        </div>
+                        <div class="response-detail">
+                            <i class="fas fa-briefcase"></i>
+                            <span>${this.getPositionSummary(response)}</span>
+                        </div>
+                        <div class="response-detail">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>${this.getFieldValue(response, 'salaryRange')}</span>
+                        </div>
+                    </div>
+                    <div class="response-actions">
+                        <button class="response-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${originalIndex})">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
                     </div>
                 </div>
-                <div class="response-details">
-                    <div class="response-detail">
-                        <i class="fas fa-industry"></i>
-                        <span>${response.industry || 'Not specified'}</span>
-                    </div>
-                    <div class="response-detail">
-                        <i class="fas fa-briefcase"></i>
-                        <span>${this.getPositionSummary(response)}</span>
-                    </div>
-                    <div class="response-detail">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span>${this.getFieldValue(response, 'salaryRange')}</span>
-                    </div>
-                </div>
-                <div class="response-actions">
-                    <button class="response-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${index})">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
     
     getRelativeTime(timestamp) {
