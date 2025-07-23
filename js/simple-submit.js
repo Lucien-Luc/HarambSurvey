@@ -85,7 +85,14 @@ class SimpleFormSubmit {
                 'no_preference': 'No preference',
                 'male': 'Male',
                 'female': 'Female',
-                'any': 'Any'
+                'any': 'Any',
+                // Notification messages
+                'form_submitted_success': 'Form submitted successfully!',
+                'form_saved_offline': 'Form saved. Will submit when online.',
+                'network_error': 'Network error. Form saved, will retry when online.',
+                'submission_failed': 'Submission failed. Please check your internet connection.',
+                'connecting': 'Connecting...',
+                'retrying': 'Retrying...'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -162,7 +169,14 @@ class SimpleFormSubmit {
                 'no_preference': 'Nta kigena',
                 'male': 'Gabo',
                 'female': 'Gore',
-                'any': 'Igitsina cyose'
+                'any': 'Igitsina cyose',
+                // Notification messages
+                'form_submitted_success': 'Ifishi yoherejwe neza!',
+                'form_saved_offline': 'Ifishi yarabitswe. Izohererezwa mugihe ukorana kuri interineti.',
+                'network_error': 'Ikibazo cyo kuragurana. Ifishi yarabitswe, tuzongera tugerageze.',
+                'submission_failed': 'Kohereza byanze. Suzuma niba ukoresha interineti neza.',
+                'connecting': 'Twiragurana...',
+                'retrying': 'Twongera tugerageza...'
             }
         };
     }
@@ -222,7 +236,189 @@ class SimpleFormSubmit {
         // Set up form navigation
         this.setupFormNavigation();
         
+        // Initialize offline storage system
+        this.initOfflineStorage();
+        
+        // Initialize network monitoring
+        this.initNetworkMonitoring();
+        
+        // Load draft if available
+        this.loadDraft();
+        
         console.log('SimpleFormSubmit: Setup complete - button is ready');
+    }
+
+    // Toast notification system
+    showToast(messageKey, type = 'info', duration = 3000) {
+        const message = this.translations[this.currentLanguage][messageKey] || messageKey;
+        const container = document.getElementById('toastContainer');
+        
+        if (!container) {
+            console.error('Toast container not found');
+            return;
+        }
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        // Get appropriate icon
+        let icon = 'fas fa-info-circle';
+        if (type === 'success') icon = 'fas fa-check-circle';
+        else if (type === 'error') icon = 'fas fa-exclamation-circle';
+        else if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+        
+        toast.innerHTML = `
+            <i class="${icon} toast-icon"></i>
+            <span class="toast-message">${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        // Add to container
+        container.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Auto remove after duration
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // Network connectivity detection
+    initNetworkMonitoring() {
+        this.isOnline = navigator.onLine;
+        
+        window.addEventListener('online', () => {
+            this.isOnline = true;
+            this.showToast('connecting', 'info', 2000);
+            this.processOfflineSubmissions();
+        });
+        
+        window.addEventListener('offline', () => {
+            this.isOnline = false;
+        });
+    }
+
+    // Offline storage system
+    initOfflineStorage() {
+        this.offlineStorageKey = 'bpn_pending_submissions';
+        this.draftStorageKey = 'bpn_form_draft';
+        
+        // Auto-save form data as user types
+        if (this.form) {
+            this.form.addEventListener('input', () => {
+                this.saveDraft();
+            });
+        }
+    }
+
+    saveDraft() {
+        if (!this.form) return;
+        
+        const formData = new FormData(this.form);
+        const data = {};
+        
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        
+        // Also save checkboxes
+        const checkboxes = this.form.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            data[checkbox.name] = checkbox.checked;
+        });
+        
+        localStorage.setItem(this.draftStorageKey, JSON.stringify({
+            data: data,
+            timestamp: Date.now()
+        }));
+    }
+
+    loadDraft() {
+        try {
+            const draft = localStorage.getItem(this.draftStorageKey);
+            if (draft) {
+                const { data, timestamp } = JSON.parse(draft);
+                
+                // Only load draft if it's less than 24 hours old
+                if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+                    this.populateForm(data);
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading draft:', error);
+        }
+        return false;
+    }
+
+    populateForm(data) {
+        if (!this.form) return;
+        
+        Object.keys(data).forEach(key => {
+            const element = this.form.querySelector(`[name="${key}"]`);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = data[key];
+                } else {
+                    element.value = data[key];
+                }
+            }
+        });
+    }
+
+    saveOfflineSubmission(formData) {
+        try {
+            const submissions = JSON.parse(localStorage.getItem(this.offlineStorageKey) || '[]');
+            submissions.push({
+                data: formData,
+                timestamp: Date.now(),
+                retryCount: 0
+            });
+            localStorage.setItem(this.offlineStorageKey, JSON.stringify(submissions));
+            this.showToast('form_saved_offline', 'warning');
+        } catch (error) {
+            console.error('Error saving offline submission:', error);
+            this.showToast('submission_failed', 'error');
+        }
+    }
+
+    async processOfflineSubmissions() {
+        try {
+            const submissions = JSON.parse(localStorage.getItem(this.offlineStorageKey) || '[]');
+            if (submissions.length === 0) return;
+
+            this.showToast('retrying', 'info', 2000);
+
+            for (let i = submissions.length - 1; i >= 0; i--) {
+                const submission = submissions[i];
+                const success = await this.submitToFirebase(submission.data);
+                
+                if (success) {
+                    submissions.splice(i, 1);
+                    this.showToast('form_submitted_success', 'success');
+                } else {
+                    submission.retryCount = (submission.retryCount || 0) + 1;
+                    // Remove submissions that have failed too many times
+                    if (submission.retryCount > 3) {
+                        submissions.splice(i, 1);
+                    }
+                }
+            }
+
+            localStorage.setItem(this.offlineStorageKey, JSON.stringify(submissions));
+        } catch (error) {
+            console.error('Error processing offline submissions:', error);
+        }
+    }
+
+    clearDraft() {
+        localStorage.removeItem(this.draftStorageKey);
     }
 
     setupLanguageSwitcher() {
@@ -3790,7 +3986,7 @@ class SimpleFormSubmit {
         }
     }
 
-    processSubmission() {
+    async processSubmission() {
         console.log('SimpleFormSubmit: Processing submission...');
         
         // Collect all form data
@@ -3798,14 +3994,65 @@ class SimpleFormSubmit {
         
         console.log('SimpleFormSubmit: Form data collected:', formData);
         
-        // Save to localStorage
+        // Always save to localStorage as backup
         this.saveToLocalStorage(formData);
         
-        // Try Firebase if available
-        this.tryFirebaseSubmission(formData);
-        
-        // Show success
-        this.showSuccess(formData);
+        try {
+            // Check network connectivity
+            if (!this.isOnline) {
+                console.log('Offline detected - saving for later submission');
+                this.saveOfflineSubmission(formData);
+                this.resetButton();
+                return;
+            }
+            
+            // Try Firebase submission
+            const success = await this.submitToFirebase(formData);
+            
+            if (success) {
+                // Clear draft since submission was successful
+                this.clearDraft();
+                this.showToast('form_submitted_success', 'success');
+                this.showSuccess(formData);
+            } else {
+                // Firebase failed but we're online - save for retry
+                this.saveOfflineSubmission(formData);
+                this.showToast('network_error', 'error');
+                this.resetButton();
+            }
+            
+        } catch (error) {
+            console.error('Submission error:', error);
+            // Save for offline retry
+            this.saveOfflineSubmission(formData);
+            this.showToast('submission_failed', 'error');
+            this.resetButton();
+        }
+    }
+
+    // Enhanced Firebase submission with proper error handling
+    async submitToFirebase(formData) {
+        try {
+            if (!window.firebaseConfig || !window.firebaseConfig.createDocument) {
+                console.log('Firebase not available');
+                return false;
+            }
+
+            console.log('Attempting Firebase submission...');
+            const result = await window.firebaseConfig.createDocument('employer-diagnostics', formData);
+            
+            if (result && result.success) {
+                console.log('Firebase submission successful:', result.id);
+                return true;
+            } else {
+                console.error('Firebase submission failed:', result.error);
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('Firebase submission error:', error);
+            return false;
+        }
     }
 
     collectFormData() {
@@ -3927,26 +4174,7 @@ class SimpleFormSubmit {
         }
     }
 
-    tryFirebaseSubmission(data) {
-        try {
-            // Check if Firebase is available
-            if (window.firebaseConfig && window.firebaseConfig.createDocument) {
-                console.log('SimpleFormSubmit: Attempting Firebase submission...');
-                
-                window.firebaseConfig.createDocument('employer-diagnostics', data)
-                    .then(() => {
-                        console.log('SimpleFormSubmit: Firebase submission successful');
-                    })
-                    .catch(error => {
-                        console.warn('SimpleFormSubmit: Firebase submission failed:', error);
-                    });
-            } else {
-                console.log('SimpleFormSubmit: Firebase not available, using localStorage only');
-            }
-        } catch (error) {
-            console.warn('SimpleFormSubmit: Firebase attempt failed:', error);
-        }
-    }
+    // This function is now replaced by submitToFirebase for better error handling
 
     showSuccess(data) {
         console.log('SimpleFormSubmit: Showing beautiful success popup');
