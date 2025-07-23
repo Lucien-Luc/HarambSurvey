@@ -392,24 +392,46 @@ body::before {
     transform: translateX(-100%);
 }
 
-/* Header Styles */
+/* iOS-Style Liquid Glass Header */
 .header {
-    background: var(--color-white);
-    border-bottom: 1px solid #E5E7EB;
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 1px 0 0 rgba(255, 255, 255, 0.4) inset,
+        0 1px 20px 0 rgba(0, 0, 0, 0.05),
+        0 0 1px 0 rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    height: 72px;
+    position: relative;
 }
 
 .header-right {
@@ -420,11 +442,30 @@ body::before {
 .logo-container {
     cursor: pointer;
     user-select: none;
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 2px 8px 0 rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
 }
 
 .logo-container:hover {
-    transform: scale(1.02);
+    transform: scale(1.02) translateY(-1px);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 4px 16px 0 rgba(45, 212, 191, 0.1),
+        0 2px 8px 0 rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+}
+
+.logo-container:active {
+    transform: scale(0.98);
 }
 
 .nav-links {
@@ -447,42 +488,82 @@ body::before {
     color: var(--color-white);
 }
 
-/* Language Switcher Styles */
-.language-switcher {
+/* iOS-Style Language Switcher */
+.language-switcher,
+.lang-switcher {
     display: flex;
-    gap: 0.5rem;
+    gap: 8px;
     align-items: center;
     margin-left: auto;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px) saturate(1.5);
+    -webkit-backdrop-filter: blur(30px) saturate(1.5);
+    border-radius: 20px;
+    padding: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 2px 12px 0 rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
 }
 
 .lang-btn {
     width: 36px;
     height: 36px;
-    border: 2px solid #e5e7eb;
+    border: none;
     border-radius: 50%;
-    background: white;
-    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #333;
     font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+}
+
+.lang-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: all 0.25s ease;
+    transform: scale(0.8);
 }
 
 .lang-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    border-color: var(--color-primary);
+    transform: scale(1.08) translateY(-1px);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 4px 16px 0 rgba(45, 212, 191, 0.15),
+        0 2px 8px 0 rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
 }
 
-
+.lang-btn:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
 
 .lang-btn.active {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+    background: rgba(45, 212, 191, 0.2);
+    backdrop-filter: blur(25px) saturate(1.8);
+    -webkit-backdrop-filter: blur(25px) saturate(1.8);
+    box-shadow: 
+        0 4px 16px 0 rgba(45, 212, 191, 0.25),
+        0 1px 4px 0 rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
     transform: scale(1.05);
-    background: rgba(45, 212, 191, 0.05);
+    color: #1a1a1a;
+    font-weight: 600;
 }
 
 .lang-btn:active {
@@ -497,8 +578,26 @@ body::before {
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
+    .header {
+        backdrop-filter: blur(30px) saturate(1.6);
+        -webkit-backdrop-filter: blur(30px) saturate(1.6);
+    }
+    
     .header-content {
-        padding: 0 0.5rem;
+        padding: 0 1rem;
+        height: 64px;
+    }
+
+    .logo-container {
+        padding: 6px 10px;
+        border-radius: 10px;
+    }
+
+    .language-switcher,
+    .lang-switcher {
+        padding: 4px;
+        border-radius: 16px;
+        gap: 6px;
     }
 
     .lang-btn {
