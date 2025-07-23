@@ -753,13 +753,17 @@ class SimpleFormSubmit {
                     <div class="form-group">
                         <input type="password" id="adminConfirmPassword" placeholder="Confirm password" class="form-control">
                     </div>
-                    <button onclick="window.simpleFormSubmit.createAdmin()" class="btn btn-primary btn-full">
-                        Create Admin
-                    </button>
+                    <div class="auth-form-actions">
+                        <button onclick="this.closest('.notification-overlay').remove()" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button onclick="window.simpleFormSubmit.createAdmin()" class="btn btn-primary">
+                            <i class="fas fa-shield-alt"></i>
+                            Create Admin
+                        </button>
+                    </div>
                 </div>
-                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
-                    Cancel
-                </button>
             </div>
         `;
         
@@ -781,14 +785,17 @@ class SimpleFormSubmit {
                     <div class="form-group">
                         <input type="password" id="adminLoginPassword" placeholder="Enter password" class="form-control">
                     </div>
-                    <button onclick="window.simpleFormSubmit.loginAdmin()" class="btn btn-primary btn-full">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </button>
+                    <div class="auth-form-actions">
+                        <button onclick="this.closest('.notification-overlay').remove()" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button onclick="window.simpleFormSubmit.loginAdmin()" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </button>
+                    </div>
                 </div>
-                <button class="notification-action" onclick="this.closest('.notification-overlay').remove()">
-                    Cancel
-                </button>
             </div>
         `;
         

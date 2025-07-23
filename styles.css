@@ -982,6 +982,24 @@ textarea.form-control {
 }
 
 .btn-secondary {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--color-tertiary);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    box-shadow: 
+        0 2px 8px 0 rgba(107, 114, 128, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(107, 114, 128, 0.15);
+    color: var(--color-dark);
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 12px 0 rgba(107, 114, 128, 0.15),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary {
     background-color: var(--color-secondary);
     color: var(--color-white);
 }
@@ -1147,6 +1165,17 @@ textarea.form-control {
 
 .auth-form-content {
     margin-bottom: 1rem;
+}
+
+.auth-form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.auth-form-actions .btn {
+    flex: 1;
+    justify-content: center;
 }
 
 .auth-toggle {
