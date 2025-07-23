@@ -3553,22 +3553,19 @@ class SimpleFormSubmit {
                             <div class="table-cell">Submitted</div>
                             <div class="table-cell">Actions</div>
                         </div>
-                        ${sortedResponses.map((response, index) => {
-                            // Store the sorted response temporarily for correct reference
-                            const responseId = response.id || response.companyName + '_' + (response.timestamp || Date.now());
-                            return `
+                        ${sortedResponses.map((response, index) => `
                             <div class="table-row">
                                 <div class="table-cell">${response.companyName || 'Unknown'}</div>
                                 <div class="table-cell">${response.industry || 'Not specified'}</div>
                                 <div class="table-cell">${this.getFieldValue(response, 'jobTitle')}</div>
                                 <div class="table-cell">${this.formatDate(response.timestamp || response.submittedAt)}</div>
                                 <div class="table-cell">
-                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewResponseByData('${responseId}', ${index})">
+                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.findIndex(r => r === response)})">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
-                        `;}).join('')}
+                        `).join('')}
                     </div>
                 </div>
             </div>
@@ -3577,39 +3574,6 @@ class SimpleFormSubmit {
         document.body.appendChild(popup);
         setTimeout(() => popup.classList.add('show'), 100);
         
-        // Store sorted responses for correct referencing
-        this.sortedResponses = sortedResponses;
-    }
-    
-    viewResponseByData(responseId, sortedIndex) {
-        // Use the sorted response directly
-        if (this.sortedResponses && this.sortedResponses[sortedIndex]) {
-            this.viewSingleResponseData(this.sortedResponses[sortedIndex], sortedIndex);
-        } else {
-            console.error('Could not find response for sorted index:', sortedIndex);
-            Utils.showError('Could not load response details');
-        }
-    }
-    
-    viewSingleResponseData(response, displayIndex) {
-        console.log('Viewing response data:', response);
-        
-        const popup = document.createElement('div');
-        popup.className = 'notification-overlay';
-        popup.innerHTML = `
-            <div class="notification-popup single-response-popup">
-                <div class="notification-header">
-                    <h2>Response Details - ${response.companyName || 'Unknown Company'}</h2>
-                    <button onclick="this.closest('.notification-overlay').remove()" class="close-btn">×</button>
-                </div>
-                <div class="single-response-content">
-                    ${this.generateSingleResponseHtml(response)}
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(popup);
-        setTimeout(() => popup.classList.add('show'), 100);
     }
     
     refreshData() {
