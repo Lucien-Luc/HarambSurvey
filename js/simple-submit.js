@@ -3523,6 +3523,19 @@ class SimpleFormSubmit {
             return;
         }
         
+        // Sort responses by timestamp (most recent first)
+        const sortedResponses = [...responses].sort((a, b) => {
+            const timestampA = this.parseTimestamp(a.timestamp || a.createdAt || a.submittedAt);
+            const timestampB = this.parseTimestamp(b.timestamp || b.createdAt || b.submittedAt);
+            return timestampB - timestampA; // Descending order (newest first)
+        });
+        
+        console.log('All responses sorted by timestamp (newest first):', sortedResponses.map(r => ({
+            company: r.companyName,
+            timestamp: r.timestamp || r.createdAt || r.submittedAt,
+            formatted: this.formatDate(r.timestamp || r.submittedAt)
+        })));
+        
         const popup = document.createElement('div');
         popup.className = 'notification-overlay';
         popup.innerHTML = `
@@ -3540,14 +3553,14 @@ class SimpleFormSubmit {
                             <div class="table-cell">Submitted</div>
                             <div class="table-cell">Actions</div>
                         </div>
-                        ${responses.map((response, index) => `
+                        ${sortedResponses.map((response, index) => `
                             <div class="table-row">
                                 <div class="table-cell">${response.companyName || 'Unknown'}</div>
                                 <div class="table-cell">${response.industry || 'Not specified'}</div>
-                                <div class="table-cell">${response.jobTitle || 'Not specified'}</div>
+                                <div class="table-cell">${this.getFieldValue(response, 'jobTitle')}</div>
                                 <div class="table-cell">${this.formatDate(response.timestamp || response.submittedAt)}</div>
                                 <div class="table-cell">
-                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.length - 1 - index})">
+                                    <button class="table-action-btn" onclick="window.simpleFormSubmit.viewSingleResponse(${responses.indexOf(response)})">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
