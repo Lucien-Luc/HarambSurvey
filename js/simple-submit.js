@@ -3953,6 +3953,13 @@ class SimpleFormSubmit {
             return;
         }
         
+        // Handle admin mode - hide/show navigation
+        if (viewId === 'adminView') {
+            document.body.classList.add('admin-mode');
+        } else {
+            document.body.classList.remove('admin-mode');
+        }
+        
         // If there's a current view, slide it out
         if (currentView) {
             currentView.classList.add('slide-out');

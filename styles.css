@@ -570,6 +570,22 @@ body::before {
     transform: scale(0.95);
 }
 
+/* Hide navigation bar in admin view - using CSS class approach */
+body.admin-mode .header {
+    display: none !important;
+}
+
+/* Admin view takes full screen when navigation is hidden */
+body.admin-mode #adminView.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: #f8f9fa;
+}
+
 /* Required field indicator */
 .required {
     color: #EF4444;
@@ -1156,12 +1172,13 @@ textarea.form-control {
     text-decoration: underline;
 }
 
-/* Admin Layout */
-transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-width: 14.28%;
-/* 1/7 sections */
-border-radius: 8px;
-position: relative;
+/* Progress Fill Styles */
+.progress-fill {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 14.28%;
+    /* 1/7 sections */
+    border-radius: 8px;
+    position: relative;
 }
 
 .progress-fill::after {

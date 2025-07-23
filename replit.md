@@ -11,6 +11,9 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 23, 2025 - Latest:**
+- **CONDITIONAL NAVIGATION VISIBILITY**: Navigation bar now hidden in admin panel and visible only on survey side using admin-mode body class
+- **ENHANCED ADMIN VIEW MANAGEMENT**: JavaScript showView method updated to manage admin-mode class for proper navigation control
+- **FULL SCREEN ADMIN PANEL**: Admin panel takes full screen when navigation is hidden for better dashboard experience
 - **iOS-STYLE LIQUID GLASS NAVIGATION**: Implemented advanced glassmorphism navigation bar with iOS-inspired design, enhanced blur effects, and sophisticated styling
 - **PREMIUM GLASS HEADER**: Navigation features blur(40px) saturate(1.8) effects, gradient overlays, and advanced shadow systems for depth
 - **REFINED LANGUAGE SWITCHER**: iOS-style switcher with backdrop-blur, radial gradients, and micro-interactions similar to modern iOS interfaces
