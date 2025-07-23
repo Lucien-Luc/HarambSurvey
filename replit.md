@@ -11,6 +11,9 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 23, 2025 - Latest:**
+- **RECENT ACTIVITY FILTER**: Limited Recent Activity to show only submissions from the last 2 days with proper date filtering
+- **DIRECT FIRESTORE QUERIES**: Enhanced Recent Activity to fetch fresh data directly from Firestore with date-based filtering
+- **IMPROVED DATE DISPLAY**: Changed from relative time ("3 days ago") to actual dates and times ("Jul 23, 2:45 PM")
 - **RECENT ACTIVITY SORTING FIX**: Fixed Recent Activity section to show most recent submissions at top with accurate timestamp-based sorting
 - **ENHANCED TIME DISPLAY**: Added precise timestamp formatting (seconds, minutes, hours, days, weeks) with "Just now" for immediate submissions
 - **FIRESTORE DATA ACCURACY**: Enhanced analytics to ensure counts exactly match database with detailed verification logging and force refresh capability

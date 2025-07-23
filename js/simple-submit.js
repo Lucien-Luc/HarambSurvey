@@ -2741,10 +2741,16 @@ class SimpleFormSubmit {
         
         // If no responses provided, fetch directly from Firestore
         if (!responses || responses.length === 0) {
-            console.log('No responses provided, fetching fresh data from Firestore...');
+            console.log('No responses provided, fetching fresh data from Firestore for last 2 days...');
             try {
+                // Calculate 2 days ago timestamp
+                const twoDaysAgo = new Date();
+                twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+                twoDaysAgo.setHours(0, 0, 0, 0);
+                
                 const snapshot = await firebase.firestore()
                     .collection('employer-diagnostics')
+                    .where('timestamp', '>=', twoDaysAgo)
                     .orderBy('timestamp', 'desc')
                     .limit(10)
                     .get();
@@ -2777,20 +2783,41 @@ class SimpleFormSubmit {
             }
         }
         
-        // Sort responses by timestamp (most recent first) and take top 10
-        const sortedResponses = [...responses].sort((a, b) => {
+        // Filter responses from the last 2 days only
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        twoDaysAgo.setHours(0, 0, 0, 0); // Start of day 2 days ago
+        
+        const recentResponses = responses.filter(response => {
+            const timestamp = this.parseTimestamp(response.timestamp || response.createdAt || response.submittedAt);
+            return timestamp >= twoDaysAgo;
+        });
+        
+        // Sort filtered responses by timestamp (most recent first)
+        const sortedResponses = recentResponses.sort((a, b) => {
             const timestampA = this.parseTimestamp(a.timestamp || a.createdAt || a.submittedAt);
             const timestampB = this.parseTimestamp(b.timestamp || b.createdAt || b.submittedAt);
             return timestampB - timestampA; // Descending order (newest first)
         });
         
-        const recent = sortedResponses.slice(0, 10); // Take first 10 (most recent)
+        const recent = sortedResponses.slice(0, 10); // Take first 10 (most recent from last 2 days)
         
-        console.log('Recent responses with formatted dates:', recent.map(r => ({
+        console.log(`Recent responses from last 2 days (${recentResponses.length} total, showing ${recent.length}):`, recent.map(r => ({
             company: r.companyName,
             timestamp: r.timestamp || r.createdAt || r.submittedAt,
             formatted: this.getAccurateTime(r.timestamp || r.createdAt || r.submittedAt)
         })));
+        
+        // If no responses in last 2 days, show a message
+        if (recent.length === 0) {
+            container.innerHTML = `
+                <div class="loading-placeholder">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>No submissions in the last 2 days</span>
+                </div>
+            `;
+            return;
+        }
         
         container.innerHTML = recent.map((response, index) => `
             <div class="response-item enhanced">
