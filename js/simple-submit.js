@@ -2751,8 +2751,8 @@ class SimpleFormSubmit {
         
         // Sort responses by timestamp (most recent first) and take top 10
         const sortedResponses = [...responses].sort((a, b) => {
-            const timestampA = new Date(a.timestamp || a.createdAt || a.submittedAt || 0);
-            const timestampB = new Date(b.timestamp || b.createdAt || b.submittedAt || 0);
+            const timestampA = this.parseTimestamp(a.timestamp || a.createdAt || a.submittedAt);
+            const timestampB = this.parseTimestamp(b.timestamp || b.createdAt || b.submittedAt);
             return timestampB - timestampA; // Descending order (newest first)
         });
         
@@ -2815,14 +2815,39 @@ class SimpleFormSubmit {
     }
 
     getAccurateTime(timestamp) {
-        if (!timestamp) return 'Unknown time';
+        if (!timestamp) return 'Recently';
         
         try {
-            const date = new Date(timestamp);
-            if (isNaN(date.getTime())) return 'Invalid date';
+            let date;
+            
+            // Handle different timestamp formats
+            if (typeof timestamp === 'object' && timestamp.seconds) {
+                // Firestore Timestamp object
+                date = new Date(timestamp.seconds * 1000);
+            } else if (typeof timestamp === 'object' && timestamp._seconds) {
+                // Firestore Timestamp object (alternative format)
+                date = new Date(timestamp._seconds * 1000);
+            } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+                // ISO string or Unix timestamp
+                date = new Date(timestamp);
+            } else {
+                console.warn('Unknown timestamp format:', timestamp);
+                return 'Recently';
+            }
+            
+            // Validate the date
+            if (isNaN(date.getTime())) {
+                console.warn('Invalid date parsed from timestamp:', timestamp);
+                return 'Recently';
+            }
             
             const now = new Date();
             const diff = now - date;
+            
+            // Handle future dates (clock sync issues)
+            if (diff < 0) {
+                return 'Just now';
+            }
             
             const seconds = Math.floor(diff / 1000);
             const minutes = Math.floor(diff / (1000 * 60));
@@ -2830,7 +2855,8 @@ class SimpleFormSubmit {
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             
             // More precise time formatting
-            if (seconds < 60) return seconds <= 5 ? 'Just now' : `${seconds}s ago`;
+            if (seconds < 10) return 'Just now';
+            if (seconds < 60) return `${seconds}s ago`;
             if (minutes < 60) return `${minutes}m ago`;
             if (hours < 24) return `${hours}h ago`;
             if (days < 7) return `${days}d ago`;
@@ -2843,8 +2869,29 @@ class SimpleFormSubmit {
                 year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
             });
         } catch (error) {
-            console.warn('Error formatting timestamp:', error, timestamp);
-            return 'Unknown time';
+            console.warn('Error formatting timestamp:', error, 'for value:', timestamp);
+            return 'Recently';
+        }
+    }
+
+    parseTimestamp(timestamp) {
+        if (!timestamp) return new Date(0);
+        
+        try {
+            if (typeof timestamp === 'object' && timestamp.seconds) {
+                // Firestore Timestamp object
+                return new Date(timestamp.seconds * 1000);
+            } else if (typeof timestamp === 'object' && timestamp._seconds) {
+                // Firestore Timestamp object (alternative format)
+                return new Date(timestamp._seconds * 1000);
+            } else {
+                // ISO string or Unix timestamp
+                const date = new Date(timestamp);
+                return isNaN(date.getTime()) ? new Date(0) : date;
+            }
+        } catch (error) {
+            console.warn('Error parsing timestamp:', error, timestamp);
+            return new Date(0);
         }
     }
 
