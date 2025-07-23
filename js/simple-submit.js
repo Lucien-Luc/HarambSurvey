@@ -747,9 +747,13 @@ class SimpleFormSubmit {
                 <h1 class="notification-title">Admin Setup</h1>
                 <p class="notification-message">Set up the admin password. This can only be done once.</p>
                 <div class="auth-form">
-                    <input type="password" id="adminSetupPassword" placeholder="Enter admin password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
-                    <input type="password" id="adminConfirmPassword" placeholder="Confirm password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
-                    <button onclick="window.simpleFormSubmit.createAdmin()" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <div class="form-group">
+                        <input type="password" id="adminSetupPassword" placeholder="Enter admin password" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="adminConfirmPassword" placeholder="Confirm password" class="form-control">
+                    </div>
+                    <button onclick="window.simpleFormSubmit.createAdmin()" class="btn btn-primary btn-full">
                         Create Admin
                     </button>
                 </div>
@@ -774,8 +778,11 @@ class SimpleFormSubmit {
                 <h1 class="notification-title">Admin Login</h1>
                 <p class="notification-message">Enter admin password to access the panel.</p>
                 <div class="auth-form">
-                    <input type="password" id="adminLoginPassword" placeholder="Enter password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
-                    <button onclick="window.simpleFormSubmit.loginAdmin()" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <div class="form-group">
+                        <input type="password" id="adminLoginPassword" placeholder="Enter password" class="form-control">
+                    </div>
+                    <button onclick="window.simpleFormSubmit.loginAdmin()" class="btn btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i>
                         Login
                     </button>
                 </div>
