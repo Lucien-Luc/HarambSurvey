@@ -2071,7 +2071,7 @@ class SimpleFormSubmit {
             
             // Update all dashboard components with fresh data
             this.updateAnalytics(responses);
-            this.displayRecentResponses(responses);
+            await this.displayRecentResponses(responses);
             this.updateInsightfulMetrics(responses);
             
             console.log('✅ Admin dashboard updated with', responses.length, 'employer submissions');
@@ -2736,17 +2736,45 @@ class SimpleFormSubmit {
         }
     }
 
-    displayRecentResponses(responses) {
+    async displayRecentResponses(responses) {
         const container = document.getElementById('recentResponses');
         
-        if (responses.length === 0) {
-            container.innerHTML = `
-                <div class="loading-placeholder">
-                    <i class="fas fa-inbox"></i>
-                    <span>No responses yet</span>
-                </div>
-            `;
-            return;
+        // If no responses provided, fetch directly from Firestore
+        if (!responses || responses.length === 0) {
+            console.log('No responses provided, fetching fresh data from Firestore...');
+            try {
+                const snapshot = await firebase.firestore()
+                    .collection('employer-diagnostics')
+                    .orderBy('timestamp', 'desc')
+                    .limit(10)
+                    .get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="loading-placeholder">
+                            <i class="fas fa-inbox"></i>
+                            <span>No responses yet</span>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                responses = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                console.log('Fetched fresh responses from Firestore:', responses.length);
+            } catch (error) {
+                console.error('Error fetching fresh responses:', error);
+                container.innerHTML = `
+                    <div class="loading-placeholder">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Error loading responses</span>
+                    </div>
+                `;
+                return;
+            }
         }
         
         // Sort responses by timestamp (most recent first) and take top 10
@@ -2758,7 +2786,7 @@ class SimpleFormSubmit {
         
         const recent = sortedResponses.slice(0, 10); // Take first 10 (most recent)
         
-        console.log('Recent responses sorted by timestamp:', recent.map(r => ({
+        console.log('Recent responses with formatted dates:', recent.map(r => ({
             company: r.companyName,
             timestamp: r.timestamp || r.createdAt || r.submittedAt,
             formatted: this.getAccurateTime(r.timestamp || r.createdAt || r.submittedAt)
@@ -2772,7 +2800,7 @@ class SimpleFormSubmit {
                         <strong>${response.companyName || 'Unknown Company'}</strong>
                     </div>
                     <div class="response-time">
-                        <i class="fas fa-clock"></i>
+                        <i class="fas fa-calendar-alt"></i>
                         ${this.getAccurateTime(response.timestamp || response.createdAt || response.submittedAt)}
                     </div>
                 </div>
@@ -2815,7 +2843,7 @@ class SimpleFormSubmit {
     }
 
     getAccurateTime(timestamp) {
-        if (!timestamp) return 'Recently';
+        if (!timestamp) return 'Date not recorded';
         
         try {
             let date;
@@ -2832,13 +2860,13 @@ class SimpleFormSubmit {
                 date = new Date(timestamp);
             } else {
                 console.warn('Unknown timestamp format:', timestamp);
-                return 'Recently';
+                return 'Date not recorded';
             }
             
             // Validate the date
             if (isNaN(date.getTime())) {
                 console.warn('Invalid date parsed from timestamp:', timestamp);
-                return 'Recently';
+                return 'Date not recorded';
             }
             
             const now = new Date();
@@ -2846,31 +2874,35 @@ class SimpleFormSubmit {
             
             // Handle future dates (clock sync issues)
             if (diff < 0) {
+                return 'Just submitted';
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            
+            // Show "Just now" only for very recent submissions (within 5 minutes)
+            if (diff < 5 * 60 * 1000) {
                 return 'Just now';
             }
             
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(diff / (1000 * 60));
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            // More precise time formatting
-            if (seconds < 10) return 'Just now';
-            if (seconds < 60) return `${seconds}s ago`;
-            if (minutes < 60) return `${minutes}m ago`;
-            if (hours < 24) return `${hours}h ago`;
-            if (days < 7) return `${days}d ago`;
-            if (days < 30) return `${Math.floor(days / 7)}w ago`;
-            
-            // For older submissions, show the actual date
-            return date.toLocaleDateString('en-US', { 
-                month: 'short', 
+            // Show date and time for all other submissions
+            const timeOptions = {
+                month: 'short',
                 day: 'numeric',
-                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-            });
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            };
+            
+            // Add year if not current year
+            if (date.getFullYear() !== now.getFullYear()) {
+                timeOptions.year = 'numeric';
+            }
+            
+            return date.toLocaleDateString('en-US', timeOptions);
+            
         } catch (error) {
             console.warn('Error formatting timestamp:', error, 'for value:', timestamp);
-            return 'Recently';
+            return 'Date not recorded';
         }
     }
 
