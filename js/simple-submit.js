@@ -3611,6 +3611,9 @@ class SimpleFormSubmit {
         
         // Apply translations to newly created cards
         this.updateTranslations();
+        
+        // Add click outside listener for dropdowns
+        this.addDropdownClickOutsideListener();
     }
     
     createPositionCard(positionNumber) {
@@ -3624,12 +3627,16 @@ class SimpleFormSubmit {
                     <i class="fas fa-briefcase"></i>
                     Position ${positionNumber}
                 </div>
-                ${positionNumber > 1 ? `
-                    <button type="button" class="copy-position-btn" onclick="window.simpleFormSubmit.copyFromPosition1(${positionNumber})">
-                        <i class="fas fa-copy"></i>
-                        Copy from Position 1
+                <div class="paste-to-dropdown">
+                    <button type="button" class="paste-to-btn" onclick="window.simpleFormSubmit.togglePasteDropdown(${positionNumber})">
+                        <i class="fas fa-clipboard"></i>
+                        Paste to:
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
                     </button>
-                ` : ''}
+                    <div class="paste-dropdown-menu" id="pasteDropdown${positionNumber}">
+                        <!-- Dropdown options will be populated dynamically -->
+                    </div>
+                </div>
             </div>
             
             <div class="position-form-group">
@@ -3878,26 +3885,112 @@ class SimpleFormSubmit {
         return card;
     }
     
-    copyFromPosition1(targetPosition) {
-        const pos1Data = this.getPositionData(1);
-        if (!pos1Data) return;
+    togglePasteDropdown(sourcePosition) {
+        const dropdown = document.getElementById(`pasteDropdown${sourcePosition}`);
+        const allDropdowns = document.querySelectorAll('.paste-dropdown-menu');
+        
+        // Close all other dropdowns
+        allDropdowns.forEach(d => {
+            if (d.id !== `pasteDropdown${sourcePosition}`) {
+                d.classList.remove('show');
+            }
+        });
+        
+        // Toggle current dropdown
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        } else {
+            this.populateDropdownOptions(sourcePosition);
+            dropdown.classList.add('show');
+        }
+    }
+    
+    populateDropdownOptions(sourcePosition) {
+        const dropdown = document.getElementById(`pasteDropdown${sourcePosition}`);
+        const totalPositions = this.positionModes.length;
+        
+        let optionsHtml = '';
+        for (let i = 1; i <= totalPositions; i++) {
+            if (i !== sourcePosition) {
+                const jobTitle = document.getElementById(`pos${i}_jobTitle`)?.value || '';
+                const displayText = jobTitle ? `Position ${i}: ${jobTitle}` : `Position ${i}`;
+                
+                optionsHtml += `
+                    <div class="paste-dropdown-option" onclick="window.simpleFormSubmit.pasteToPosition(${sourcePosition}, ${i})">
+                        <i class="fas fa-arrow-right"></i>
+                        ${displayText}
+                    </div>
+                `;
+            }
+        }
+        
+        if (optionsHtml === '') {
+            optionsHtml = '<div class="paste-dropdown-empty">No other positions available</div>';
+        }
+        
+        dropdown.innerHTML = optionsHtml;
+    }
+    
+    pasteToPosition(sourcePosition, targetPosition) {
+        const sourceData = this.getPositionData(sourcePosition);
+        if (!sourceData) return;
         
         // Copy data to target position
-        this.setPositionData(targetPosition, pos1Data);
+        this.setPositionData(targetPosition, sourceData);
+        
+        // Close dropdown
+        document.getElementById(`pasteDropdown${sourcePosition}`).classList.remove('show');
         
         // Show success message
-        const card = document.getElementById(`position-card-${targetPosition}`);
-        if (card) {
-            const title = card.querySelector('.position-card-title');
+        const targetCard = document.getElementById(`position-card-${targetPosition}`);
+        if (targetCard) {
+            const title = targetCard.querySelector('.position-card-title');
             const originalText = title.innerHTML;
-            title.innerHTML = '<i class="fas fa-check"></i> Copied from Position 1';
+            title.innerHTML = `<i class="fas fa-check"></i> Pasted from Position ${sourcePosition}`;
             title.style.color = '#10b981';
             
             setTimeout(() => {
                 title.innerHTML = originalText;
                 title.style.color = '';
+            }, 3000);
+        }
+        
+        // Also show feedback on source card
+        const sourceCard = document.getElementById(`position-card-${sourcePosition}`);
+        if (sourceCard) {
+            const btn = sourceCard.querySelector('.paste-to-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Pasted!';
+            btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            btn.style.color = 'white';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                btn.style.color = '';
             }, 2000);
         }
+    }
+    
+    addDropdownClickOutsideListener() {
+        // Remove existing listener if any
+        if (this.dropdownClickListener) {
+            document.removeEventListener('click', this.dropdownClickListener);
+        }
+        
+        // Add new listener
+        this.dropdownClickListener = (event) => {
+            const dropdowns = document.querySelectorAll('.paste-dropdown-menu.show');
+            const isDropdownClick = event.target.closest('.paste-to-dropdown');
+            
+            if (!isDropdownClick && dropdowns.length > 0) {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        };
+        
+        document.addEventListener('click', this.dropdownClickListener);
     }
     
     getPositionData(positionNumber) {
