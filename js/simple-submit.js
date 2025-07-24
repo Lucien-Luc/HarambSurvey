@@ -93,7 +93,21 @@ class SimpleFormSubmit {
                 'submission_failed': 'Submission failed. Please check your internet connection.',
                 'connecting': 'Connecting...',
                 'retrying': 'Retrying...',
-                'admin_logout_success': 'Logged out successfully - session cleared'
+                'admin_logout_success': 'Logged out successfully - session cleared',
+                // User guide translations
+                'guide_title': 'Welcome! Here\'s how to use the form',
+                'guide_step1_title': 'Fill out your company information',
+                'guide_step1_desc': 'Start by providing basic details about your company and contact information. This helps us understand your business better.',
+                'guide_step2_title': 'Choose single or multiple positions',
+                'guide_step2_desc': 'Select how many job positions you\'re hiring for. If you choose multiple positions, you\'ll get individual forms for each role.',
+                'guide_step3_title': 'Use "Paste to:" for similar positions',
+                'guide_step3_desc': 'Save time! Fill out one position completely, then click the "Paste to:" button to copy all details to other similar positions. You can copy from any position to any other position.',
+                'guide_step4_title': 'Switch languages anytime',
+                'guide_step4_desc': 'Use the flag buttons in the top-right corner to switch between English and Kinyarwanda. Your progress will be saved automatically.',
+                'guide_step5_title': 'Auto-save keeps your work safe',
+                'guide_step5_desc': 'Don\'t worry about losing your work! The form automatically saves your progress as you type, and works even when you\'re offline.',
+                'guide_start_using': 'Start Using Form',
+                'guide_dont_show': 'Don\'t show this guide again'
             },
             rw: {
                 'page_title': 'Gushaka Akazi - Ibibazo by\'Abakoresha',
@@ -178,7 +192,21 @@ class SimpleFormSubmit {
                 'submission_failed': 'Kohereza byanze. Suzuma niba ukoresha interineti neza.',
                 'connecting': 'Twiragurana...',
                 'retrying': 'Twongera tugerageza...',
-                'admin_logout_success': 'Byasuye neza - ubwiyunge bwasibwe'
+                'admin_logout_success': 'Byasuye neza - ubwiyunge bwasibwe',
+                // User guide translations
+                'guide_title': 'Murakaza neza! Dore uburyo bwo gukoresha ifishi',
+                'guide_step1_title': 'Uzuza amakuru y\'ikigo cyawe',
+                'guide_step1_desc': 'Tangira utanga amakuru y\'ibanze ku kigo cyawe n\'uburyo bwo kubonana. Ibi bituma tumenyera neza ubucuruzi bwawe.',
+                'guide_step2_title': 'Hitamo umurimo umwe cyangwa imirimo myinshi',
+                'guide_step2_desc': 'Hitamo imirimo ushaka gushaka abakozi. Niba uhitamo imirimo myinshi, uzabonera buri murimo ifishi yihariye.',
+                'guide_step3_title': 'Koresha "Paste to:" ku mirimo isa',
+                'guide_step3_desc': 'Kugabanya igihe! Uzuza umurimo umwe wuzuye, hanyuma ukande buto ya "Paste to:" kugira ukopire amakuru yose mu indi mirimo isa. Urashobora gukopira umurimo uwariwo wose mu indi mirimo iyo ariyo yose.',
+                'guide_step4_title': 'Hindura ururimi igihe icyo ari cyo cyose',
+                'guide_step4_desc': 'Koresha utubuto tw\'amabendera ku ruhande rwo hejuru kugira uhindure hagati y\'Icyongereza na Kinyarwanda. Aho wageze hifashwe mu buryo bwikora.',
+                'guide_step5_title': 'Auto-save igumana akazi kawe',
+                'guide_step5_desc': 'Ntugire impungenge zo gutakaza akazi kawe! Ifishi igumana byikora uko wagenda wandika, kandi ikakora nubwo udafite internet.',
+                'guide_start_using': 'Tangira Gukoresha Ifishi',
+                'guide_dont_show': 'Ntuyerekane uyu mubonano nanone'
             }
         };
     }
@@ -202,6 +230,9 @@ class SimpleFormSubmit {
         
         // Set up language switcher
         this.setupLanguageSwitcher();
+        
+        // Initialize user guide
+        this.initUserGuide();
         
         // Find form and button
         this.form = document.getElementById('employerDiagnosticForm');
@@ -4478,6 +4509,129 @@ class SimpleFormSubmit {
         this.isSubmitting = false;
         this.submitBtn.disabled = false;
         this.submitBtn.innerHTML = '<i class="fas fa-check"></i> SUBMIT FORM';
+    }
+
+    // ======================
+    // USER GUIDE SYSTEM
+    // ======================
+
+    initUserGuide() {
+        this.currentGuideStep = 1;
+        this.totalGuideSteps = 5;
+        
+        // Check if user has seen the guide before
+        const hasSeenGuide = localStorage.getItem('bpn_guide_seen');
+        
+        // Show guide on first visit
+        if (!hasSeenGuide) {
+            setTimeout(() => {
+                this.showUserGuide();
+            }, 1000); // Small delay to ensure page is loaded
+        }
+        
+        // Set up click outside to close dropdowns
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-guide-overlay')) {
+                // Handle click outside guide if needed
+            }
+        });
+    }
+
+    showUserGuide() {
+        const overlay = document.getElementById('userGuideOverlay');
+        if (overlay) {
+            overlay.classList.add('show');
+            this.updateGuideStep(1);
+        }
+    }
+
+    closeUserGuide() {
+        const overlay = document.getElementById('userGuideOverlay');
+        if (overlay) {
+            overlay.classList.remove('show');
+            
+            // Check if user selected "don't show again"
+            const dontShowCheckbox = document.getElementById('dontShowAgain');
+            if (dontShowCheckbox && dontShowCheckbox.checked) {
+                localStorage.setItem('bpn_guide_seen', 'true');
+            }
+        }
+    }
+
+    nextGuideStep() {
+        if (this.currentGuideStep < this.totalGuideSteps) {
+            this.currentGuideStep++;
+            this.updateGuideStep(this.currentGuideStep);
+        }
+    }
+
+    previousGuideStep() {
+        if (this.currentGuideStep > 1) {
+            this.currentGuideStep--;
+            this.updateGuideStep(this.currentGuideStep);
+        }
+    }
+
+    updateGuideStep(stepNumber) {
+        // Update step content
+        const steps = document.querySelectorAll('.guide-step');
+        steps.forEach((step, index) => {
+            if (index + 1 === stepNumber) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update step indicators
+        const dots = document.querySelectorAll('.step-dot');
+        dots.forEach((dot, index) => {
+            if (index + 1 === stepNumber) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Update navigation buttons
+        const prevBtn = document.querySelector('.guide-prev');
+        const nextBtn = document.querySelector('.guide-next');
+        const startBtn = document.querySelector('.guide-start');
+
+        if (prevBtn) {
+            prevBtn.disabled = stepNumber === 1;
+        }
+
+        if (nextBtn && startBtn) {
+            if (stepNumber === this.totalGuideSteps) {
+                nextBtn.style.display = 'none';
+                startBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                startBtn.style.display = 'none';
+            }
+        }
+
+        this.currentGuideStep = stepNumber;
+    }
+
+    startUsingForm() {
+        // Mark guide as seen and close
+        localStorage.setItem('bpn_guide_seen', 'true');
+        this.closeUserGuide();
+        
+        // Optional: Scroll to form or highlight first input
+        const firstInput = document.querySelector('input[type="text"]');
+        if (firstInput) {
+            firstInput.focus();
+            firstInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // Method to show guide again (can be called from dev tools or hidden button)
+    showGuideAgain() {
+        localStorage.removeItem('bpn_guide_seen');
+        this.showUserGuide();
     }
 }
 

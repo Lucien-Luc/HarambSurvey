@@ -11,6 +11,12 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **July 24, 2025 - Latest:**
+- **FRIENDLY USER GUIDE TUTORIAL**: Added comprehensive 5-step interactive tutorial that automatically shows to first-time users
+- **BEAUTIFUL MODAL DESIGN**: Glassmorphism tutorial overlay with animated step indicators, smooth transitions, and professional styling
+- **SMART FEATURE EXPLANATIONS**: Step-by-step walkthrough covering company info, position selection, copy-paste functionality, language switching, and auto-save
+- **BILINGUAL GUIDE SUPPORT**: Tutorial fully translated into English and Kinyarwanda with cultural localization
+- **USER-CONTROLLED EXPERIENCE**: "Don't show again" option with localStorage persistence for returning users
+- **MOBILE-OPTIMIZED TUTORIAL**: Responsive design with touch-friendly navigation and mobile-specific styling adjustments
 - **ENHANCED PASTE FUNCTIONALITY**: Completely redesigned copy system with beautiful "Paste to:" dropdown on every position form
 - **BIDIRECTIONAL COPYING**: Users can now copy from any position to any other position (e.g., Position 3 to Position 1)
 - **INTELLIGENT DROPDOWN**: Dynamic dropdown shows all available positions with smart job title display
