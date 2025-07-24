@@ -3886,7 +3886,15 @@ class SimpleFormSubmit {
     }
     
     togglePasteDropdown(sourcePosition) {
+        console.log('togglePasteDropdown called with sourcePosition:', sourcePosition);
         const dropdown = document.getElementById(`pasteDropdown${sourcePosition}`);
+        console.log('dropdown element found:', dropdown);
+        
+        if (!dropdown) {
+            console.error('Dropdown not found for position:', sourcePosition);
+            return;
+        }
+        
         const allDropdowns = document.querySelectorAll('.paste-dropdown-menu');
         
         // Close all other dropdowns
@@ -3899,15 +3907,19 @@ class SimpleFormSubmit {
         // Toggle current dropdown
         if (dropdown.classList.contains('show')) {
             dropdown.classList.remove('show');
+            console.log('Dropdown closed');
         } else {
             this.populateDropdownOptions(sourcePosition);
             dropdown.classList.add('show');
+            console.log('Dropdown opened');
         }
     }
     
     populateDropdownOptions(sourcePosition) {
         const dropdown = document.getElementById(`pasteDropdown${sourcePosition}`);
-        const totalPositions = this.positionModes.length;
+        const totalPositions = this.positions?.length || 0;
+        
+        console.log('populateDropdownOptions - sourcePosition:', sourcePosition, 'totalPositions:', totalPositions);
         
         let optionsHtml = '';
         for (let i = 1; i <= totalPositions; i++) {
@@ -3928,6 +3940,7 @@ class SimpleFormSubmit {
             optionsHtml = '<div class="paste-dropdown-empty">No other positions available</div>';
         }
         
+        console.log('Generated options HTML:', optionsHtml);
         dropdown.innerHTML = optionsHtml;
     }
     

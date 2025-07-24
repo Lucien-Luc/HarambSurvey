@@ -2892,7 +2892,6 @@ textarea.form-control {
     width: 95%;
     margin: 1rem;
 }
-}
 
 @media (max-width: 480px) {
     .form-builder-actions {
