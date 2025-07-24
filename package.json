@@ -8,10 +8,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@types/memoizee": "^0.4.12",
-    "memoizee": "^0.4.17",
-    "openid-client": "^6.6.2"
-  }
+  "description": ""
 }
